@@ -9,21 +9,15 @@ This tool generates comprehensive PDF recruitment reports by:
 
 ## Requirements
 
-- Python 3.7+
+- Node.js 18+ and npm
 - LibreOffice (for DOCX to PDF conversion)
 
 ## Installation
 
-Install required Python packages:
+Install dependencies:
 
 ```bash
-pip install -r requirements.txt
-```
-
-Or install individually:
-
-```bash
-pip install openpyxl python-docx PyPDF2 reportlab pandas
+npm install
 ```
 
 Install LibreOffice (for PDF conversion):
@@ -41,10 +35,16 @@ brew install --cask libreoffice
 
 ## Usage
 
-Simply run the generator script:
+Build and run the generator:
 
 ```bash
-python3 generate_pdf.py
+npm run generate
+```
+
+Or for development:
+
+```bash
+npm run dev
 ```
 
 The script will:
@@ -56,7 +56,7 @@ The script will:
 
 The final output will be generated at:
 ```
-output/Rastimir_Potencijalovic_Complete_Report.pdf
+output/{CandidateName}_Complete_Report.pdf
 ```
 
 ## Input Files
@@ -88,6 +88,13 @@ The generator creates an `output/` directory containing:
 4. **PDF Conversion**: Uses LibreOffice to convert DOCX to PDF
 5. **PDF Merging**: Combines generated PDF with Fleet-15 assessment pages
 
+## Scripts
+
+- `npm run build` - Compile TypeScript to JavaScript
+- `npm run start` - Run the compiled JavaScript
+- `npm run dev` - Run directly with ts-node (for development)
+- `npm run generate` - Build and run (recommended)
+
 ## Customization
 
 To generate reports for different candidates:
@@ -100,7 +107,7 @@ To generate reports for different candidates:
 
 3. Run the generator:
    ```bash
-   python3 generate_pdf.py
+   npm run generate
    ```
 
 The script will automatically extract the candidate name from the template filename and generate a personalized report.
@@ -110,7 +117,7 @@ The script will automatically extract the candidate name from the template filen
 Running the generator produces:
 - `output/filled_report.docx` - DOCX with filled placeholders
 - `output/filled_report.pdf` - PDF version of the filled report  
-- `output/Rastimir_Complete_Report.pdf` - Final merged PDF (11.62 MB, 21 pages)
+- `output/{CandidateName}_Complete_Report.pdf` - Final merged PDF (11.62 MB, 21 pages)
 
 The final PDF contains:
 - 1 personalized report page with candidate data
