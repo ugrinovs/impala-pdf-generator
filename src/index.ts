@@ -73,9 +73,10 @@ function getCellValue(cell: ExcelJS.Cell): any {
 }
 
 /**
- * Extract relevant data from Impala_OUTPUT.xlsx
+ * Extract relevant data from Impala_OUTPUT.xlsx (legacy mode)
+ * Returns minimal data - scores should be extracted separately
  */
-async function extractDataFromImpalaOutput(): Promise<CandidateData> {
+async function extractDataFromImpalaOutput(): Promise<{ candidate_name: string; profile_type: string; gender_pronoun: string }> {
   console.log('Reading Impala_OUTPUT.xlsx...');
   
   const workbook = new ExcelJS.Workbook();
@@ -92,11 +93,13 @@ async function extractDataFromImpalaOutput(): Promise<CandidateData> {
     // Use default
   }
   
-  const data: any = {
+  // Note: This function is for legacy mode only
+  // In practice, the extracted hexaco_scores should come from the Impala_OUTPUT Excel file
+  // For now, returning minimal data structure since new API accepts scores as parameters
+  const data = {
     candidate_name: candidateName,
     profile_type: 'Charismatic Driver',
-    gender_pronoun: 'His',
-    hexaco_scores: {}
+    gender_pronoun: 'His'
   };
   
   // Extract from "Profili Licnosti (Recruitment) " sheet
@@ -463,27 +466,53 @@ async function main(): Promise<number> {
     // Extract data from Excel files
     const impalaData = await extractDataFromImpalaOutput();
     
+    // Read candidate scores from Impala_OUTPUT.xlsx "Novi kraći ideal" sheet
+    // These are the actual candidate scores from column I
+    const workbook = new ExcelJS.Workbook();
+    await workbook.xlsx.readFile(IDEAL_CANDIDATE);
+    const sheet = workbook.getWorksheet('Novi kraći ideal');
+    
+    const hexacoScores: any = {};
+    const hbeckScores: any = {};
+    
+    if (sheet) {
+      // Read candidate scores from column I (rows 2-13)
+      // Rows 2-7: HEXACO dimensions
+      // Rows 8-13: HBECK/360 dimensions
+      const dimensionNames = [
+        'Honesty–Humility',
+        'Emotionality', 
+        'Extraversion',
+        'Agreeableness',
+        'Conscientiousness',
+        'Openness to Experience',
+        'Results',
+        'Mindset',
+        'Skills',
+        'Communication',
+        'Interpersonal Savvy',
+        'Influence'
+      ];
+      
+      for (let i = 0; i < dimensionNames.length; i++) {
+        const rowIdx = i + 2;
+        const score = getCellValue(sheet.getCell(rowIdx, 9)); // Column I
+        
+        if (i < 6) {
+          hexacoScores[dimensionNames[i]] = Number(score) || 0;
+        } else {
+          hbeckScores[dimensionNames[i]] = Number(score) || 0;
+        }
+      }
+    }
+    
     // Convert to the new format expected by generatePDF
     const candidateData: CandidateData = {
       candidate_name: impalaData.candidate_name,
       profile_type: impalaData.profile_type,
       gender_pronoun: impalaData.gender_pronoun,
-      hexaco_scores: {
-        'Honesty–Humility': 4.6,
-        'Emotionality': 4.5,
-        'Extraversion': 1.47,
-        'Agreeableness': 3.4,
-        'Conscientiousness': 2.66,
-        'Openness to Experience': 2.8,
-      },
-      hbeck_scores: {
-        'Results': 0,
-        'Mindset': 0,
-        'Skills': 0,
-        'Communication': 0,
-        'Interpersonal Savvy': 0,
-        'Influence': 0,
-      }
+      hexaco_scores: hexacoScores,
+      hbeck_scores: hbeckScores
     };
     
     // Generate PDF using the new function
