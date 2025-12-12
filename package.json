@@ -8,7 +8,8 @@
     "start": "node dist/index.js",
     "dev": "ts-node src/index.ts",
     "generate": "npm run build && npm start",
-    "example": "npm run build && node dist/example.js"
+    "example": "npm run build && node dist/example.js",
+    "extract-config": "npm run build && node dist/config/extractExcelConfig.js"
   },
   "keywords": [
     "pdf",
