@@ -20,7 +20,7 @@ import subprocess
 import re
 
 # Paths
-BASE_DIR = Path("/home/runner/work/impala-pdf-generator/impala-pdf-generator")
+BASE_DIR = Path(__file__).parent.resolve()
 DOCX_TEMPLATE = BASE_DIR / "Rastimir_Potencijalovic_Recruitment_Development_Flow_Executive_Summary.docx"
 IMPALA_OUTPUT = BASE_DIR / "Impala_OUTPUT.xlsx"
 IDEAL_CANDIDATE = BASE_DIR / "Idealan kandidat atributi (1).xlsx"
@@ -32,8 +32,20 @@ def extract_data_from_impala_output():
     print("Reading Impala_OUTPUT.xlsx...")
     wb = load_workbook(IMPALA_OUTPUT, data_only=True)
     
+    # Extract candidate name from DOCX template filename
+    # Default to "Rastimir" if extraction fails
+    candidate_name = "Rastimir"
+    try:
+        # Try to extract from template filename
+        template_name = DOCX_TEMPLATE.stem
+        # Get first word from filename (e.g., "Rastimir_Potencijalovic..." -> "Rastimir")
+        if "_" in template_name:
+            candidate_name = template_name.split("_")[0]
+    except Exception:
+        pass
+    
     data = {
-        'candidate_name': 'Rastimir',
+        'candidate_name': candidate_name,
         'profile_type': 'Charismatic Driver',
         'gender_pronoun': 'His',
         'hexaco_scores': {}
@@ -236,11 +248,12 @@ def convert_docx_to_pdf(docx_path):
                 str(docx_path)
             ], check=True)
             return pdf_path
-        except:
-            print("Could not convert DOCX to PDF. Please install libreoffice or unoconv.")
+        except (subprocess.CalledProcessError, FileNotFoundError) as e:
+            print(f"Could not convert DOCX to PDF: {e}")
+            print("Please install libreoffice or unoconv.")
             return None
 
-def merge_pdfs(generated_pdf):
+def merge_pdfs(generated_pdf, candidate_name="Candidate"):
     """Merge the generated PDF with existing Fleet-15 PDFs"""
     print("Merging PDFs...")
     
@@ -261,8 +274,8 @@ def merge_pdfs(generated_pdf):
         merger.append(str(pdf_path))
         print(f"Added: {pdf_path.name}")
     
-    # Write merged PDF
-    final_pdf = OUTPUT_DIR / "Rastimir_Potencijalovic_Complete_Report.pdf"
+    # Write merged PDF with dynamic filename
+    final_pdf = OUTPUT_DIR / f"{candidate_name}_Complete_Report.pdf"
     merger.write(str(final_pdf))
     merger.close()
     
@@ -301,7 +314,7 @@ def main():
         generated_pdf = convert_docx_to_pdf(filled_docx)
         
         # Step 4: Merge with Fleet-15 PDFs
-        final_pdf = merge_pdfs(generated_pdf)
+        final_pdf = merge_pdfs(generated_pdf, impala_data['candidate_name'])
         
         print("\n" + "="*60)
         print("PDF generation complete!")
