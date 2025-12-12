@@ -42,7 +42,7 @@ interface ExcelConfig {
 /**
  * Extracts configuration data from Excel files
  */
-export async function extractExcelConfig(excelPath: string): Promise<ExcelConfig> {
+export async function extractExcelConfig(excelPath: string, outputExcelPath?: string): Promise<ExcelConfig> {
   const workbook = new ExcelJS.Workbook();
   await workbook.xlsx.readFile(excelPath);
 
@@ -102,11 +102,110 @@ export async function extractExcelConfig(excelPath: string): Promise<ExcelConfig
     });
   }
 
-  // Generate placeholder development plans based on score levels
-  // TODO: Replace with actual development plan data when source is identified
-  config.dev_plan = generatePlaceholderDevPlans(config.dimensions);
+  // Extract development plans from Impala_OUTPUT.xlsx if provided
+  if (outputExcelPath) {
+    const outputWorkbook = new ExcelJS.Workbook();
+    await outputWorkbook.xlsx.readFile(outputExcelPath);
+    config.dev_plan = await extractDevPlanData(outputWorkbook, config.dimensions);
+  } else {
+    // Generate placeholder development plans based on score levels
+    config.dev_plan = generatePlaceholderDevPlans(config.dimensions);
+  }
 
   return config;
+}
+
+/**
+ * Extracts development plan data from Impala_OUTPUT.xlsx dev plan sheet
+ */
+async function extractDevPlanData(workbook: ExcelJS.Workbook, dimensions: DimensionConfig): Promise<ExcelConfig['dev_plan']> {
+  const devPlans: ExcelConfig['dev_plan'] = {};
+  
+  // Try to find the dev plan sheet (with or without spaces)
+  let devPlanSheet = workbook.getWorksheet('dev plan');
+  if (!devPlanSheet) {
+    devPlanSheet = workbook.getWorksheet('dev plan '); // Try with trailing space
+  }
+  if (!devPlanSheet) {
+    console.warn('Dev plan sheet not found in Impala_OUTPUT.xlsx, using placeholder data');
+    return generatePlaceholderDevPlans(dimensions);
+  }
+
+  console.log(`Found dev plan sheet: "${devPlanSheet.name}"`);
+
+  // The dev plan sheet structure: Dimension | Score Level | Text
+  let headerRow: any[] = [];
+  devPlanSheet.eachRow((row, rowNumber) => {
+    const values = row.values as any[];
+    
+    if (rowNumber === 1) {
+      // Store header row
+      headerRow = values;
+      console.log('Header structure:', headerRow.map((h, i) => `[${i}] ${h}`).join(', '));
+      return;
+    }
+
+    const dimension = String(values[1] || '').trim();
+    const scoreLevel = String(values[2] || '').trim();
+    const text = String(values[3] || '').trim();
+
+    if (!dimension || !scoreLevel || dimension.length < 2) return;
+
+    // Initialize dimension if not exists
+    if (!devPlans[dimension]) {
+      devPlans[dimension] = {
+        'Low': { text: '', recommendations: [] },
+        'Medium': { text: '', recommendations: [] },
+        'High': { text: '', recommendations: [] }
+      };
+    }
+
+    // Map score level to Low/Medium/High
+    let level: 'Low' | 'Medium' | 'High' | null = null;
+    const scoreLower = scoreLevel.toLowerCase();
+    if (scoreLower.includes('low') || scoreLower.includes('0-2')) {
+      level = 'Low';
+    } else if (scoreLower.includes('medium') || scoreLower.includes('mid') || scoreLower.includes('2-3')) {
+      level = 'Medium';
+    } else if (scoreLower.includes('high') || scoreLower.includes('3-5')) {
+      level = 'High';
+    }
+
+    if (level && text) {
+      devPlans[dimension][level] = {
+        text: text,
+        recommendations: parseRecommendations(text)
+      };
+      console.log(`  ${dimension} [${level}]: ${text.substring(0, 60)}...`);
+    }
+  });
+
+  console.log(`Extracted development plans for ${Object.keys(devPlans).length} dimensions from Excel`);
+
+  // Fill in missing dimensions with placeholder data
+  Object.keys(dimensions).forEach(dimension => {
+    if (!devPlans[dimension]) {
+      devPlans[dimension] = generatePlaceholderDevPlans({[dimension]: dimensions[dimension]})[dimension];
+    }
+  });
+
+  return devPlans;
+}
+
+/**
+ * Parses recommendations from text (extracts bullet points or sentences)
+ */
+function parseRecommendations(text: any): string[] {
+  if (!text) return [];
+  
+  const textStr = String(text);
+  // Split by bullet points, newlines, or numbered lists
+  const recommendations = textStr
+    .split(/[•\n\r]|^\d+[\.)]\s*/gm)
+    .map(r => r.trim())
+    .filter(r => r.length > 10); // Filter out empty or very short strings
+  
+  return recommendations.length > 0 ? recommendations : [textStr.substring(0, 200)];
 }
 
 /**
@@ -205,15 +304,22 @@ export function getAttributesByDimension(dimension: string): AttributeItem[] {
 // CLI execution
 if (require.main === module) {
   const excelPath = path.join(__dirname, '../..', 'Idealan kandidat atributi (1).xlsx');
+  const outputExcelPath = path.join(__dirname, '../..', 'Impala_OUTPUT.xlsx');
   const outputPath = path.join(__dirname, 'excelData.ts');
 
-  extractExcelConfig(excelPath)
+  extractExcelConfig(excelPath, outputExcelPath)
     .then(config => {
       console.log('Excel configuration extracted successfully:');
       console.log(`  - ${config.attributes.length} attributes`);
       console.log(`  - ${config.idealProfile.length} ideal profile items`);
       console.log(`  - ${Object.keys(config.dimensions).length} dimensions`);
       console.log(`  - ${Object.keys(config.dev_plan).length} development plans`);
+
+      // Save raw JSON for inspection
+      fs.writeFileSync(
+        path.join(__dirname, '../..', 'config-raw.json'),
+        JSON.stringify(config, null, 2)
+      );
 
       return saveConfigToTypeScript(config, outputPath);
     })
