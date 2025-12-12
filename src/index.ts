@@ -399,8 +399,8 @@ export async function generatePDF(
   console.log('Impala PDF Generator');
   console.log('='.repeat(60));
   
-  // Verify required files
-  const requiredFiles = [templatePath, IDEAL_CANDIDATE];
+  // Verify required files (only template is required, ideal scores are passed as parameters)
+  const requiredFiles = [templatePath];
   const missingFiles = requiredFiles.filter(file => !fs.existsSync(file));
   
   if (missingFiles.length > 0) {
@@ -412,7 +412,7 @@ export async function generatePDF(
     console.warn('The final PDF will only contain the generated report.');
   }
   
-  // Step 1: Calculate scores using ideal profile formulas and candidate data
+  // Step 1: Calculate scores using candidate data and ideal scores
   const scores = await calculateScoresFromIdealCandidate(candidateData);
   
   // Step 2: Fill DOCX template
