@@ -90,4 +90,29 @@ The generator creates an `output/` directory containing:
 
 ## Customization
 
-To generate reports for different candidates, update the source Excel files with new candidate data and ensure the DOCX template filename matches the candidate name.
+To generate reports for different candidates:
+
+1. Update the Excel files with new candidate data:
+   - `Impala_OUTPUT.xlsx` - Add new candidate assessment results
+   - `Idealan kandidat atributi (1).xlsx` - Adjust ideal profile if needed
+
+2. Ensure the DOCX template filename matches the candidate name pattern (e.g., `FirstName_LastName_...docx`)
+
+3. Run the generator:
+   ```bash
+   python3 generate_pdf.py
+   ```
+
+The script will automatically extract the candidate name from the template filename and generate a personalized report.
+
+## Example Output
+
+Running the generator produces:
+- `output/filled_report.docx` - DOCX with filled placeholders
+- `output/filled_report.pdf` - PDF version of the filled report  
+- `output/Rastimir_Complete_Report.pdf` - Final merged PDF (11.62 MB, 21 pages)
+
+The final PDF contains:
+- 1 personalized report page with candidate data
+- 9 assessment pages from Fleet-15 directory
+- Additional pages from the comprehensive template
