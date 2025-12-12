@@ -35,3 +35,9 @@ Thumbs.db
 # Temporary files
 *.tmp
 *.bak
+
+# Generated PDFs and temp directories
+*.pdf
+.tmp-*/
+!Fleet-15/*.pdf
+!Fleet-16/*.svg
