@@ -23,6 +23,9 @@ const IDEAL_CANDIDATE = path.join(BASE_DIR, 'Idealan kandidat atributi (1).xlsx'
 const FLEET_DIR = path.join(BASE_DIR, 'Fleet-15');
 const OUTPUT_DIR = path.join(BASE_DIR, 'output');
 
+// Default candidate name for Fleet-15 PDFs
+const FLEET_CANDIDATE_NAME = 'rastimir';
+
 interface CandidateData {
   candidate_name: string;
   profile_type?: string;
@@ -436,10 +439,10 @@ export async function generatePDF(
     if (!fs.existsSync(fleetDir) || fs.readdirSync(fleetDir).filter(f => f.endsWith('.pdf')).length === 0) {
       console.warn('\nWarning: No PDF files found in Fleet-15 directory');
       console.warn('The final PDF will only contain the generated report.');
-    } else if (fleetDir === FLEET_DIR && candidateData.candidate_name.toLowerCase() !== 'rastimir') {
+    } else if (fleetDir === FLEET_DIR && candidateData.candidate_name.toLowerCase() !== FLEET_CANDIDATE_NAME) {
       console.warn('\n' + '!'.repeat(60));
       console.warn('WARNING: Using default Fleet-15 PDFs with a different candidate!');
-      console.warn(`The Fleet-15 PDFs contain assessment data for "Rastimir",`);
+      console.warn(`The Fleet-15 PDFs contain assessment data for "${FLEET_CANDIDATE_NAME.charAt(0).toUpperCase() + FLEET_CANDIDATE_NAME.slice(1)}",`);
       console.warn(`but you're generating a report for "${candidateData.candidate_name}".`);
       console.warn(`To exclude Fleet PDFs, pass null as the fleetPdfsPath parameter.`);
       console.warn('!'.repeat(60) + '\n');
