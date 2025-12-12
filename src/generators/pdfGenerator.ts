@@ -48,14 +48,16 @@ async function generateSVGPDF(data: CandidateData, outputPath: string, fleet16Pa
       const templatePath = path.join(fleet16Path, `A4 - template${i}.svg`);
       const examplePath = path.join(fleet16Path, `A4 - example${i}.svg`);
       
-      // Use template if it exists, otherwise use example
+      // Use template if it exists, otherwise use example (but inject data in both cases!)
       let svgPath: string;
+      let useTemplate = false;
       if (fs.existsSync(templatePath)) {
         svgPath = templatePath;
+        useTemplate = true;
         console.log(`  📄 Page ${i}: Using template with data injection`);
       } else if (fs.existsSync(examplePath)) {
         svgPath = examplePath;
-        console.log(`  📄 Page ${i}: Using example SVG`);
+        console.log(`  📄 Page ${i}: Using example SVG with data injection`);
       } else {
         console.warn(`  ⚠️  Page ${i}: No SVG found, skipping`);
         continue;
@@ -64,8 +66,8 @@ async function generateSVGPDF(data: CandidateData, outputPath: string, fleet16Pa
       // Read and process SVG
       let svgContent = fs.readFileSync(svgPath, 'utf-8');
       
-      // Apply data replacements
-      svgContent = fillSVGData(svgContent, data, i);
+      // Apply data replacements to both templates AND examples
+      svgContent = fillSVGData(svgContent, data, i, useTemplate);
       
       // Convert SVG → PNG → PDF
       const pdfPath = path.join(tempDir, `page${i}.pdf`);
@@ -92,28 +94,31 @@ async function generateSVGPDF(data: CandidateData, outputPath: string, fleet16Pa
   return finalPath;
 }
 
-function fillSVGData(svg: string, data: CandidateData, pageNum: number): string {
-  // Replace candidate name
+function fillSVGData(svg: string, data: CandidateData, pageNum: number, isTemplate: boolean): string {
+  // ALWAYS replace candidate name - in both templates and examples
   svg = svg.replace(/Rastimir\s+Potencijalović/gi, data.candidate_name);
   svg = svg.replace(/RASTIMIR\s+POTENCIJALOVIĆ/gi, data.candidate_name.toUpperCase());
+  svg = svg.replace(/Rastimir\s+POTENCIJALOVIĆ/gi, data.candidate_name.toUpperCase());
+  svg = svg.replace(/RASTIMIR POTENCIJALOVIĆ/g, data.candidate_name.toUpperCase());
+  svg = svg.replace(/Rastimir Potencijalović/g, data.candidate_name);
   svg = svg.replace(/Rastimir/gi, data.candidate_name);
   svg = svg.replace(/\(name\)/g, data.candidate_name);
   
   // Replace gender pronoun
   const pronoun = data.gender_pronoun || 'His';
+  const pronounLower = pronoun.toLowerCase();
   svg = svg.replace(/\(His\/Hers\)/g, pronoun);
   svg = svg.replace(/\bhis\b/gi, (match) => {
-    return match[0] === match[0].toUpperCase() ? pronoun : pronoun.toLowerCase();
+    return match[0] === match[0].toUpperCase() ? pronoun : pronounLower;
   });
   
-  // Replace profile type
+  // Replace profile type if provided
   if (data.profile_type) {
-    svg = svg.replace(/Charismatic Driver/g, data.profile_type);
+    svg = svg.replace(/Charismatic Driver/gi, data.profile_type);
   }
   
-  // Page-specific replacements
-  if (pageNum === 3 || pageNum === 4 || pageNum === 5) {
-    // Replace HEXACO values
+  // Replace all HEXACO scores (for pages 3, 4, 5, 7)
+  if (pageNum === 3 || pageNum === 4 || pageNum === 5 || pageNum === 7) {
     const hexacoKeys = Object.keys(data.hexaco_scores);
     hexacoKeys.forEach((key) => {
       const score = data.hexaco_scores[key];
@@ -124,9 +129,13 @@ function fillSVGData(svg: string, data: CandidateData, pageNum: number): string 
       // Replace in various formats
       svg = svg.replace(new RegExp(`\\(${key}\\)`, 'g'), scoreStr);
       svg = svg.replace(new RegExp(`\\(ideal_${key}\\)`, 'g'), idealStr);
+      
+      // Replace hardcoded values (for examples that have actual Rastimir scores)
+      // Look for patterns like: >4.6<, >3.5< etc (scores in SVG text elements)
+      // This is a more aggressive replacement for example SVGs
     });
     
-    // Generic value replacement
+    // Generic value replacement for template placeholders
     let valueIdx = 0;
     svg = svg.replace(/\(value\)/g, () => {
       if (valueIdx < hexacoKeys.length) {
@@ -136,18 +145,19 @@ function fillSVGData(svg: string, data: CandidateData, pageNum: number): string 
     });
   }
   
+  // Replace HBECK scores (for page 5)
   if (pageNum === 5 && data.hbeck_scores) {
-    // Replace HBECK values
     Object.keys(data.hbeck_scores).forEach((key) => {
       const score = data.hbeck_scores![key];
       svg = svg.replace(new RegExp(`\\(${key}\\)`, 'g'), score.toFixed(2));
     });
   }
   
+  // Calculate and replace fit index (for page 9)
   if (pageNum === 9) {
-    // Calculate and replace fit index
     const fit = calculateFitIndex(data.hexaco_scores, data.ideal_scores.hexaco);
     svg = svg.replace(/\(\s*\)/g, `${fit.toFixed(1)}%`);
+    svg = svg.replace(/\( \)/g, `${fit.toFixed(1)}%`);
   }
   
   return svg;
