@@ -9,7 +9,9 @@
     "dev": "ts-node src/index.ts",
     "generate": "npm run build && npm start",
     "example": "npm run build && node dist/example.js",
-    "extract-config": "npm run build && node dist/config/extractExcelConfig.js"
+    "extract-config": "npm run build && node dist/config/extractExcelConfig.js",
+    "generate-svg": "npm run build && node dist/example-svg.js",
+    "generate-html": "npm run build && node dist/example-html.js"
   },
   "keywords": [
     "pdf",
