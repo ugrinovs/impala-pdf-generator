@@ -56,7 +56,8 @@ async function exampleUsage() {
 
   try {
     // Generate PDF with candidate data
-    const pdfPath = await generatePDF(candidateData);
+    // Pass null for fleetPdfsPath to skip Fleet-15 PDFs (which contain data for a different candidate)
+    const pdfPath = await generatePDF(candidateData, undefined, null);
     console.log(`\n✓ PDF generated successfully: ${pdfPath}`);
   } catch (error) {
     console.error('Error generating PDF:', error);

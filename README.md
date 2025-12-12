@@ -182,10 +182,25 @@ Generates a PDF report with candidate data.
   - `hbeck_scores` (object, optional): HBECK/360 scores (1-5 scale) with keys:
     - `Results`, `Mindset`, `Skills`, `Communication`, `Interpersonal Savvy`, `Influence`
 - `docxTemplatePath` (string, optional): Custom DOCX template path
-- `fleetPdfsPath` (string, optional): Custom Fleet PDFs directory
+- `fleetPdfsPath` (string | null, optional): Custom Fleet PDFs directory. Pass `null` to skip merging Fleet PDFs (recommended when using custom candidate data, as default Fleet PDFs contain data for a different candidate)
 - `outputPath` (string, optional): Custom output directory
 
 **Returns:** Promise<string> - Path to generated PDF
+
+**Important Note about Fleet-15 PDFs:**
+The default Fleet-15 directory contains pre-generated assessment PDFs for a specific candidate ("Rastimir"). When generating reports for different candidates, you have three options:
+1. **Skip Fleet PDFs** (recommended): Pass `null` for `fleetPdfsPath` to generate only the main report without additional assessment pages
+2. **Provide custom Fleet PDFs**: Create candidate-specific assessment PDFs and pass their directory path
+3. **Use default Fleet PDFs**: The generator will warn you that the Fleet PDFs contain data for a different candidate
+
+Example:
+```typescript
+// Skip Fleet PDFs for John Smith (recommended)
+await generatePDF(candidateData, undefined, null);
+
+// Or use custom Fleet PDFs directory for this candidate
+await generatePDF(candidateData, undefined, './john-smith-assessments/');
+```
 
 ## Scripts
 

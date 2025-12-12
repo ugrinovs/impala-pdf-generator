@@ -405,18 +405,18 @@ function convertDocxToPdf(docxPath: string): string | null {
  * Generate PDF with candidate data passed as parameters
  * @param candidateData - Candidate information including name and scores
  * @param docxTemplatePath - Optional path to DOCX template (defaults to repository template)
- * @param fleetPdfsPath - Optional path to Fleet-15 PDFs directory
+ * @param fleetPdfsPath - Optional path to Fleet-15 PDFs directory (set to null to skip Fleet PDFs)
  * @param outputPath - Optional output directory path
  * @returns Path to the generated PDF
  */
 export async function generatePDF(
   candidateData: CandidateData,
   docxTemplatePath?: string,
-  fleetPdfsPath?: string,
+  fleetPdfsPath?: string | null,
   outputPath?: string
 ): Promise<string> {
   const templatePath = docxTemplatePath || DOCX_TEMPLATE;
-  const fleetDir = fleetPdfsPath || FLEET_DIR;
+  const fleetDir = fleetPdfsPath === null ? null : (fleetPdfsPath || FLEET_DIR);
   const outputDir = outputPath || OUTPUT_DIR;
   
   console.log('='.repeat(60));
@@ -431,9 +431,21 @@ export async function generatePDF(
     throw new Error(`Missing required files: ${missingFiles.map(f => path.basename(f)).join(', ')}`);
   }
   
-  if (!fs.existsSync(fleetDir) || fs.readdirSync(fleetDir).filter(f => f.endsWith('.pdf')).length === 0) {
-    console.warn('\nWarning: No PDF files found in Fleet-15 directory');
-    console.warn('The final PDF will only contain the generated report.');
+  // Check Fleet-15 directory and warn if using default with different candidate
+  if (fleetDir) {
+    if (!fs.existsSync(fleetDir) || fs.readdirSync(fleetDir).filter(f => f.endsWith('.pdf')).length === 0) {
+      console.warn('\nWarning: No PDF files found in Fleet-15 directory');
+      console.warn('The final PDF will only contain the generated report.');
+    } else if (fleetDir === FLEET_DIR && candidateData.candidate_name.toLowerCase() !== 'rastimir') {
+      console.warn('\n' + '!'.repeat(60));
+      console.warn('WARNING: Using default Fleet-15 PDFs with a different candidate!');
+      console.warn(`The Fleet-15 PDFs contain assessment data for "Rastimir",`);
+      console.warn(`but you're generating a report for "${candidateData.candidate_name}".`);
+      console.warn(`To exclude Fleet PDFs, pass null as the fleetPdfsPath parameter.`);
+      console.warn('!'.repeat(60) + '\n');
+    }
+  } else {
+    console.log('\nSkipping Fleet-15 PDFs as requested (fleetPdfsPath = null)');
   }
   
   // Step 1: Calculate scores using candidate data and ideal scores
@@ -445,7 +457,7 @@ export async function generatePDF(
   // Step 3: Convert DOCX to PDF
   const generatedPdf = convertDocxToPdf(filledDocx);
   
-  // Step 4: Merge with Fleet-15 PDFs
+  // Step 4: Merge with Fleet-15 PDFs (if fleetDir is not null)
   const finalPdf = await mergePdfsWithPaths(generatedPdf, candidateData.candidate_name, fleetDir, outputDir);
   
   const stats = fs.statSync(finalPdf);
@@ -466,22 +478,26 @@ export async function generatePDF(
 async function mergePdfsWithPaths(
   generatedPdf: string | null,
   candidateName: string,
-  fleetDir: string,
+  fleetDir: string | null,
   outputDir: string
 ): Promise<string> {
   console.log('Merging PDFs...');
   
   const mergedPdf = await PDFDocument.create();
   
-  // Get all PDF files from Fleet directory, sorted by name
-  const fleetPdfs = fs.existsSync(fleetDir)
+  // Get all PDF files from Fleet directory, sorted by name (only if fleetDir is provided)
+  const fleetPdfs = fleetDir && fs.existsSync(fleetDir)
     ? fs.readdirSync(fleetDir)
         .filter(file => file.endsWith('.pdf'))
         .sort()
         .map(file => path.join(fleetDir, file))
     : [];
   
-  console.log(`Found ${fleetPdfs.length} PDFs in Fleet directory`);
+  if (fleetDir) {
+    console.log(`Found ${fleetPdfs.length} PDFs in Fleet directory`);
+  } else {
+    console.log('Skipping Fleet PDFs (fleetPdfsPath = null)');
+  }
   
   // Add generated PDF first
   if (generatedPdf && fs.existsSync(generatedPdf)) {
@@ -492,7 +508,7 @@ async function mergePdfsWithPaths(
     console.log(`Added generated PDF: ${path.basename(generatedPdf)}`);
   }
   
-  // Add Fleet PDFs
+  // Add Fleet PDFs (only if not skipped)
   for (const pdfPath of fleetPdfs) {
     const pdfBytes = fs.readFileSync(pdfPath);
     const pdf = await PDFDocument.load(pdfBytes);
