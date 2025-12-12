@@ -1,10 +1,11 @@
 /**
- * PDF Generator - Dual Implementation (SVG + HTML)
+ * Working PDF Generator - Uses resvg-js to convert SVG → PNG → PDF
  */
 import * as fs from 'fs';
 import * as path from 'path';
-import { execSync } from 'child_process';
 import { PDFDocument } from 'pdf-lib';
+import PDFDocument2 from 'pdfkit';
+import { Resvg } from '@resvg/resvg-js';
 
 export interface CandidateData {
   candidate_name: string;
@@ -25,144 +26,183 @@ export interface GeneratorOptions {
 }
 
 export async function generatePDF(data: CandidateData, options: GeneratorOptions = {}): Promise<string> {
-  const { outputPath = process.cwd(), fleet16Path = path.join(__dirname, '../../Fleet-16'), method = 'html' } = options;
+  const { outputPath = process.cwd(), fleet16Path = path.join(__dirname, '../../Fleet-16'), method = 'svg' } = options;
   
   console.log(`\n🚀 Generating PDF using ${method.toUpperCase()} method for ${data.candidate_name}...`);
+  console.log(`   Fleet-16 path: ${fleet16Path}`);
+  console.log(`   Output path: ${outputPath}`);
   
-  if (method === 'svg') {
-    return generateSVGPDF(data, outputPath, fleet16Path);
-  } else {
-    return generateHTMLPDF(data, outputPath, fleet16Path);
-  }
+  // Both methods now use the same approach: SVG → PNG → PDF
+  return generateSVGPDF(data, outputPath, fleet16Path);
 }
 
 async function generateSVGPDF(data: CandidateData, outputPath: string, fleet16Path: string): Promise<string> {
-  const tempDir = path.join(outputPath, '.tmp-svg');
+  const tempDir = path.join(outputPath, '.tmp-pdf');
   fs.mkdirSync(tempDir, { recursive: true });
   
   const pdfPages: string[] = [];
   
+  // Generate all 10 pages
   for (let i = 1; i <= 10; i++) {
-    const templatePath = path.join(fleet16Path, `A4 - template${i}.svg`);
-    const examplePath = path.join(fleet16Path, `A4 - example${i}.svg`);
-    
-    if (fs.existsSync(templatePath) || fs.existsSync(examplePath)) {
-      let svgContent = fs.readFileSync(fs.existsSync(templatePath) ? templatePath : examplePath, 'utf-8');
+    try {
+      const templatePath = path.join(fleet16Path, `A4 - template${i}.svg`);
+      const examplePath = path.join(fleet16Path, `A4 - example${i}.svg`);
+      
+      // Use template if it exists, otherwise use example
+      let svgPath: string;
+      if (fs.existsSync(templatePath)) {
+        svgPath = templatePath;
+        console.log(`  📄 Page ${i}: Using template with data injection`);
+      } else if (fs.existsSync(examplePath)) {
+        svgPath = examplePath;
+        console.log(`  📄 Page ${i}: Using example SVG`);
+      } else {
+        console.warn(`  ⚠️  Page ${i}: No SVG found, skipping`);
+        continue;
+      }
+      
+      // Read and process SVG
+      let svgContent = fs.readFileSync(svgPath, 'utf-8');
+      
+      // Apply data replacements
       svgContent = fillSVGData(svgContent, data, i);
       
-      const svgPath = path.join(tempDir, `page${i}.svg`);
+      // Convert SVG → PNG → PDF
       const pdfPath = path.join(tempDir, `page${i}.pdf`);
-      fs.writeFileSync(svgPath, svgContent);
-      
-      try {
-        execSync(`rsvg-convert -f pdf -o "${pdfPath}" "${svgPath}"`, { stdio: 'pipe' });
-        pdfPages.push(pdfPath);
-        console.log(`  ✓ Page ${i}`);
-      } catch (e) {
-        console.warn(`  ⚠ Page ${i} conversion failed`);
-      }
-    }
-  }
-  
-  const finalPath = path.join(outputPath, `${data.candidate_name}_Report_SVG.pdf`);
-  await mergePDFs(pdfPages, finalPath);
-  fs.rmSync(tempDir, { recursive: true, force: true });
-  console.log(`\n✅ Generated: ${finalPath}`);
-  return finalPath;
-}
-
-async function generateHTMLPDF(data: CandidateData, outputPath: string, fleet16Path: string): Promise<string> {
-  const tempDir = path.join(outputPath, '.tmp-html');
-  fs.mkdirSync(tempDir, { recursive: true });
-  
-  const pdfPages: string[] = [];
-  
-  for (let i = 1; i <= 10; i++) {
-    const html = generateHTMLPage(data, i);
-    const htmlPath = path.join(tempDir, `page${i}.html`);
-    const pdfPath = path.join(tempDir, `page${i}.pdf`);
-    fs.writeFileSync(htmlPath, html);
-    
-    try {
-      execSync(`wkhtmltopdf --page-size A4 --margin-top 0 --margin-bottom 0 --margin-left 0 --margin-right 0 "${htmlPath}" "${pdfPath}"`, { stdio: 'pipe' });
+      await convertSVGtoPDF(svgContent, pdfPath);
       pdfPages.push(pdfPath);
-      console.log(`  ✓ Page ${i}`);
-    } catch (e) {
-      console.warn(`  ⚠ Page ${i} conversion failed (install wkhtmltopdf)`);
+      console.log(`  ✅ Page ${i} converted successfully`);
+    } catch (error: any) {
+      console.error(`  ❌ Page ${i} failed:`, error.message);
     }
   }
   
-  const finalPath = path.join(outputPath, `${data.candidate_name}_Report_HTML.pdf`);
+  if (pdfPages.length === 0) {
+    throw new Error('No pages were successfully converted!');
+  }
+  
+  // Merge all PDFs
+  const finalPath = path.join(outputPath, `${data.candidate_name.replace(/\s+/g, '_')}_Report.pdf`);
   await mergePDFs(pdfPages, finalPath);
+  
+  // Cleanup
   fs.rmSync(tempDir, { recursive: true, force: true });
+  
   console.log(`\n✅ Generated: ${finalPath} (${pdfPages.length} pages)`);
   return finalPath;
 }
 
 function fillSVGData(svg: string, data: CandidateData, pageNum: number): string {
+  // Replace candidate name
   svg = svg.replace(/Rastimir\s+Potencijalović/gi, data.candidate_name);
   svg = svg.replace(/RASTIMIR\s+POTENCIJALOVIĆ/gi, data.candidate_name.toUpperCase());
+  svg = svg.replace(/Rastimir/gi, data.candidate_name);
   svg = svg.replace(/\(name\)/g, data.candidate_name);
-  svg = svg.replace(/\(His\/Hers\)/g, data.gender_pronoun || 'His');
   
-  if (pageNum === 3 || pageNum === 4) {
-    const scores = Object.values(data.hexaco_scores);
-    let idx = 0;
-    svg = svg.replace(/\(value\)/g, () => idx < scores.length ? scores[idx++].toFixed(2) : '(value)');
+  // Replace gender pronoun
+  const pronoun = data.gender_pronoun || 'His';
+  svg = svg.replace(/\(His\/Hers\)/g, pronoun);
+  svg = svg.replace(/\bhis\b/gi, (match) => {
+    return match[0] === match[0].toUpperCase() ? pronoun : pronoun.toLowerCase();
+  });
+  
+  // Replace profile type
+  if (data.profile_type) {
+    svg = svg.replace(/Charismatic Driver/g, data.profile_type);
+  }
+  
+  // Page-specific replacements
+  if (pageNum === 3 || pageNum === 4 || pageNum === 5) {
+    // Replace HEXACO values
+    const hexacoKeys = Object.keys(data.hexaco_scores);
+    hexacoKeys.forEach((key) => {
+      const score = data.hexaco_scores[key];
+      const ideal = data.ideal_scores.hexaco[key];
+      const scoreStr = score.toFixed(2);
+      const idealStr = ideal ? ideal.toFixed(2) : '';
+      
+      // Replace in various formats
+      svg = svg.replace(new RegExp(`\\(${key}\\)`, 'g'), scoreStr);
+      svg = svg.replace(new RegExp(`\\(ideal_${key}\\)`, 'g'), idealStr);
+    });
+    
+    // Generic value replacement
+    let valueIdx = 0;
+    svg = svg.replace(/\(value\)/g, () => {
+      if (valueIdx < hexacoKeys.length) {
+        return data.hexaco_scores[hexacoKeys[valueIdx++]].toFixed(2);
+      }
+      return '(value)';
+    });
+  }
+  
+  if (pageNum === 5 && data.hbeck_scores) {
+    // Replace HBECK values
+    Object.keys(data.hbeck_scores).forEach((key) => {
+      const score = data.hbeck_scores![key];
+      svg = svg.replace(new RegExp(`\\(${key}\\)`, 'g'), score.toFixed(2));
+    });
   }
   
   if (pageNum === 9) {
+    // Calculate and replace fit index
     const fit = calculateFitIndex(data.hexaco_scores, data.ideal_scores.hexaco);
-    svg = svg.replace(/\( \)/g, `${fit.toFixed(1)}%`);
+    svg = svg.replace(/\(\s*\)/g, `${fit.toFixed(1)}%`);
   }
   
   return svg;
 }
 
-function generateHTMLPage(data: CandidateData, pageNum: number): string {
-  const styles = `<style>
-    * { margin: 0; padding: 0; box-sizing: border-box; }
-    @page { size: A4; margin: 0; }
-    body { width: 210mm; height: 297mm; font-family: Arial, sans-serif; }
-    .page { padding: 20mm; }
-    .header { background: linear-gradient(135deg, #1a1a2e, #0f3460); color: white; padding: 20px; margin: -20mm -20mm 20px -20mm; }
-    h1 { font-size: 24pt; margin-bottom: 10px; }
-    h2 { font-size: 18pt; margin: 20px 0 10px 0; color: #0f3460; }
-    table { width: 100%; border-collapse: collapse; margin: 20px 0; }
-    th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
-    th { background: #0f3460; color: white; }
-  </style>`;
-  
-  if (pageNum === 1) {
-    return `<!DOCTYPE html><html><head><meta charset="UTF-8">${styles}</head><body>
-      <div class="page"><div class="header">
-        <h1>${data.candidate_name.toUpperCase()} – RECRUITMENT & DEVELOPMENT FLOW</h1>
-        <p>Position: ${data.profile_type || 'Not specified'} | Assessment Type: Integrated Evaluation</p>
-      </div></div></body></html>`;
-  }
-  
-  if (pageNum === 3) {
-    const rows = Object.entries(data.hexaco_scores).map(([dim, score]) => {
-      const ideal = data.ideal_scores.hexaco[dim];
-      const fit = ((5 - Math.abs(ideal - score)) / 5 * 100).toFixed(1);
-      return `<tr><td>${dim}</td><td>${score.toFixed(2)}</td><td>${ideal.toFixed(2)}</td><td>${fit}%</td></tr>`;
-    }).join('');
-    
-    return `<!DOCTYPE html><html><head><meta charset="UTF-8">${styles}</head><body>
-      <div class="page"><h2>HEXACO Assessment Results</h2>
-      <table><thead><tr><th>Dimension</th><th>Score</th><th>Ideal</th><th>Fit</th></tr></thead>
-      <tbody>${rows}</tbody></table></div></body></html>`;
-  }
-  
-  return `<!DOCTYPE html><html><head><meta charset="UTF-8">${styles}</head><body>
-    <div class="page"><h2>Page ${pageNum}</h2><p>${data.candidate_name} - Assessment Report</p></div></body></html>`;
+async function convertSVGtoPDF(svgContent: string, outputPath: string): Promise<void> {
+  return new Promise((resolve, reject) => {
+    try {
+      // Convert SVG to PNG using resvg
+      const resvg = new Resvg(svgContent, {
+        fitTo: {
+          mode: 'width',
+          value: 2480  // A4 width at 300 DPI (210mm = 2480px)
+        }
+      });
+      
+      const pngData = resvg.render();
+      const pngBuffer = pngData.asPng();
+      
+      // Create PDF with the PNG
+      const doc = new PDFDocument2({
+        size: 'A4',
+        margins: { top: 0, bottom: 0, left: 0, right: 0 },
+        autoFirstPage: false
+      });
+      
+      const stream = fs.createWriteStream(outputPath);
+      doc.pipe(stream);
+      
+      // Add page and embed PNG
+      doc.addPage({
+        size: 'A4',
+        margins: { top: 0, bottom: 0, left: 0, right: 0 }
+      });
+      
+      doc.image(pngBuffer, 0, 0, {
+        width: 595.28,  // A4 width in points
+        height: 841.89  // A4 height in points
+      });
+      
+      doc.end();
+      
+      stream.on('finish', () => resolve());
+      stream.on('error', reject);
+    } catch (error) {
+      reject(error);
+    }
+  });
 }
 
 function calculateFitIndex(scores: Record<string, number>, idealScores: Record<string, number>): number {
   const dims = Object.keys(scores);
   let total = 0;
   dims.forEach(dim => {
-    const deviation = Math.abs(idealScores[dim] - scores[dim]);
+    const deviation = Math.abs((idealScores[dim] || 0) - scores[dim]);
     total += (5 - deviation) / 5;
   });
   return (total / dims.length) * 100;
@@ -170,12 +210,14 @@ function calculateFitIndex(scores: Record<string, number>, idealScores: Record<s
 
 async function mergePDFs(pdfPaths: string[], outputPath: string): Promise<void> {
   const mergedPdf = await PDFDocument.create();
+  
   for (const pdfPath of pdfPaths) {
     const pdfBytes = fs.readFileSync(pdfPath);
     const pdf = await PDFDocument.load(pdfBytes);
     const copiedPages = await mergedPdf.copyPages(pdf, pdf.getPageIndices());
     copiedPages.forEach((page) => mergedPdf.addPage(page));
   }
+  
   const mergedPdfBytes = await mergedPdf.save();
   fs.writeFileSync(outputPath, mergedPdfBytes);
 }
