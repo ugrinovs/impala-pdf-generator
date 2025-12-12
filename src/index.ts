@@ -261,17 +261,24 @@ async function fillDocxTemplate(data: CandidateData, scores: Scores): Promise<st
   
   // Replace hardcoded "Rastimir" and "RASTIMIR POTENCIJALOVIĆ" with the candidate name
   // This handles the template-specific content that's not in placeholder format
+  // Use word boundaries to avoid unintended replacements
   documentXml = documentXml.replace(/RASTIMIR POTENCIJALOVIĆ/g, candidateName.toUpperCase());
-  documentXml = documentXml.replace(/Rastimir/g, candidateName);
+  documentXml = documentXml.replace(/\bRastimir\b/g, candidateName);
   
   // Replace (His/Hers) with gender pronoun
   documentXml = documentXml.replace(/\(His\/Hers\)/g, genderPronoun);
   
-  // Replace "his" or "His" references to match the gender pronoun
-  const lowerPronoun = genderPronoun.toLowerCase();
-  // Only replace standalone "his" references in context (be careful not to break other words)
-  documentXml = documentXml.replace(/\bhis\b/g, lowerPronoun);
-  documentXml = documentXml.replace(/\bHis\b/g, genderPronoun);
+  // Replace "his" references to match the gender pronoun (if it's a possessive pronoun)
+  // Map possessive pronouns: His -> his, Her -> her, Hers -> her
+  let lowerPronoun = genderPronoun.toLowerCase();
+  if (lowerPronoun === 'hers') {
+    lowerPronoun = 'her'; // "Hers" as lowercase possessive is "her"
+  }
+  // Only replace standalone "his" references in text (not in XML tags or attributes)
+  if (genderPronoun && (genderPronoun === 'His' || genderPronoun === 'Her' || genderPronoun === 'Hers')) {
+    documentXml = documentXml.replace(/\bhis\b/g, lowerPronoun);
+    documentXml = documentXml.replace(/\bHis\b/g, genderPronoun === 'Hers' ? 'Her' : genderPronoun);
+  }
   
   // Replace ( ) with fit index when it appears near "alignment score"
   // We need to be careful to only replace the one near alignment score
