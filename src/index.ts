@@ -259,8 +259,19 @@ async function fillDocxTemplate(data: CandidateData, scores: Scores): Promise<st
   // Replace (name) with candidate name
   documentXml = documentXml.replace(/\(name\)/g, candidateName);
   
+  // Replace hardcoded "Rastimir" and "RASTIMIR POTENCIJALOVIĆ" with the candidate name
+  // This handles the template-specific content that's not in placeholder format
+  documentXml = documentXml.replace(/RASTIMIR POTENCIJALOVIĆ/g, candidateName.toUpperCase());
+  documentXml = documentXml.replace(/Rastimir/g, candidateName);
+  
   // Replace (His/Hers) with gender pronoun
   documentXml = documentXml.replace(/\(His\/Hers\)/g, genderPronoun);
+  
+  // Replace "his" or "His" references to match the gender pronoun
+  const lowerPronoun = genderPronoun.toLowerCase();
+  // Only replace standalone "his" references in context (be careful not to break other words)
+  documentXml = documentXml.replace(/\bhis\b/g, lowerPronoun);
+  documentXml = documentXml.replace(/\bHis\b/g, genderPronoun);
   
   // Replace ( ) with fit index when it appears near "alignment score"
   // We need to be careful to only replace the one near alignment score
