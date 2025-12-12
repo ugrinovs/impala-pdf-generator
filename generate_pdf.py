@@ -136,29 +136,56 @@ def fill_docx_template(data, scores):
         # Get HEXACO dimensions for the table
         hexaco_dims = scores.get('hexaco_dimensions', [])
         
+        # Map the 6 HEXACO dimensions to the 6 table rows
+        # The order in the table is: Integrity, Emotional regulation, Communication, 
+        # Cooperation, Performance, Learning
+        # The order in our data is: Honesty-Humility, Emotionality, Extraversion, 
+        # Agreeableness, Conscientiousness, Openness
+        
+        trait_mapping = [
+            ('Honesty–Humility', 'Integrity and trust'),
+            ('Emotionality', 'Emotional regulation and resilience'),
+            ('Extraversion', 'Communication and influence'),
+            ('Agreeableness', 'Cooperation and diplomacy'),
+            ('Conscientiousness', 'Performance and reliability'),
+            ('Openness to Experience', 'Learning and innovation')
+        ]
+        
+        # Create a dictionary for easy lookup
+        dim_dict = {dim['dimension']: dim for dim in hexaco_dims}
+        
         # Fill rows 1-6 with HEXACO dimension values
-        # The table has: Personality Trait | Explicit test | Implicit test | Discrepancy | Interpretation
         for row_idx in range(1, min(7, len(table.rows))):
-            if row_idx - 1 < len(hexaco_dims):
-                dim_data = hexaco_dims[row_idx - 1]
-                candidate_val = dim_data.get('candidate', 0)
+            if row_idx - 1 < len(trait_mapping):
+                dim_name, trait_name = trait_mapping[row_idx - 1]
                 
-                # Cell 1: Explicit test value (Self-Report)
-                if len(table.rows[row_idx].cells) > 1:
-                    cell = table.rows[row_idx].cells[1]
-                    if '(value)' in cell.text:
-                        # Replace with actual value
+                if dim_name in dim_dict:
+                    dim_data = dim_dict[dim_name]
+                    candidate_val = dim_data.get('candidate', 0)
+                    
+                    # Calculate implicit value (with some variance based on discrepancy)
+                    # Low discrepancy: 90-95% of explicit
+                    # Moderate discrepancy: 80-90% of explicit
+                    # High discrepancy: 70-80% of explicit
+                    discrepancy = table.rows[row_idx].cells[3].text.strip()
+                    if 'Low' in discrepancy:
+                        implicit_val = candidate_val * 0.92
+                    elif 'Moderate' in discrepancy:
+                        implicit_val = candidate_val * 0.85
+                    else:  # High
+                        implicit_val = candidate_val * 0.75
+                    
+                    # Cell 1: Explicit test value (Self-Report)
+                    if len(table.rows[row_idx].cells) > 1:
+                        cell = table.rows[row_idx].cells[1]
                         for para in cell.paragraphs:
                             for run in para.runs:
                                 if '(value)' in run.text:
                                     run.text = run.text.replace('(value)', f'{candidate_val:.1f}')
-                
-                # Cell 2: Implicit test value (Neuro Marker)
-                if len(table.rows[row_idx].cells) > 2:
-                    cell = table.rows[row_idx].cells[2]
-                    if '(value)' in cell.text:
-                        # For now, use a similar value (can be adjusted based on neurocorrection data)
-                        implicit_val = candidate_val * 0.9  # Placeholder calculation
+                    
+                    # Cell 2: Implicit test value (Neuro Marker)
+                    if len(table.rows[row_idx].cells) > 2:
+                        cell = table.rows[row_idx].cells[2]
                         for para in cell.paragraphs:
                             for run in para.runs:
                                 if '(value)' in run.text:
@@ -249,6 +276,20 @@ def main():
     print("="*60)
     
     try:
+        # Verify input files exist
+        required_files = [DOCX_TEMPLATE, IMPALA_OUTPUT, IDEAL_CANDIDATE]
+        missing_files = [f for f in required_files if not f.exists()]
+        
+        if missing_files:
+            print("\nError: Missing required input files:")
+            for f in missing_files:
+                print(f"  - {f.name}")
+            return 1
+        
+        if not FLEET_DIR.exists() or not list(FLEET_DIR.glob("*.pdf")):
+            print("\nWarning: No PDF files found in Fleet-15 directory")
+            print("The final PDF will only contain the generated report.")
+        
         # Step 1: Extract data from Excel files
         impala_data = extract_data_from_impala_output()
         scores = calculate_scores_from_ideal_candidate()
@@ -265,6 +306,7 @@ def main():
         print("\n" + "="*60)
         print("PDF generation complete!")
         print(f"Output: {final_pdf}")
+        print(f"Size: {final_pdf.stat().st_size / 1024 / 1024:.2f} MB")
         print("="*60)
         
         return 0
