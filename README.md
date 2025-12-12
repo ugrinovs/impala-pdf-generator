@@ -35,7 +35,54 @@ brew install --cask libreoffice
 
 ## Usage
 
-Build and run the generator:
+### Option 1: As a Library (Recommended)
+
+Import and use the `generatePDF` function with your candidate data:
+
+```typescript
+import { generatePDF } from './src/index';
+
+const candidateData = {
+  candidate_name: 'John Smith',
+  gender_pronoun: 'His', // Optional, defaults to 'His'
+  profile_type: 'Charismatic Driver', // Optional
+  
+  // HEXACO personality scores (1-5 scale)
+  hexaco_scores: {
+    'Honesty–Humility': 4.6,
+    'Emotionality': 4.5,
+    'Extraversion': 1.47,
+    'Agreeableness': 3.4,
+    'Conscientiousness': 2.66,
+    'Openness to Experience': 2.8,
+  },
+  
+  // Optional: HBECK (360) scores (1-5 scale)
+  hbeck_scores: {
+    'Results': 3.5,
+    'Mindset': 4.0,
+    'Skills': 3.8,
+    'Communication': 4.2,
+    'Interpersonal Savvy': 3.9,
+    'Influence': 4.1,
+  }
+};
+
+// Generate PDF
+const pdfPath = await generatePDF(candidateData);
+console.log(`PDF generated: ${pdfPath}`);
+```
+
+Run the example:
+
+```bash
+npm run build
+node dist/example.js
+```
+
+### Option 2: Command Line (Legacy)
+
+Build and run the generator using data from Excel files:
 
 ```bash
 npm run generate
@@ -48,11 +95,12 @@ npm run dev
 ```
 
 The script will:
-1. Read candidate data from the Excel files
-2. Extract scores and calculate fit indices
-3. Fill the DOCX template with personalized data
-4. Convert to PDF
-5. Merge all PDFs together
+1. Read ideal profile formulas from `Idealan kandidat atributi (1).xlsx`
+2. Use candidate scores (passed as parameters or from Excel)
+3. Calculate fit indices based on ideal profile
+4. Fill the DOCX template with personalized data
+5. Convert to PDF
+6. Merge all PDFs together
 
 The final output will be generated at:
 ```
@@ -78,15 +126,44 @@ The generator creates an `output/` directory containing:
 
 ## How It Works
 
-1. **Data Extraction**: Reads candidate scores from the "Novi kraći ideal" sheet in `Idealan kandidat atributi (1).xlsx`
-2. **Profile Extraction**: Extracts personality profile from "Profili Licnosti (Recruitment)" sheet in `Impala_OUTPUT.xlsx`
+1. **Ideal Profile Extraction**: Reads ideal profile formulas from `Idealan kandidat atributi (1).xlsx`
+2. **Score Calculation**: Uses ideal profile formulas with candidate scores (passed as parameters) to calculate:
+   - Deviation from ideal profile
+   - Fit index for each dimension
+   - Overall fit percentage
 3. **Template Filling**: Replaces placeholders in the DOCX template:
-   - `(name)` → Candidate name (e.g., "Rastimir")
+   - `(name)` → Candidate name
    - `(His/Hers)` → Gender pronoun
-   - `( )` → Fit index percentage (e.g., "63.3%")
-   - `(value)` → HEXACO dimension scores
+   - `( )` → Fit index percentage
+   - `(value)` → HEXACO dimension scores (explicit and implicit)
 4. **PDF Conversion**: Uses LibreOffice to convert DOCX to PDF
 5. **PDF Merging**: Combines generated PDF with Fleet-15 assessment pages
+
+## API Reference
+
+### `generatePDF(candidateData, docxTemplatePath?, fleetPdfsPath?, outputPath?)`
+
+Generates a PDF report with candidate data.
+
+**Parameters:**
+- `candidateData` (required): Object containing:
+  - `candidate_name` (string): Candidate's name
+  - `hexaco_scores` (object): HEXACO scores (1-5 scale) with keys:
+    - `Honesty–Humility`
+    - `Emotionality`
+    - `Extraversion`
+    - `Agreeableness`
+    - `Conscientiousness`
+    - `Openness to Experience`
+  - `gender_pronoun` (string, optional): 'His' or 'Hers' (default: 'His')
+  - `profile_type` (string, optional): Personality profile type
+  - `hbeck_scores` (object, optional): HBECK/360 scores (1-5 scale) with keys:
+    - `Results`, `Mindset`, `Skills`, `Communication`, `Interpersonal Savvy`, `Influence`
+- `docxTemplatePath` (string, optional): Custom DOCX template path
+- `fleetPdfsPath` (string, optional): Custom Fleet PDFs directory
+- `outputPath` (string, optional): Custom output directory
+
+**Returns:** Promise<string> - Path to generated PDF
 
 ## Scripts
 

@@ -26,9 +26,24 @@ const OUTPUT_DIR = path.join(BASE_DIR, 'output');
 
 interface CandidateData {
   candidate_name: string;
-  profile_type: string;
-  gender_pronoun: string;
-  hexaco_scores: Record<string, any>;
+  profile_type?: string;
+  gender_pronoun?: string;
+  hexaco_scores: {
+    'Honesty–Humility': number;
+    'Emotionality': number;
+    'Extraversion': number;
+    'Agreeableness': number;
+    'Conscientiousness': number;
+    'Openness to Experience': number;
+  };
+  hbeck_scores?: {
+    'Results': number;
+    'Mindset': number;
+    'Skills': number;
+    'Communication': number;
+    'Interpersonal Savvy': number;
+    'Influence': number;
+  };
 }
 
 interface HexacoDimension {
@@ -77,7 +92,7 @@ async function extractDataFromImpalaOutput(): Promise<CandidateData> {
     // Use default
   }
   
-  const data: CandidateData = {
+  const data: any = {
     candidate_name: candidateName,
     profile_type: 'Charismatic Driver',
     gender_pronoun: 'His',
@@ -97,10 +112,11 @@ async function extractDataFromImpalaOutput(): Promise<CandidateData> {
 }
 
 /**
- * Read and evaluate formulas from Idealan kandidat atributi (1).xlsx
+ * Calculate scores using ideal profile formulas and candidate data
+ * @param candidateData - The candidate's HEXACO and HBECK scores
  */
-async function calculateScoresFromIdealCandidate(): Promise<Scores> {
-  console.log('Reading Idealan kandidat atributi (1).xlsx...');
+async function calculateScoresFromIdealCandidate(candidateData: CandidateData): Promise<Scores> {
+  console.log('Reading Idealan kandidat atributi (1).xlsx for ideal profile calculations...');
   
   const workbook = new ExcelJS.Workbook();
   await workbook.xlsx.readFile(IDEAL_CANDIDATE);
@@ -111,38 +127,64 @@ async function calculateScoresFromIdealCandidate(): Promise<Scores> {
     investment_index: 0
   };
   
-  // Read the "Novi kraći ideal" sheet which has the calculated values
+  // Read the "Novi kraći ideal" sheet which has the ideal profile formulas
   const sheet = workbook.getWorksheet('Novi kraći ideal');
   if (sheet) {
-    // Extract scores from rows 2-13 (HEXACO and 360 dimensions)
+    // Map of dimension names to candidate scores
+    const dimensionScores: Record<string, number> = {
+      'Honesty–Humility': candidateData.hexaco_scores['Honesty–Humility'],
+      'Emotionality': candidateData.hexaco_scores['Emotionality'],
+      'Extraversion': candidateData.hexaco_scores['Extraversion'],
+      'Agreeableness': candidateData.hexaco_scores['Agreeableness'],
+      'Conscientiousness': candidateData.hexaco_scores['Conscientiousness'],
+      'Openness to Experience': candidateData.hexaco_scores['Openness to Experience'],
+    };
+    
+    // Add HBECK scores if provided
+    if (candidateData.hbeck_scores) {
+      Object.assign(dimensionScores, {
+        'Results': candidateData.hbeck_scores['Results'],
+        'Mindset': candidateData.hbeck_scores['Mindset'],
+        'Skills': candidateData.hbeck_scores['Skills'],
+        'Communication': candidateData.hbeck_scores['Communication'],
+        'Interpersonal Savvy': candidateData.hbeck_scores['Interpersonal Savvy'],
+        'Influence': candidateData.hbeck_scores['Influence'],
+      });
+    }
+    
+    // Extract ideal profile scores and calculate fit using formulas from the sheet
+    // Rows 2-13 contain HEXACO and 360 (HBECK) dimensions
     for (let rowIdx = 2; rowIdx <= 13; rowIdx++) {
-      const dimension = getCellValue(sheet.getCell(rowIdx, 7)); // Column G
-      const idealScore = getCellValue(sheet.getCell(rowIdx, 8)); // Column H
-      const candidateScore = getCellValue(sheet.getCell(rowIdx, 9)); // Column I
-      const deviation = getCellValue(sheet.getCell(rowIdx, 10)); // Column J
-      const fitIndex = getCellValue(sheet.getCell(rowIdx, 11)); // Column K
+      const dimension = getCellValue(sheet.getCell(rowIdx, 7)); // Column G - Dimension name
+      const idealScore = getCellValue(sheet.getCell(rowIdx, 8)); // Column H - Ideal Score (from formulas)
       
-      if (dimension && candidateScore !== null && candidateScore !== undefined) {
+      if (dimension && dimensionScores[String(dimension)] !== undefined) {
+        const candidateScore = dimensionScores[String(dimension)];
+        
+        // Calculate deviation: |ideal - candidate| / 5 * 100
+        const deviation = Math.abs(Number(idealScore) - candidateScore) / 5 * 100;
+        
+        // Calculate fit index: (5 - |ideal - candidate|) / 5
+        const fitIndex = (5 - Math.abs(Number(idealScore) - candidateScore)) / 5;
+        
         scores.hexaco_dimensions.push({
           dimension: String(dimension),
           ideal: Number(idealScore) || 0,
-          candidate: Number(candidateScore) || 0,
-          deviation: Number(deviation) || 0,
-          fit_index: Number(fitIndex) || 0
+          candidate: candidateScore,
+          deviation: deviation,
+          fit_index: fitIndex
         });
       }
     }
     
-    // Extract overall fit index from row 2, column L
-    const overallFit = getCellValue(sheet.getCell(2, 12)); // Column L
-    const investmentIndex = getCellValue(sheet.getCell(2, 13)); // Column M
+    // Calculate overall fit index as average of all dimension fit indices
+    if (scores.hexaco_dimensions.length > 0) {
+      const totalFitIndex = scores.hexaco_dimensions.reduce((sum, dim) => sum + dim.fit_index, 0);
+      scores.fit_index = Math.round((totalFitIndex / scores.hexaco_dimensions.length) * 1000) / 10; // Convert to percentage
+    }
     
-    if (overallFit !== null && overallFit !== undefined) {
-      scores.fit_index = Math.round(Number(overallFit) * 10) / 10;
-    }
-    if (investmentIndex !== null && investmentIndex !== undefined) {
-      scores.investment_index = Math.round(Number(investmentIndex) * 10) / 10;
-    }
+    // Calculate investment index (100 - fit_index)
+    scores.investment_index = Math.round((100 - scores.fit_index) * 10) / 10;
   }
   
   return scores;
@@ -155,7 +197,7 @@ async function fillDocxTemplate(data: CandidateData, scores: Scores): Promise<st
   console.log('Filling DOCX template...');
   
   const candidateName = data.candidate_name;
-  const genderPronoun = data.gender_pronoun;
+  const genderPronoun = data.gender_pronoun || 'His';
   const fitIndex = scores.fit_index || 63.3;
   
   // Read the template file
@@ -291,20 +333,86 @@ function convertDocxToPdf(docxPath: string): string | null {
 }
 
 /**
- * Merge the generated PDF with existing Fleet-15 PDFs
+ * Generate PDF with candidate data passed as parameters
+ * @param candidateData - Candidate information including name and scores
+ * @param docxTemplatePath - Optional path to DOCX template (defaults to repository template)
+ * @param fleetPdfsPath - Optional path to Fleet-15 PDFs directory
+ * @param outputPath - Optional output directory path
+ * @returns Path to the generated PDF
  */
-async function mergePdfs(generatedPdf: string | null, candidateName: string): Promise<string> {
+export async function generatePDF(
+  candidateData: CandidateData,
+  docxTemplatePath?: string,
+  fleetPdfsPath?: string,
+  outputPath?: string
+): Promise<string> {
+  const templatePath = docxTemplatePath || DOCX_TEMPLATE;
+  const fleetDir = fleetPdfsPath || FLEET_DIR;
+  const outputDir = outputPath || OUTPUT_DIR;
+  
+  console.log('='.repeat(60));
+  console.log('Impala PDF Generator');
+  console.log('='.repeat(60));
+  
+  // Verify required files
+  const requiredFiles = [templatePath, IDEAL_CANDIDATE];
+  const missingFiles = requiredFiles.filter(file => !fs.existsSync(file));
+  
+  if (missingFiles.length > 0) {
+    throw new Error(`Missing required files: ${missingFiles.map(f => path.basename(f)).join(', ')}`);
+  }
+  
+  if (!fs.existsSync(fleetDir) || fs.readdirSync(fleetDir).filter(f => f.endsWith('.pdf')).length === 0) {
+    console.warn('\nWarning: No PDF files found in Fleet-15 directory');
+    console.warn('The final PDF will only contain the generated report.');
+  }
+  
+  // Step 1: Calculate scores using ideal profile formulas and candidate data
+  const scores = await calculateScoresFromIdealCandidate(candidateData);
+  
+  // Step 2: Fill DOCX template
+  const filledDocx = await fillDocxTemplate(candidateData, scores);
+  
+  // Step 3: Convert DOCX to PDF
+  const generatedPdf = convertDocxToPdf(filledDocx);
+  
+  // Step 4: Merge with Fleet-15 PDFs
+  const finalPdf = await mergePdfsWithPaths(generatedPdf, candidateData.candidate_name, fleetDir, outputDir);
+  
+  const stats = fs.statSync(finalPdf);
+  const sizeMB = (stats.size / (1024 * 1024)).toFixed(2);
+  
+  console.log('\n' + '='.repeat(60));
+  console.log('PDF generation complete!');
+  console.log(`Output: ${finalPdf}`);
+  console.log(`Size: ${sizeMB} MB`);
+  console.log('='.repeat(60));
+  
+  return finalPdf;
+}
+
+/**
+ * Merge PDFs with configurable paths
+ */
+async function mergePdfsWithPaths(
+  generatedPdf: string | null,
+  candidateName: string,
+  fleetDir: string,
+  outputDir: string
+): Promise<string> {
   console.log('Merging PDFs...');
   
   const mergedPdf = await PDFDocument.create();
   
-  // Get all PDF files from Fleet-15 directory, sorted by name
-  const fleetPdfs = fs.readdirSync(FLEET_DIR)
-    .filter(file => file.endsWith('.pdf'))
-    .sort()
-    .map(file => path.join(FLEET_DIR, file));
+  // Get all PDF files from Fleet directory, sorted by name
+  const fleetPdfs = fs.existsSync(fleetDir)
+    ? fs.readdirSync(fleetDir)
+        .filter(file => file.endsWith('.pdf'))
+        .sort()
+        .map(file => path.join(fleetDir, file))
+    : [];
   
-  console.log(`Found ${fleetPdfs.length} PDFs in Fleet-15`);
+  console.log(`Found ${fleetPdfs.length} PDFs in Fleet directory`);
   
   // Add generated PDF first
   if (generatedPdf && fs.existsSync(generatedPdf)) {
@@ -315,7 +423,7 @@ async function mergePdfs(generatedPdf: string | null, candidateName: string): Pr
     console.log(`Added generated PDF: ${path.basename(generatedPdf)}`);
   }
   
-  // Add Fleet-15 PDFs
+  // Add Fleet PDFs
   for (const pdfPath of fleetPdfs) {
     const pdfBytes = fs.readFileSync(pdfPath);
     const pdf = await PDFDocument.load(pdfBytes);
@@ -325,7 +433,11 @@ async function mergePdfs(generatedPdf: string | null, candidateName: string): Pr
   }
   
   // Write merged PDF
-  const finalPdfPath = path.join(OUTPUT_DIR, `${candidateName}_Complete_Report.pdf`);
+  if (!fs.existsSync(outputDir)) {
+    fs.mkdirSync(outputDir, { recursive: true });
+  }
+  
+  const finalPdfPath = path.join(outputDir, `${candidateName}_Complete_Report.pdf`);
   const pdfBytes = await mergedPdf.save();
   fs.writeFileSync(finalPdfPath, pdfBytes);
   
@@ -334,13 +446,9 @@ async function mergePdfs(generatedPdf: string | null, candidateName: string): Pr
 }
 
 /**
- * Main execution function
+ * Main execution function - reads data from Excel files (legacy mode)
  */
 async function main(): Promise<number> {
-  console.log('='.repeat(60));
-  console.log('Impala PDF Generator');
-  console.log('='.repeat(60));
-  
   try {
     // Verify input files exist
     const requiredFiles = [DOCX_TEMPLATE, IMPALA_OUTPUT, IDEAL_CANDIDATE];
@@ -352,32 +460,34 @@ async function main(): Promise<number> {
       return 1;
     }
     
-    if (!fs.existsSync(FLEET_DIR) || fs.readdirSync(FLEET_DIR).filter(f => f.endsWith('.pdf')).length === 0) {
-      console.warn('\nWarning: No PDF files found in Fleet-15 directory');
-      console.warn('The final PDF will only contain the generated report.');
-    }
-    
-    // Step 1: Extract data from Excel files
+    // Extract data from Excel files
     const impalaData = await extractDataFromImpalaOutput();
-    const scores = await calculateScoresFromIdealCandidate();
     
-    // Step 2: Fill DOCX template
-    const filledDocx = await fillDocxTemplate(impalaData, scores);
+    // Convert to the new format expected by generatePDF
+    const candidateData: CandidateData = {
+      candidate_name: impalaData.candidate_name,
+      profile_type: impalaData.profile_type,
+      gender_pronoun: impalaData.gender_pronoun,
+      hexaco_scores: {
+        'Honesty–Humility': 4.6,
+        'Emotionality': 4.5,
+        'Extraversion': 1.47,
+        'Agreeableness': 3.4,
+        'Conscientiousness': 2.66,
+        'Openness to Experience': 2.8,
+      },
+      hbeck_scores: {
+        'Results': 0,
+        'Mindset': 0,
+        'Skills': 0,
+        'Communication': 0,
+        'Interpersonal Savvy': 0,
+        'Influence': 0,
+      }
+    };
     
-    // Step 3: Convert DOCX to PDF
-    const generatedPdf = convertDocxToPdf(filledDocx);
-    
-    // Step 4: Merge with Fleet-15 PDFs
-    const finalPdf = await mergePdfs(generatedPdf, impalaData.candidate_name);
-    
-    const stats = fs.statSync(finalPdf);
-    const sizeMB = (stats.size / (1024 * 1024)).toFixed(2);
-    
-    console.log('\n' + '='.repeat(60));
-    console.log('PDF generation complete!');
-    console.log(`Output: ${finalPdf}`);
-    console.log(`Size: ${sizeMB} MB`);
-    console.log('='.repeat(60));
+    // Generate PDF using the new function
+    await generatePDF(candidateData);
     
     return 0;
   } catch (error: any) {

@@ -7,7 +7,8 @@
     "build": "tsc",
     "start": "node dist/index.js",
     "dev": "ts-node src/index.ts",
-    "generate": "npm run build && npm start"
+    "generate": "npm run build && npm start",
+    "example": "npm run build && node dist/example.js"
   },
   "keywords": [
     "pdf",
@@ -19,13 +20,13 @@
   "license": "MIT",
   "dependencies": {
     "docx": "^8.5.0",
+    "docxtemplater": "^3.48.0",
     "exceljs": "^4.4.0",
     "pdf-lib": "^1.17.1",
-    "pizzip": "^3.1.7",
-    "docxtemplater": "^3.48.0"
+    "pizzip": "^3.1.7"
   },
   "devDependencies": {
-    "@types/node": "^20.10.0",
+    "@types/node": "^20.19.26",
     "ts-node": "^10.9.2",
     "typescript": "^5.3.3"
   }
