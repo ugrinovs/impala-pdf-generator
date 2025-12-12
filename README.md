@@ -17,6 +17,12 @@ This tool generates comprehensive PDF recruitment reports by:
 Install required Python packages:
 
 ```bash
+pip install -r requirements.txt
+```
+
+Or install individually:
+
+```bash
 pip install openpyxl python-docx PyPDF2 reportlab pandas
 ```
 
