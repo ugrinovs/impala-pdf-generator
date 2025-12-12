@@ -46,6 +46,18 @@ interface Scores {
 }
 
 /**
+ * Helper function to extract value from Excel cell, handling formula results
+ */
+function getCellValue(cell: ExcelJS.Cell): any {
+  const value = cell.value;
+  // ExcelJS returns formula results as objects with a 'result' property
+  if (typeof value === 'object' && value !== null && 'result' in value) {
+    return (value as any).result;
+  }
+  return value;
+}
+
+/**
  * Extract relevant data from Impala_OUTPUT.xlsx
  */
 async function extractDataFromImpalaOutput(): Promise<CandidateData> {
@@ -104,26 +116,11 @@ async function calculateScoresFromIdealCandidate(): Promise<Scores> {
   if (sheet) {
     // Extract scores from rows 2-13 (HEXACO and 360 dimensions)
     for (let rowIdx = 2; rowIdx <= 13; rowIdx++) {
-      const dimensionCell = sheet.getCell(rowIdx, 7); // Column G
-      const idealScoreCell = sheet.getCell(rowIdx, 8); // Column H
-      const candidateScoreCell = sheet.getCell(rowIdx, 9); // Column I
-      const deviationCell = sheet.getCell(rowIdx, 10); // Column J
-      const fitIndexCell = sheet.getCell(rowIdx, 11); // Column K
-      
-      // Handle formula results
-      const dimension = dimensionCell.value;
-      const idealScore = typeof idealScoreCell.value === 'object' && idealScoreCell.value !== null
-        ? (idealScoreCell.value as any).result
-        : idealScoreCell.value;
-      const candidateScore = typeof candidateScoreCell.value === 'object' && candidateScoreCell.value !== null
-        ? (candidateScoreCell.value as any).result
-        : candidateScoreCell.value;
-      const deviation = typeof deviationCell.value === 'object' && deviationCell.value !== null
-        ? (deviationCell.value as any).result
-        : deviationCell.value;
-      const fitIndex = typeof fitIndexCell.value === 'object' && fitIndexCell.value !== null
-        ? (fitIndexCell.value as any).result
-        : fitIndexCell.value;
+      const dimension = getCellValue(sheet.getCell(rowIdx, 7)); // Column G
+      const idealScore = getCellValue(sheet.getCell(rowIdx, 8)); // Column H
+      const candidateScore = getCellValue(sheet.getCell(rowIdx, 9)); // Column I
+      const deviation = getCellValue(sheet.getCell(rowIdx, 10)); // Column J
+      const fitIndex = getCellValue(sheet.getCell(rowIdx, 11)); // Column K
       
       if (dimension && candidateScore !== null && candidateScore !== undefined) {
         scores.hexaco_dimensions.push({
@@ -137,16 +134,8 @@ async function calculateScoresFromIdealCandidate(): Promise<Scores> {
     }
     
     // Extract overall fit index from row 2, column L
-    const overallFitCell = sheet.getCell(2, 12); // Column L
-    const investmentIndexCell = sheet.getCell(2, 13); // Column M
-    
-    // Handle both formula results and direct values
-    const overallFit = typeof overallFitCell.value === 'object' && overallFitCell.value !== null
-      ? (overallFitCell.value as any).result
-      : overallFitCell.value;
-    const investmentIndex = typeof investmentIndexCell.value === 'object' && investmentIndexCell.value !== null
-      ? (investmentIndexCell.value as any).result
-      : investmentIndexCell.value;
+    const overallFit = getCellValue(sheet.getCell(2, 12)); // Column L
+    const investmentIndex = getCellValue(sheet.getCell(2, 13)); // Column M
     
     if (overallFit !== null && overallFit !== undefined) {
       scores.fit_index = Math.round(Number(overallFit) * 10) / 10;
