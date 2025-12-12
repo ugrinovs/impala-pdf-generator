@@ -287,6 +287,8 @@ async function fillDocxTemplate(data: CandidateData, scores: Scores): Promise<st
   
   // Calculate implicit values for each dimension and replace (value) placeholders
   let valueReplacementCount = 0;
+  const expectedReplacements = traitMapping.length * 2; // 2 values per trait (explicit + implicit)
+  
   traitMapping.forEach((mapping) => {
     const dim = dimDict[mapping.dimension];
     if (dim) {
@@ -320,6 +322,11 @@ async function fillDocxTemplate(data: CandidateData, scores: Scores): Promise<st
       }
     }
   });
+  
+  // Verify we replaced the expected number of values
+  if (valueReplacementCount !== expectedReplacements) {
+    console.warn(`Warning: Expected ${expectedReplacements} value replacements but made ${valueReplacementCount}`);
+  }
   
   // Update the document XML in the zip
   zip.file('word/document.xml', documentXml);
