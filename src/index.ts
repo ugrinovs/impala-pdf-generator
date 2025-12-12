@@ -13,7 +13,6 @@ import * as fs from 'fs';
 import ExcelJS from 'exceljs';
 import { PDFDocument } from 'pdf-lib';
 import { execSync } from 'child_process';
-import Docxtemplater from 'docxtemplater';
 import PizZip from 'pizzip';
 
 // Paths
@@ -249,11 +248,24 @@ async function fillDocxTemplate(data: CandidateData, scores: Scores): Promise<st
   const content = fs.readFileSync(DOCX_TEMPLATE, 'binary');
   const zip = new PizZip(content);
   
-  // Create docxtemplater instance
-  const doc = new Docxtemplater(zip, {
-    paragraphLoop: true,
-    linebreaks: true,
-  });
+  // Get the document XML
+  let documentXml = zip.file('word/document.xml')?.asText();
+  
+  if (!documentXml) {
+    throw new Error('Could not read document.xml from template');
+  }
+  
+  // Replace placeholders with actual values
+  // Replace (name) with candidate name
+  documentXml = documentXml.replace(/\(name\)/g, candidateName);
+  
+  // Replace (His/Hers) with gender pronoun
+  documentXml = documentXml.replace(/\(His\/Hers\)/g, genderPronoun);
+  
+  // Replace ( ) with fit index when it appears near "alignment score"
+  // We need to be careful to only replace the one near alignment score
+  const alignmentScorePattern = /(alignment score[^<]*?)(\( \))/gi;
+  documentXml = documentXml.replace(alignmentScorePattern, `$1${fitIndex}%`);
   
   const hexacoDims = scores.hexaco_dimensions;
   
@@ -273,8 +285,8 @@ async function fillDocxTemplate(data: CandidateData, scores: Scores): Promise<st
     dimDict[dim.dimension] = dim;
   });
   
-  // Calculate implicit values for each dimension
-  const values: any[] = [];
+  // Calculate implicit values for each dimension and replace (value) placeholders
+  let valueReplacementCount = 0;
   traitMapping.forEach((mapping) => {
     const dim = dimDict[mapping.dimension];
     if (dim) {
@@ -290,43 +302,29 @@ async function fillDocxTemplate(data: CandidateData, scores: Scores): Promise<st
         implicitVal = candidateVal * 0.75;
       }
       
-      values.push({
-        explicit: candidateVal.toFixed(1),
-        implicit: implicitVal.toFixed(1)
-      });
+      // Replace the next two occurrences of (value) with explicit and implicit values
+      // This assumes the template has (value) pairs for each trait row
+      const explicitValue = candidateVal.toFixed(1);
+      const implicitValue = implicitVal.toFixed(1);
+      
+      // Replace first occurrence (explicit value)
+      if (documentXml.includes('(value)')) {
+        documentXml = documentXml.replace('(value)', explicitValue);
+        valueReplacementCount++;
+      }
+      
+      // Replace second occurrence (implicit value)
+      if (documentXml.includes('(value)')) {
+        documentXml = documentXml.replace('(value)', implicitValue);
+        valueReplacementCount++;
+      }
     }
   });
   
-  // Prepare template data
-  // Note: This is a simplified approach. For proper table handling, 
-  // we'd need to manually edit the document XML or use a more specific approach
-  const templateData = {
-    name: candidateName,
-    'His/Hers': genderPronoun,
-    alignment_score: fitIndex.toString(),
-    value1_explicit: values[0]?.explicit || '4.6',
-    value1_implicit: values[0]?.implicit || '4.2',
-    value2_explicit: values[1]?.explicit || '4.5',
-    value2_implicit: values[1]?.implicit || '3.8',
-    value3_explicit: values[2]?.explicit || '1.5',
-    value3_implicit: values[2]?.implicit || '1.4',
-    value4_explicit: values[3]?.explicit || '3.4',
-    value4_implicit: values[3]?.implicit || '2.9',
-    value5_explicit: values[4]?.explicit || '2.7',
-    value5_implicit: values[4]?.implicit || '2.3',
-    value6_explicit: values[5]?.explicit || '2.8',
-    value6_implicit: values[5]?.implicit || '2.1',
-  };
+  // Update the document XML in the zip
+  zip.file('word/document.xml', documentXml);
   
-  try {
-    doc.render(templateData);
-  } catch (error: any) {
-    // Docxtemplater might fail if placeholders don't match exactly
-    // In that case, fall back to manual replacement
-    console.warn('Template rendering failed, using fallback method');
-  }
-  
-  const buf = doc.getZip().generate({
+  const buf = zip.generate({
     type: 'nodebuffer',
     compression: 'DEFLATE',
   });
@@ -343,6 +341,7 @@ async function fillDocxTemplate(data: CandidateData, scores: Scores): Promise<st
   console.log(`  - Candidate: ${candidateName}`);
   console.log(`  - Fit Index: ${fitIndex}%`);
   console.log(`  - Dimensions filled: ${hexacoDims.length}`);
+  console.log(`  - Value replacements: ${valueReplacementCount}`);
   
   return filledDocx;
 }
@@ -578,10 +577,12 @@ async function main(): Promise<number> {
   }
 }
 
-// Run the main function
-main().then(exitCode => {
-  process.exit(exitCode);
-}).catch(error => {
-  console.error('Unexpected error:', error);
-  process.exit(1);
-});
+// Run the main function only if this is the main module
+if (require.main === module) {
+  main().then(exitCode => {
+    process.exit(exitCode);
+  }).catch(error => {
+    console.error('Unexpected error:', error);
+    process.exit(1);
+  });
+}
