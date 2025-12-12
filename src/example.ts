@@ -31,6 +31,26 @@ async function exampleUsage() {
       'Communication': 4.2,
       'Interpersonal Savvy': 3.9,
       'Influence': 4.1,
+    },
+    
+    // Ideal profile scores for comparison
+    ideal_scores: {
+      hexaco: {
+        'Honesty–Humility': 4.5,
+        'Emotionality': 2.5,
+        'Extraversion': 1.0,
+        'Agreeableness': 2.5,
+        'Conscientiousness': 4.5,
+        'Openness to Experience': 3.5,
+      },
+      hbeck: {
+        'Results': 1.5,
+        'Mindset': 2.5,
+        'Skills': 4.5,
+        'Communication': 3.5,
+        'Interpersonal Savvy': 1.5,
+        'Influence': 2.5,
+      }
     }
   };
 

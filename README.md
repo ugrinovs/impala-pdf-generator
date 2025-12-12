@@ -65,6 +65,26 @@ const candidateData = {
     'Communication': 4.2,
     'Interpersonal Savvy': 3.9,
     'Influence': 4.1,
+  },
+  
+  // Ideal profile scores for comparison
+  ideal_scores: {
+    hexaco: {
+      'Honesty–Humility': 4.5,
+      'Emotionality': 2.5,
+      'Extraversion': 1.0,
+      'Agreeableness': 2.5,
+      'Conscientiousness': 4.5,
+      'Openness to Experience': 3.5,
+    },
+    hbeck: { // Optional
+      'Results': 1.5,
+      'Mindset': 2.5,
+      'Skills': 4.5,
+      'Communication': 3.5,
+      'Interpersonal Savvy': 1.5,
+      'Influence': 2.5,
+    }
   }
 };
 
@@ -126,18 +146,17 @@ The generator creates an `output/` directory containing:
 
 ## How It Works
 
-1. **Ideal Profile Extraction**: Reads ideal profile formulas from `Idealan kandidat atributi (1).xlsx`
-2. **Score Calculation**: Uses ideal profile formulas with candidate scores (passed as parameters) to calculate:
-   - Deviation from ideal profile
-   - Fit index for each dimension
-   - Overall fit percentage
-3. **Template Filling**: Replaces placeholders in the DOCX template:
+1. **Score Calculation**: Uses candidate scores and ideal profile scores (passed as parameters) to calculate:
+   - Deviation from ideal profile: `|ideal - candidate| / 5 * 100`
+   - Fit index for each dimension: `(5 - |ideal - candidate|) / 5`
+   - Overall fit percentage: average of all dimension fit indices
+2. **Template Filling**: Replaces placeholders in the DOCX template:
    - `(name)` → Candidate name
    - `(His/Hers)` → Gender pronoun
    - `( )` → Fit index percentage
    - `(value)` → HEXACO dimension scores (explicit and implicit)
-4. **PDF Conversion**: Uses LibreOffice to convert DOCX to PDF
-5. **PDF Merging**: Combines generated PDF with Fleet-15 assessment pages
+3. **PDF Conversion**: Uses LibreOffice to convert DOCX to PDF
+4. **PDF Merging**: Combines generated PDF with Fleet-15 assessment pages
 
 ## API Reference
 
@@ -155,6 +174,9 @@ Generates a PDF report with candidate data.
     - `Agreeableness`
     - `Conscientiousness`
     - `Openness to Experience`
+  - `ideal_scores` (object): Ideal profile scores for comparison
+    - `hexaco` (object): Ideal HEXACO scores (1-5 scale) with same keys as hexaco_scores
+    - `hbeck` (object, optional): Ideal HBECK/360 scores (1-5 scale)
   - `gender_pronoun` (string, optional): 'His' or 'Hers' (default: 'His')
   - `profile_type` (string, optional): Personality profile type
   - `hbeck_scores` (object, optional): HBECK/360 scores (1-5 scale) with keys:

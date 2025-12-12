@@ -44,6 +44,24 @@ interface CandidateData {
     'Interpersonal Savvy': number;
     'Influence': number;
   };
+  ideal_scores: {
+    hexaco: {
+      'Honesty–Humility': number;
+      'Emotionality': number;
+      'Extraversion': number;
+      'Agreeableness': number;
+      'Conscientiousness': number;
+      'Openness to Experience': number;
+    };
+    hbeck?: {
+      'Results': number;
+      'Mindset': number;
+      'Skills': number;
+      'Communication': number;
+      'Interpersonal Savvy': number;
+      'Influence': number;
+    };
+  };
 }
 
 interface HexacoDimension {
@@ -115,14 +133,11 @@ async function extractDataFromImpalaOutput(): Promise<{ candidate_name: string; 
 }
 
 /**
- * Calculate scores using ideal profile formulas and candidate data
- * @param candidateData - The candidate's HEXACO and HBECK scores
+ * Calculate scores using ideal profile and candidate data
+ * @param candidateData - The candidate's HEXACO and HBECK scores with ideal scores
  */
 async function calculateScoresFromIdealCandidate(candidateData: CandidateData): Promise<Scores> {
-  console.log('Reading Idealan kandidat atributi (1).xlsx for ideal profile calculations...');
-  
-  const workbook = new ExcelJS.Workbook();
-  await workbook.xlsx.readFile(IDEAL_CANDIDATE);
+  console.log('Calculating fit indices using candidate and ideal scores...');
   
   const scores: Scores = {
     hexaco_dimensions: [],
@@ -130,65 +145,92 @@ async function calculateScoresFromIdealCandidate(candidateData: CandidateData): 
     investment_index: 0
   };
   
-  // Read the "Novi kraći ideal" sheet which has the ideal profile formulas
-  const sheet = workbook.getWorksheet('Novi kraći ideal');
-  if (sheet) {
-    // Map of dimension names to candidate scores
-    const dimensionScores: Record<string, number> = {
-      'Honesty–Humility': candidateData.hexaco_scores['Honesty–Humility'],
-      'Emotionality': candidateData.hexaco_scores['Emotionality'],
-      'Extraversion': candidateData.hexaco_scores['Extraversion'],
-      'Agreeableness': candidateData.hexaco_scores['Agreeableness'],
-      'Conscientiousness': candidateData.hexaco_scores['Conscientiousness'],
-      'Openness to Experience': candidateData.hexaco_scores['Openness to Experience'],
-    };
-    
-    // Add HBECK scores if provided
-    if (candidateData.hbeck_scores) {
-      Object.assign(dimensionScores, {
-        'Results': candidateData.hbeck_scores['Results'],
-        'Mindset': candidateData.hbeck_scores['Mindset'],
-        'Skills': candidateData.hbeck_scores['Skills'],
-        'Communication': candidateData.hbeck_scores['Communication'],
-        'Interpersonal Savvy': candidateData.hbeck_scores['Interpersonal Savvy'],
-        'Influence': candidateData.hbeck_scores['Influence'],
-      });
-    }
-    
-    // Extract ideal profile scores and calculate fit using formulas from the sheet
-    // Rows 2-13 contain HEXACO and 360 (HBECK) dimensions
-    for (let rowIdx = 2; rowIdx <= 13; rowIdx++) {
-      const dimension = getCellValue(sheet.getCell(rowIdx, 7)); // Column G - Dimension name
-      const idealScore = getCellValue(sheet.getCell(rowIdx, 8)); // Column H - Ideal Score (from formulas)
-      
-      if (dimension && dimensionScores[String(dimension)] !== undefined) {
-        const candidateScore = dimensionScores[String(dimension)];
-        
-        // Calculate deviation: |ideal - candidate| / 5 * 100
-        const deviation = Math.abs(Number(idealScore) - candidateScore) / 5 * 100;
-        
-        // Calculate fit index: (5 - |ideal - candidate|) / 5
-        const fitIndex = (5 - Math.abs(Number(idealScore) - candidateScore)) / 5;
-        
-        scores.hexaco_dimensions.push({
-          dimension: String(dimension),
-          ideal: Number(idealScore) || 0,
-          candidate: candidateScore,
-          deviation: deviation,
-          fit_index: fitIndex
-        });
-      }
-    }
-    
-    // Calculate overall fit index as average of all dimension fit indices
-    if (scores.hexaco_dimensions.length > 0) {
-      const totalFitIndex = scores.hexaco_dimensions.reduce((sum, dim) => sum + dim.fit_index, 0);
-      scores.fit_index = Math.round((totalFitIndex / scores.hexaco_dimensions.length) * 1000) / 10; // Convert to percentage
-    }
-    
-    // Calculate investment index (100 - fit_index)
-    scores.investment_index = Math.round((100 - scores.fit_index) * 10) / 10;
+  // Map of dimension names to candidate scores and ideal scores
+  const dimensionData: Record<string, { candidate: number; ideal: number }> = {
+    'Honesty–Humility': {
+      candidate: candidateData.hexaco_scores['Honesty–Humility'],
+      ideal: candidateData.ideal_scores.hexaco['Honesty–Humility']
+    },
+    'Emotionality': {
+      candidate: candidateData.hexaco_scores['Emotionality'],
+      ideal: candidateData.ideal_scores.hexaco['Emotionality']
+    },
+    'Extraversion': {
+      candidate: candidateData.hexaco_scores['Extraversion'],
+      ideal: candidateData.ideal_scores.hexaco['Extraversion']
+    },
+    'Agreeableness': {
+      candidate: candidateData.hexaco_scores['Agreeableness'],
+      ideal: candidateData.ideal_scores.hexaco['Agreeableness']
+    },
+    'Conscientiousness': {
+      candidate: candidateData.hexaco_scores['Conscientiousness'],
+      ideal: candidateData.ideal_scores.hexaco['Conscientiousness']
+    },
+    'Openness to Experience': {
+      candidate: candidateData.hexaco_scores['Openness to Experience'],
+      ideal: candidateData.ideal_scores.hexaco['Openness to Experience']
+    },
+  };
+  
+  // Add HBECK scores if provided
+  if (candidateData.hbeck_scores && candidateData.ideal_scores.hbeck) {
+    Object.assign(dimensionData, {
+      'Results': {
+        candidate: candidateData.hbeck_scores['Results'],
+        ideal: candidateData.ideal_scores.hbeck['Results']
+      },
+      'Mindset': {
+        candidate: candidateData.hbeck_scores['Mindset'],
+        ideal: candidateData.ideal_scores.hbeck['Mindset']
+      },
+      'Skills': {
+        candidate: candidateData.hbeck_scores['Skills'],
+        ideal: candidateData.ideal_scores.hbeck['Skills']
+      },
+      'Communication': {
+        candidate: candidateData.hbeck_scores['Communication'],
+        ideal: candidateData.ideal_scores.hbeck['Communication']
+      },
+      'Interpersonal Savvy': {
+        candidate: candidateData.hbeck_scores['Interpersonal Savvy'],
+        ideal: candidateData.ideal_scores.hbeck['Interpersonal Savvy']
+      },
+      'Influence': {
+        candidate: candidateData.hbeck_scores['Influence'],
+        ideal: candidateData.ideal_scores.hbeck['Influence']
+      },
+    });
   }
+  
+  // Calculate fit for each dimension
+  for (const [dimension, data] of Object.entries(dimensionData)) {
+    const candidateScore = data.candidate;
+    const idealScore = data.ideal;
+    
+    // Calculate deviation: |ideal - candidate| / 5 * 100
+    const deviation = Math.abs(idealScore - candidateScore) / 5 * 100;
+    
+    // Calculate fit index: (5 - |ideal - candidate|) / 5
+    const fitIndex = (5 - Math.abs(idealScore - candidateScore)) / 5;
+    
+    scores.hexaco_dimensions.push({
+      dimension: dimension,
+      ideal: idealScore,
+      candidate: candidateScore,
+      deviation: deviation,
+      fit_index: fitIndex
+    });
+  }
+  
+  // Calculate overall fit index as average of all dimension fit indices
+  if (scores.hexaco_dimensions.length > 0) {
+    const totalFitIndex = scores.hexaco_dimensions.reduce((sum, dim) => sum + dim.fit_index, 0);
+    scores.fit_index = Math.round((totalFitIndex / scores.hexaco_dimensions.length) * 1000) / 10; // Convert to percentage
+  }
+  
+  // Calculate investment index (100 - fit_index)
+  scores.investment_index = Math.round((100 - scores.fit_index) * 10) / 10;
   
   return scores;
 }
@@ -467,16 +509,19 @@ async function main(): Promise<number> {
     const impalaData = await extractDataFromImpalaOutput();
     
     // Read candidate scores from Impala_OUTPUT.xlsx "Novi kraći ideal" sheet
-    // These are the actual candidate scores from column I
+    // Column I: Candidate scores
+    // Column H: Ideal scores
     const workbook = new ExcelJS.Workbook();
     await workbook.xlsx.readFile(IDEAL_CANDIDATE);
     const sheet = workbook.getWorksheet('Novi kraći ideal');
     
     const hexacoScores: any = {};
     const hbeckScores: any = {};
+    const hexacoIdealScores: any = {};
+    const hbeckIdealScores: any = {};
     
     if (sheet) {
-      // Read candidate scores from column I (rows 2-13)
+      // Read candidate and ideal scores from columns I and H (rows 2-13)
       // Rows 2-7: HEXACO dimensions
       // Rows 8-13: HBECK/360 dimensions
       const dimensionNames = [
@@ -496,12 +541,15 @@ async function main(): Promise<number> {
       
       for (let i = 0; i < dimensionNames.length; i++) {
         const rowIdx = i + 2;
-        const score = getCellValue(sheet.getCell(rowIdx, 9)); // Column I
+        const candidateScore = getCellValue(sheet.getCell(rowIdx, 9)); // Column I - Candidate
+        const idealScore = getCellValue(sheet.getCell(rowIdx, 8)); // Column H - Ideal
         
         if (i < 6) {
-          hexacoScores[dimensionNames[i]] = Number(score) || 0;
+          hexacoScores[dimensionNames[i]] = Number(candidateScore) || 0;
+          hexacoIdealScores[dimensionNames[i]] = Number(idealScore) || 0;
         } else {
-          hbeckScores[dimensionNames[i]] = Number(score) || 0;
+          hbeckScores[dimensionNames[i]] = Number(candidateScore) || 0;
+          hbeckIdealScores[dimensionNames[i]] = Number(idealScore) || 0;
         }
       }
     }
@@ -512,7 +560,11 @@ async function main(): Promise<number> {
       profile_type: impalaData.profile_type,
       gender_pronoun: impalaData.gender_pronoun,
       hexaco_scores: hexacoScores,
-      hbeck_scores: hbeckScores
+      hbeck_scores: hbeckScores,
+      ideal_scores: {
+        hexaco: hexacoIdealScores,
+        hbeck: hbeckIdealScores
+      }
     };
     
     // Generate PDF using the new function
