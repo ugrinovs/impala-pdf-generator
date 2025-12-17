@@ -1,3 +1,5 @@
+import Big from "big.js";
+
 function getScore(score: number) {
   if (score < 2.5) return 1;
   if (score < 3.5) return 2;
@@ -5,11 +7,32 @@ function getScore(score: number) {
 }
 
 function getAlignment(participantScore: number, idealScore: number) {
+  console.log(
+    "alignment",
+    participantScore,
+    idealScore,
+    3 - Math.abs(participantScore - idealScore),
+  );
+  // 3 - (3 - 3); => 3 - 0; => 3 // high
+  // 3 - (2 - 3); => 3 - 1; => 2 // medium
+  // 3 - (1 - 3); => 3 - 2; => 1 // low
+  // 3 - (0 - 3); => 3 - 3; => 0
+  // 3 - (1 - 3); => 3 - 2; => 1
+  // 3 - (2 - 3); => 3 - 1; => 2
+  // 3 - (0 - 3); => 3 - 3; => 0
+  // 3 - (1 - 3); => 3 - 2; => 1
+  // 3 - (2 - 3); => 3 - 1; => 2
   return 3 - Math.abs(participantScore - idealScore);
 }
 
 function getFitIndex(participantScores: number, idealScores: number) {
-  return (5 - Math.abs(participantScores - idealScores)) / 5;
+  console.log(
+    "fitIndex",
+    participantScores,
+    idealScores,
+    (5 - Math.abs(participantScores - idealScores)) / 5,
+  );
+  return Big(Big(5).minus(participantScores).minus(idealScores).abs()).div(5);
 }
 export default function calculateIdeaCandidate(results: {
   neuroCorrectionCorrected: any;
@@ -22,18 +45,18 @@ export default function calculateIdeaCandidate(results: {
   const idealCandidate = results.idealCandidateResults;
 
   const idealCandidateCalculated = {
-    H: (idealCandidate[0].result + idealCandidate[1].result) / 2,
-    E: (idealCandidate[2].result + idealCandidate[3].result) / 2,
-    X: (idealCandidate[4].result + idealCandidate[5].result) / 2,
-    A: (idealCandidate[6].result + idealCandidate[7].result) / 2,
-    C: (idealCandidate[8].result + idealCandidate[9].result) / 2,
-    O: (idealCandidate[10].result + idealCandidate[11].result) / 2,
-    Results: (idealCandidate[12].result + idealCandidate[13].result) / 2,
-    Mindset: (idealCandidate[14].result + idealCandidate[15].result) / 2,
-    Skills: (idealCandidate[16].result + idealCandidate[17].result) / 2,
-    Communication: (idealCandidate[18].result + idealCandidate[19].result) / 2,
-    Interpersonal: (idealCandidate[20].result + idealCandidate[21].result) / 2,
-    Influence: (idealCandidate[22].result + idealCandidate[23].result) / 2
+    H: (idealCandidate[0] + idealCandidate[1] + 2) / 2,
+    E: (idealCandidate[2] + idealCandidate[3] + 2) / 2,
+    X: (idealCandidate[4] + idealCandidate[5] + 2) / 2,
+    A: (idealCandidate[6] + idealCandidate[7] + 2) / 2,
+    C: (idealCandidate[8] + idealCandidate[9] + 2) / 2,
+    O: (idealCandidate[10] + idealCandidate[11] + 2) / 2,
+    Results: (idealCandidate[12] + idealCandidate[13] + 2) / 2,
+    Mindset: (idealCandidate[14] + idealCandidate[15] + 2) / 2,
+    Skills: (idealCandidate[16] + idealCandidate[17] + 2) / 2,
+    Communication: (idealCandidate[18] + idealCandidate[19] + 2) / 2,
+    Interpersonal: (idealCandidate[20] + idealCandidate[21] + 2) / 2,
+    Influence: (idealCandidate[22] + idealCandidate[23] + 2) / 2,
   };
 
   const idealScoreCategories = {
@@ -48,7 +71,7 @@ export default function calculateIdeaCandidate(results: {
     Skills: getScore(idealCandidateCalculated.Skills),
     Communication: getScore(idealCandidateCalculated.Communication),
     Interpersonal: getScore(idealCandidateCalculated.Interpersonal),
-    Influence: getScore(idealCandidateCalculated.Influence)
+    Influence: getScore(idealCandidateCalculated.Influence),
   };
 
   const participantScoreCategories = {
@@ -63,8 +86,9 @@ export default function calculateIdeaCandidate(results: {
     Skills: hBeck.X,
     Communication: hBeck.A,
     Interpersonal: hBeck.C,
-    Influence: hBeck.O
+    Influence: hBeck.O,
   };
+  console.log("idealCandidateCalculated", idealCandidateCalculated);
 
   const idealCandidateAlignment = {
     H: getAlignment(participantScoreCategories.H, idealScoreCategories.H),
@@ -73,32 +97,50 @@ export default function calculateIdeaCandidate(results: {
     A: getAlignment(participantScoreCategories.A, idealScoreCategories.A),
     C: getAlignment(participantScoreCategories.C, idealScoreCategories.C),
     O: getAlignment(participantScoreCategories.O, idealScoreCategories.O),
-    Results: getAlignment(participantScoreCategories.Results, idealScoreCategories.Results),
-    Mindset: getAlignment(participantScoreCategories.Mindset, idealScoreCategories.Mindset),
-    Skills: getAlignment(participantScoreCategories.Skills, idealScoreCategories.Skills),
-    Communication: getAlignment(participantScoreCategories.Communication, idealScoreCategories.Communication),
-    Interpersonal: getAlignment(participantScoreCategories.Interpersonal, idealScoreCategories.Interpersonal),
-    Influence: getAlignment(participantScoreCategories.Influence, idealScoreCategories.Influence)
+    Results: getAlignment(
+      participantScoreCategories.Results,
+      idealScoreCategories.Results,
+    ),
+    Mindset: getAlignment(
+      participantScoreCategories.Mindset,
+      idealScoreCategories.Mindset,
+    ),
+    Skills: getAlignment(
+      participantScoreCategories.Skills,
+      idealScoreCategories.Skills,
+    ),
+    Communication: getAlignment(
+      participantScoreCategories.Communication,
+      idealScoreCategories.Communication,
+    ),
+    Interpersonal: getAlignment(
+      participantScoreCategories.Interpersonal,
+      idealScoreCategories.Interpersonal,
+    ),
+    Influence: getAlignment(
+      participantScoreCategories.Influence,
+      idealScoreCategories.Influence,
+    ),
   };
 
   const fitIndexCloseToIdeal = {
-    H: getFitIndex(participantScoreCategories.H, idealScoreCategories.H),
-    E: getFitIndex(participantScoreCategories.E, idealScoreCategories.E),
-    X: getFitIndex(participantScoreCategories.X, idealScoreCategories.X),
-    A: getFitIndex(participantScoreCategories.A, idealScoreCategories.A),
-    C: getFitIndex(participantScoreCategories.C, idealScoreCategories.C),
-    O: getFitIndex(participantScoreCategories.O, idealScoreCategories.O),
-    Results: getFitIndex(participantScoreCategories.Results, idealScoreCategories.Results),
-    Mindset: getFitIndex(participantScoreCategories.Mindset, idealScoreCategories.Mindset),
-    Skills: getFitIndex(participantScoreCategories.Skills, idealScoreCategories.Skills),
-    Communication: getFitIndex(participantScoreCategories.Communication, idealScoreCategories.Communication),
-    Interpersonal: getFitIndex(participantScoreCategories.Interpersonal, idealScoreCategories.Interpersonal),
-    Influence: getFitIndex(participantScoreCategories.Influence, idealScoreCategories.Influence)
+    H: getFitIndex(hexacoCorrected.H, idealCandidateCalculated.H),
+    E: getFitIndex(hexacoCorrected.E, idealCandidateCalculated.E),
+    X: getFitIndex(hexacoCorrected.X, idealCandidateCalculated.X),
+    A: getFitIndex(hexacoCorrected.A, idealCandidateCalculated.A),
+    C: getFitIndex(hexacoCorrected.C, idealCandidateCalculated.C),
+    O: getFitIndex(hexacoCorrected.O, idealCandidateCalculated.O),
+    Results: getFitIndex(hBeck.H, idealCandidateCalculated.Results),
+    Mindset: getFitIndex(hBeck.E, idealCandidateCalculated.Mindset),
+    Skills: getFitIndex(hBeck.X, idealCandidateCalculated.Skills),
+    Communication: getFitIndex(hBeck.A, idealCandidateCalculated.Communication),
+    Interpersonal: getFitIndex(hBeck.C, idealCandidateCalculated.Interpersonal),
+    Influence: getFitIndex(hBeck.O, idealCandidateCalculated.Influence),
   };
-  const fitIndexOverall =
-    (Object.values(fitIndexCloseToIdeal).reduce((acc, val) => acc + val, 0) /
-      Object.values(fitIndexCloseToIdeal).length) *
-    100;
+  const fitIndexOverall = Object.values(fitIndexCloseToIdeal)
+    .reduce((acc, val) => acc.plus(val), new Big(0))
+    .div(Object.values(fitIndexCloseToIdeal).length)
+    .times(100);
 
   return {
     idealCandidateCalculated,
@@ -106,6 +148,6 @@ export default function calculateIdeaCandidate(results: {
     participantScoreCategories,
     idealCandidateAlignment,
     fitIndexCloseToIdeal,
-    fitIndexOverall
+    fitIndexOverall,
   };
 }
