@@ -32,7 +32,7 @@ const OUTPUT_DIR = path.join(BASE_DIR, "output");
 // Default candidate name for Fleet-15 PDFs
 const FLEET_CANDIDATE_NAME = "rastimir";
 
-interface CandidateData {
+export interface CandidateData {
   candidate_name: string;
   profile_type?: string;
   gender_pronoun?: string;
