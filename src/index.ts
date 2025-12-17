@@ -1,11 +1,11 @@
 import puppeteer from 'puppeteer';
 import path from 'path';
 import fs from 'fs';
-import * as config from './config';
-import resExample from './res-example';
+import * as config from './lib/config.js';
+import resExample from './lib/res-example.js';
 // import { createChart } from "./chart.js";
-import calculateIdeaCandidate from './ideal-candidate.calculation';
-import { personalityProfileMap } from './personality-profile.mapper';
+import calculateIdeaCandidate from './lib/ideal-candidate.calculation.js';
+import { personalityProfileMap } from './lib/personality-profile.mapper.js';
 
 const recruiter_name = '#{{RECRUITER_NAME}}';
 const flow_name = '#{{FLOW_NAME}}';

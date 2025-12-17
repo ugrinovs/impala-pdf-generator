@@ -1,4 +1,4 @@
-import { personalityProfileMap } from './personality-profile.mapper';
+import { personalityProfileMap } from './personality-profile.mapper.js';
 
 export default {
   ageRange: '25 - 34',

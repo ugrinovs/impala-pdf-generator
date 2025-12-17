@@ -31,17 +31,12 @@
     "isolatedModules": true
   },
   "include": [
-    "index.ts",
-    "config.ts",
-    "ideal-candidate.calculation.ts",
-    "personality-profile.mapper.ts",
-    "res-example.ts"
+    "src/**/*"
   ],
   "exclude": [
     "node_modules",
     "dist",
     "output",
-    "src",
     "**/*.test.ts"
   ]
 }
