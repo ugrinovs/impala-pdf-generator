@@ -80,6 +80,8 @@ const base64Pdf = await generateDevelopmentReport(participantData);
 console.log(`PDF generated successfully`);
 ```
 
+For more examples, see the [examples/](examples/) directory.
+
 ## API Reference
 
 ### `generateDevelopmentReport(result: ParticipantInfo)`

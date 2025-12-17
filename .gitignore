@@ -21,6 +21,9 @@ test/*.d.ts
 test/*.js.map
 test-output.pdf
 
+# Example output
+examples/*.pdf
+
 # Python cache (legacy)
 __pycache__/
 *.py[cod]
