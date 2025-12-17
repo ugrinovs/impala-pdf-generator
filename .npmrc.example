@@ -1,0 +1,7 @@
+# Configuration for GitHub Package Registry
+# Replace YOUR_GITHUB_TOKEN with your personal access token
+# To create a token: https://github.com/settings/tokens
+# Required scopes: read:packages, write:packages
+
+@ugrinovs:registry=https://npm.pkg.github.com
+//npm.pkg.github.com/:_authToken=YOUR_GITHUB_TOKEN

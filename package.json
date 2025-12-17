@@ -36,7 +36,7 @@
     "README.md"
   ],
   "publishConfig": {
-    "@ugrinovs:registry": "https://npm.pkg.github.com"
+    "registry": "https://npm.pkg.github.com"
   },
   "dependencies": {
     "@resvg/resvg-js": "^2.6.0",
