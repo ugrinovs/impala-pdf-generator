@@ -2,7 +2,7 @@
  * Tests for PDF Generation
  * 
  * Run with: npm test
- * Run specific test: npm test -- --grep "test name"
+ * Run specific test: npm test -- --test-name-pattern="pattern"
  */
 
 import { describe, it } from 'node:test';
