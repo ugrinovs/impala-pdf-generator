@@ -157,6 +157,29 @@ npm run build
 - `npm run build` - Compile TypeScript to JavaScript
 - `npm run dev` - Watch mode for development
 - `npm run clean` - Remove build artifacts
+- `npm test` - Run test suite
+- `npm run test:watch` - Run tests in watch mode
+
+### Testing
+
+The package includes comprehensive test coverage for PDF generation:
+
+```bash
+# Run all tests
+npm test
+
+# Watch mode (auto-run on changes)
+npm run test:watch
+```
+
+Tests are located in the `test/` directory and cover:
+- PDF generation with various input configurations
+- Base64 encoding validation
+- Output file validation
+- Error handling
+- Edge cases
+
+See [test/README.md](test/README.md) for more details.
 
 ## Publishing to GitHub Package Registry
 

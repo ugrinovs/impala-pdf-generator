@@ -15,6 +15,12 @@ yarn-error.log*
 # TypeScript
 *.tsbuildinfo
 
+# Test output
+test/*.js
+test/*.d.ts
+test/*.js.map
+test-output.pdf
+
 # Python cache (legacy)
 __pycache__/
 *.py[cod]
