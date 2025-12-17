@@ -2,8 +2,8 @@
   "name": "@ugrinovs/impala-pdf-generator",
   "version": "1.0.0",
   "description": "A PDF generator for Impala recruitment reports with support for HEXACO personality assessments and candidate evaluations",
-  "main": "dist/src/index.js",
-  "types": "dist/src/index.d.ts",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "type": "module",
   "scripts": {
     "build": "tsc",
@@ -39,16 +39,10 @@
     "registry": "https://npm.pkg.github.com"
   },
   "dependencies": {
-    "@resvg/resvg-js": "^2.6.0",
-    "exceljs": "^4.4.0",
-    "pdf-lib": "^1.17.1",
-    "pdfkit": "^0.15.0",
-    "pizzip": "^3.1.7",
     "puppeteer": "^24.31.0"
   },
   "devDependencies": {
     "@types/node": "^22.10.2",
-    "@types/pdfkit": "^0.17.4",
     "typescript": "^5.7.2"
   }
 }

@@ -31,7 +31,6 @@
     "isolatedModules": true
   },
   "include": [
-    "src/**/*",
     "index.ts",
     "config.ts",
     "ideal-candidate.calculation.ts",
@@ -42,6 +41,7 @@
     "node_modules",
     "dist",
     "output",
+    "src",
     "**/*.test.ts"
   ]
 }

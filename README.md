@@ -1,15 +1,13 @@
 # Impala PDF Generator
 
-A TypeScript-based PDF generator for Impala recruitment reports with support for HEXACO personality assessments and candidate evaluations.
+A TypeScript-based PDF generator for Impala recruitment reports with support for HEXACO personality assessments and candidate evaluations. Uses Puppeteer to generate PDFs from HTML templates.
 
 ## Features
 
 - Generate comprehensive recruitment reports in PDF format
 - Support for HEXACO personality assessment scores
 - Support for HBECK 360-degree assessment scores
-- Template-based document generation
-- SVG and HTML to PDF conversion
-- Merge multiple PDFs into a single report
+- HTML template-based PDF generation using Puppeteer
 - Customizable candidate data and ideal profiles
 
 ## Installation
@@ -31,104 +29,110 @@ Create a `.npmrc` file in your project root:
 
 ## Usage
 
-### Basic PDF Generation
+### Generate Development Report
 
 ```typescript
-import { generatePDF, CandidateData } from '@ugrinovs/impala-pdf-generator';
+import { generateDevelopmentReport, ParticipantInfo } from '@ugrinovs/impala-pdf-generator';
 
-const candidateData: CandidateData = {
-  candidate_name: 'John Doe',
-  gender_pronoun: 'His',
-  profile_type: 'Charismatic Driver',
-  hexaco_scores: {
-    'Honesty–Humility': 4.5,
-    'Emotionality': 3.2,
-    'Extraversion': 4.1,
-    'Agreeableness': 3.8,
-    'Conscientiousness': 4.2,
-    'Openness to Experience': 3.9
+const participantData: ParticipantInfo = {
+  fullName: 'John Doe',
+  flow_name: 'Executive Assessment',
+  position_name: 'Senior Manager',
+  assessment_type: 'HEXACO + HBECK',
+  recruitmentProfile: 'Charismatic_Driver',
+  gender: 'male',
+  neuroCorrectionCorrected: {
+    H: '4.5',
+    E: '3.2',
+    X: '4.1',
+    A: '3.8',
+    C: '4.2',
+    O: '3.9'
   },
-  ideal_scores: {
-    hexaco: {
-      'Honesty–Humility': 4.0,
-      'Emotionality': 3.5,
-      'Extraversion': 4.0,
-      'Agreeableness': 4.0,
-      'Conscientiousness': 4.5,
-      'Openness to Experience': 3.5
-    }
-  }
+  neuroCorrectionRaw: {
+    H: 4.5,
+    E: 3.2,
+    X: 4.1,
+    A: 3.8,
+    C: 4.2,
+    O: 3.9
+  },
+  hbeckResult: {
+    H: 4.0,
+    E: 3.5,
+    X: 4.0,
+    A: 4.0,
+    C: 4.5,
+    O: 3.5
+  },
+  idealCandidateResults: [
+    { result: 4.0 },
+    { result: 3.5 },
+    { result: 4.0 },
+    { result: 4.0 },
+    { result: 4.5 },
+    { result: 3.5 }
+  ]
 };
 
-// Generate PDF
-const pdfPath = await generatePDF(candidateData);
-console.log(`PDF generated at: ${pdfPath}`);
-```
-
-### Advanced Options
-
-```typescript
-import { generatePDF } from '@ugrinovs/impala-pdf-generator';
-
-const pdfPath = await generatePDF(
-  candidateData,
-  '/path/to/custom/template.docx',  // Custom DOCX template
-  '/path/to/fleet/pdfs',            // Fleet PDFs directory
-  '/path/to/output'                 // Custom output directory
-);
-```
-
-### Skip Fleet PDFs
-
-```typescript
-const pdfPath = await generatePDF(
-  candidateData,
-  undefined,  // Use default template
-  null,       // Skip Fleet PDFs
-  '/output'   // Output directory
-);
+// Generate PDF (returns base64 encoded PDF)
+const base64Pdf = await generateDevelopmentReport(participantData);
+console.log(`PDF generated successfully`);
 ```
 
 ## API Reference
 
-### `generatePDF(candidateData, docxTemplatePath?, fleetPdfsPath?, outputPath?)`
+### `generateDevelopmentReport(result: ParticipantInfo)`
 
-Generates a PDF report with the provided candidate data.
+Generates a development report PDF from participant data.
 
 **Parameters:**
-- `candidateData` (CandidateData): Candidate information including scores
-- `docxTemplatePath` (string, optional): Path to custom DOCX template
-- `fleetPdfsPath` (string | null, optional): Path to Fleet PDFs directory, or null to skip
-- `outputPath` (string, optional): Custom output directory path
+- `result` (ParticipantInfo): Participant information including HEXACO and HBECK scores
 
-**Returns:** Promise<string> - Path to the generated PDF file
+**Returns:** Promise<string> - Base64 encoded PDF data
 
-### CandidateData Interface
+### ParticipantInfo Interface
 
 ```typescript
-interface CandidateData {
-  candidate_name: string;
-  gender_pronoun?: string;
-  profile_type?: string;
-  hexaco_scores: {
-    'Honesty–Humility': number;
-    'Emotionality': number;
-    'Extraversion': number;
-    'Agreeableness': number;
-    'Conscientiousness': number;
-    'Openness to Experience': number;
+interface ParticipantInfo {
+  fullName: string;
+  flow_name: string;
+  position_name: string;
+  assessment_type: string;
+  recruitmentProfile: string;
+  gender: 'male' | 'female';
+  neuroCorrectionCorrected: {
+    H: string;
+    E: string;
+    X: string;
+    A: string;
+    C: string;
+    O: string;
   };
-  hbeck_scores?: {
-    'Results': number;
-    'Mindset': number;
-    'Skills': number;
-    'Communication': number;
-    'Interpersonal Savvy': number;
-    'Influence': number;
+  neuroCorrectionRaw: {
+    H: number;
+    E: number;
+    X: number;
+    A: number;
+    C: number;
+    O: number;
   };
-  ideal_scores: {
-    hexaco: Record<string, number>;
-    hbeck?: Record<string, number>;
+  hbeckResult: {
+    H: number;
+    E: number;
+    X: number;
+    A: number;
+    C: number;
+    O: number;
+  };
+  idealCandidateResults: Array<{ result: number }>;
+  discrepancyHexaco?: {
+    H: string;
+    E: string;
+    X: string;
+    A: string;
+    C: string;
+    O: string;
   };
 }
 ```
@@ -139,7 +143,7 @@ interface CandidateData {
 
 - Node.js 18 or higher
 - TypeScript 5.x
-- LibreOffice (for DOCX to PDF conversion)
+- Puppeteer (automatically installs Chrome/Chromium)
 
 ### Building
 
@@ -168,7 +172,7 @@ npm publish
 
 ## Requirements
 
-- LibreOffice or unoconv must be installed for DOCX to PDF conversion
+- Puppeteer will automatically download and use Chrome/Chromium for PDF generation
 
 ## License
 
