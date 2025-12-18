@@ -1,14 +1,34 @@
 import { personalityProfileMap } from "./personality-profile.mapper.js";
 
 export default {
+  fullName: "Employee 1",
   ageRange: "25 - 34",
   flow_name: "Recruitment & Development Flow",
-  developmentChangePriority: "Medium Priority",
-  developmentFinalMatrix: "Medium Priority",
-  developmentSuccessorReadiness: "Ready in 3+ Years",
   position_name: "Software Engineer",
   assessment_type: `Integrated Psychometric
 and Neurocognitive Evaluation`,
+  recruitmentProfile:
+    "Too good to be true" as keyof typeof personalityProfileMap,
+  gender: "male" as "male" | "female",
+  neuroCorrectionCorrected: {
+    A: "2.38",
+    C: "2.66",
+    E: "2.17",
+    H: "3.457054218248168152801",
+    O: "2.8",
+    X: "1.47",
+  },
+  neuroCorrectionRaw: {
+    A: 3.4,
+    C: 3.8,
+    E: 3.1,
+    H: 4.6,
+    O: 4,
+    X: 2.1,
+  },
+  developmentChangePriority: "Medium Priority",
+  developmentFinalMatrix: "Medium Priority",
+  developmentSuccessorReadiness: "Ready in 3+ Years",
   discrepancyHexaco: {
     A: "1.02",
     C: "1.14",
@@ -17,8 +37,6 @@ and Neurocognitive Evaluation`,
     O: "1.2",
     X: "0.63",
   },
-  fullName: "Employee 1",
-  gender: "male" as "male" | "female",
   hbeckResult: {
     A: 2.38,
     C: 2.66,
@@ -43,31 +61,14 @@ and Neurocognitive Evaluation`,
     O: "Training (targeted): behavior below potential; focus on specific situations and routines.",
     X: "Training (targeted): behavior below potential; focus on specific situations and routines.",
   },
-  neuroCorrectionCorrected: {
-    A: "2.38",
-    C: "2.66",
-    E: "2.17",
-    H: "3.457054218248168152801",
-    O: "2.8",
-    X: "1.47",
-  },
-  neuroCorrectionRaw: {
-    A: 3.4,
-    C: 3.8,
-    E: 3.1,
-    H: 4.6,
-    O: 4,
-    X: 2.1,
-  },
   neuroRedFlagAdditionalCheckNeeded: true,
   neuroRiskCategory: "high",
   nineGridFinalClassification:
     "High performance - Low potential - Misplaced Talent (Reallocation)",
   recruitmentHRActions: "N/A",
-  recruitmentProfile:
-    "Too good to be true" as keyof typeof personalityProfileMap,
   recruitmentRisks: "N/A",
   recruitmentStrengths: "N/A",
+  // length: 24
   idealCandidateResults: [
     3, 3, 2, 3, 3, 3, 2, 3, 2, 1, 3, 3, 1, 3, 3, 3, 2, 2, 2, 2, 2, 2, 2, 3,
   ],
