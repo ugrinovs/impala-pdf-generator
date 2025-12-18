@@ -1,8 +1,8 @@
 import Big from "big.js";
 
-function getScore(score: number) {
-  if (score < 2.5) return 1;
-  if (score < 3.5) return 2;
+function getScore(score: number | string) {
+  if (new Big(score).lt(2.5)) return 1;
+  if (new Big(score).lt(3.5)) return 2;
   return 3;
 }
 
@@ -25,19 +25,33 @@ function getAlignment(participantScore: number, idealScore: number) {
   return 3 - Math.abs(participantScore - idealScore);
 }
 
-function getFitIndex(participantScores: number, idealScores: number) {
+function getFitIndex(participantScores: string | number, idealScores: number) {
   console.log(
     "fitIndex",
     participantScores,
     idealScores,
-    (5 - Math.abs(participantScores - idealScores)) / 5,
+    Big(5).minus(participantScores).minus(idealScores).abs().div(5),
   );
   return Big(Big(5).minus(participantScores).minus(idealScores).abs()).div(5);
 }
 export default function calculateIdeaCandidate(results: {
-  neuroCorrectionCorrected: any;
-  hbeckResult: any;
-  idealCandidateResults: any;
+  neuroCorrectionCorrected: {
+    H: string;
+    E: string;
+    X: string;
+    A: string;
+    C: string;
+    O: string;
+  };
+  hbeckResult: {
+    H: number;
+    E: number;
+    X: number;
+    A: number;
+    C: number;
+    O: number;
+  };
+  idealCandidateResults: number[];
 }) {
   const hexacoCorrected = results.neuroCorrectionCorrected;
   const hBeck = results.hbeckResult;

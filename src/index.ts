@@ -438,9 +438,7 @@ export type ParticipantInfo = {
     C: number;
     O: number;
   };
-  idealCandidateResults: Array<{
-    result: number;
-  }>;
+  idealCandidateResults: Array<number>;
   gender: "male" | "female";
 };
 
@@ -525,7 +523,7 @@ function resultCreator(results: ParticipantInfo) {
       acc[profileKey] =
         idealCandidate.idealCandidateAlignment[
           key as keyof typeof idealCandidate.idealCandidateAlignment
-        ] < 2
+        ] === 3
           ? "high"
           : idealCandidate.idealCandidateAlignment[
                 key as keyof typeof idealCandidate.idealCandidateAlignment
@@ -577,8 +575,7 @@ function resultCreator(results: ParticipantInfo) {
   const twoHighest = sortedFromHighest.slice(0, 2);
   const twoLowest = sortedFromHighest.slice(-2);
 
-  console.log("twoHighest", twoHighest);
-  console.log("twoLowest", twoLowest);
+  console.log("fitIndexOverall", idealCandidate.fitIndexOverall.toString());
   return {
     recruiter_name: results.fullName,
     flow_name: results.flow_name,
@@ -709,8 +706,10 @@ const selectors = {
   fit_index_percentage: {
     selector: '[data-id="fit_index_percentage"]',
     type: "text",
-    replacement: (text, replacementText) =>
-      text.replaceAll(fit_index_percentage, replacementText),
+    replacement: (text, replacementText) => {
+      console.log("Replacing fit index percentage:", { text, replacementText });
+      return text.replaceAll(fit_index_percentage, replacementText);
+    },
   },
   ideal_ethical_profile: {
     selector: '[data-id="ideal_ethical_profile"]',
