@@ -7,9 +7,46 @@ import resExample from "./lib/res-example.js";
 import calculateIdeaCandidate from "./lib/ideal-candidate.calculation.js";
 import { fileURLToPath } from "node:url";
 import { personalityProfileMap } from "./lib/personality-profile.mapper.js";
+import {
+  createElement,
+  findElementById,
+  getElementsByTagName,
+  parseHTML,
+  serializeDocument,
+} from "./lib/html-parser.js";
+import Big from "big.js";
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
+console.log("process.cwd():", process.cwd());
+const __dirname = path.resolve(process.cwd());
+
+const fitIndexIcons = {
+  female: {
+    low: fs.readFileSync(path.join(__dirname, "icons/fit-index/f_index1.png"), {
+      encoding: "base64",
+    }),
+    medium: fs.readFileSync(
+      path.join(__dirname, "icons/fit-index/f_index2.png"),
+      { encoding: "base64" },
+    ),
+    high: fs.readFileSync(
+      path.join(__dirname, "icons/fit-index/f_index3.png"),
+      { encoding: "base64" },
+    ),
+  },
+  male: {
+    low: fs.readFileSync(path.join(__dirname, "icons/fit-index/m_index1.png"), {
+      encoding: "base64",
+    }),
+    medium: fs.readFileSync(
+      path.join(__dirname, "icons/fit-index/m_index2.png"),
+      { encoding: "base64" },
+    ),
+    high: fs.readFileSync(
+      path.join(__dirname, "icons/fit-index/m_index3.png"),
+      { encoding: "base64" },
+    ),
+  },
+};
 
 const recruiter_name = "#{{RECRUITER_NAME}}";
 const flow_name = "#{{FLOW_NAME}}";
@@ -114,9 +151,16 @@ const discrepancy_learning = "#{{DISCREPANCY_LEARNING}}";
 const interpretation_learning = "#{{INTERPRETATION_LEARNING}}";
 
 const personalty_profile_conclusion = "#{{PERSONALITY_PROFILE_CONCLUSION}}";
+const personality_profile_conclusion_image_url =
+  "#{{PERSONALITY_PROFILE_CONCLUSION_IMAGE_URL}}";
 const fit_index_conclusion = "#{{FIT_INDEX_CONCLUSION}}";
+const dev_plan_highest_score_image_url =
+  "#{{DEV_PLAN_HIGHEST_SCORE_IMAGE_URL}}";
 const dev_plan_highest_score = "#{{DEV_PLAN_HIGHEST_SCORE}}";
+const dev_plan_second_highest_image_url =
+  "#{{DEV_PLAN_SECOND_HIGHEST_IMAGE_URL}}";
 const dev_plan_second_highest = "#{{DEV_PLAN_SECOND_HIGHEST}}";
+const dev_plan_lowest_score_image_url = "#{{DEV_PLAN_LOWEST_SCORE_IMAGE_URL}}";
 const dev_plan_lowest_score = "#{{DEV_PLAN_LOWEST_SCORE}}";
 const dev_plan_second_lowest = "#{{DEV_PLAN_SECOND_LOWEST}}";
 
@@ -161,6 +205,200 @@ function getHexacoScore(hexacoData: {
   );
 }
 
+//
+// development_plan_integrity: "Integrity & Trust",
+// development_plan_emotional_regulation: "Emotional Regulation & Resilience",
+// development_plan_communication_influence: "Communication & Influence",
+// development_plan_collaboration_diplomacy: "Collaboration & Diplomacy",
+// development_plan_execution_reliability: "Execution & Reliability",
+// development_plan_learning_innovation: "Learning & Innovation",
+//
+// H: "integrity",
+// E: "emotional",
+// X: "communication",
+// A: "collaboration",
+// C: "execution",
+// O: "learning",
+const hexacoNegativeBadges = {
+  development_plan_integrity: fs.readFileSync(
+    path.join(__dirname, "icons/badges/n_badge_h.png"),
+    {
+      encoding: "base64",
+    },
+  ),
+  development_plan_emotional_regulation: fs.readFileSync(
+    path.join(__dirname, "icons/badges/n_badge_e.png"),
+    {
+      encoding: "base64",
+    },
+  ),
+  development_plan_communication_influence: fs.readFileSync(
+    path.join(__dirname, "icons/badges/n_badge_x.png"),
+    {
+      encoding: "base64",
+    },
+  ),
+  development_plan_collaboration_diplomacy: fs.readFileSync(
+    path.join(__dirname, "icons/badges/n_badge_a.png"),
+    {
+      encoding: "base64",
+    },
+  ),
+  development_plan_execution_reliability: fs.readFileSync(
+    path.join(__dirname, "icons/badges/n_badge_c.png"),
+    {
+      encoding: "base64",
+    },
+  ),
+  development_plan_learning_innovation: fs.readFileSync(
+    path.join(__dirname, "icons/badges/n_badge_o.png"),
+    {
+      encoding: "base64",
+    },
+  ),
+};
+
+const hexacoPositiveBadges = {
+  development_plan_integrity: fs.readFileSync(
+    path.join(__dirname, "icons/badges/p_badge_h.png"),
+    {
+      encoding: "base64",
+    },
+  ),
+  development_plan_emotional_regulation: fs.readFileSync(
+    path.join(__dirname, "icons/badges/p_badge_e.png"),
+    {
+      encoding: "base64",
+    },
+  ),
+  development_plan_communication_influence: fs.readFileSync(
+    path.join(__dirname, "icons/badges/p_badge_x.png"),
+    {
+      encoding: "base64",
+    },
+  ),
+  development_plan_collaboration_diplomacy: fs.readFileSync(
+    path.join(__dirname, "icons/badges/p_badge_a.png"),
+    {
+      encoding: "base64",
+    },
+  ),
+  development_plan_execution_reliability: fs.readFileSync(
+    path.join(__dirname, "icons/badges/p_badge_c.png"),
+    {
+      encoding: "base64",
+    },
+  ),
+  development_plan_learning_innovation: fs.readFileSync(
+    path.join(__dirname, "icons/badges/p_badge_o.png"),
+    {
+      encoding: "base64",
+    },
+  ),
+};
+
+const overallBadges = {
+  "charismatic-driver": fs.readFileSync(
+    path.join(__dirname, "icons/badges/o_badge_charismatic_driver.png"),
+    {
+      encoding: "base64",
+    },
+  ),
+  "charming-manipulator": fs.readFileSync(
+    path.join(__dirname, "icons/badges/o_badge_charming_manipulator.png"),
+    {
+      encoding: "base64",
+    },
+  ),
+  "passive-aggressive-perfectionist": fs.readFileSync(
+    path.join(
+      __dirname,
+      "icons/badges/o_badge_passive_aggressive_perfectionist.png",
+    ),
+    {
+      encoding: "base64",
+    },
+  ),
+  "too-good-to-be-true": fs.readFileSync(
+    path.join(__dirname, "icons/badges/o_badge_too_good_to_be_true.png"),
+    {
+      encoding: "base64",
+    },
+  ),
+  "withdrawn-opportunist": fs.readFileSync(
+    path.join(__dirname, "icons/badges/o_badge_withdrawn_opportunist.png"),
+    {
+      encoding: "base64",
+    },
+  ),
+  "wall-of-silence": fs.readFileSync(
+    path.join(__dirname, "icons/badges/o_badge_wall_of_silence.png"),
+    {
+      encoding: "base64",
+    },
+  ),
+  "emotionally-reactive": fs.readFileSync(
+    path.join(__dirname, "icons/badges/o_badge_emotionally_reactive.png"),
+    {
+      encoding: "base64",
+    },
+  ),
+  "cool-calculator": fs.readFileSync(
+    path.join(__dirname, "icons/badges/o_badge_cool_calculator.png"),
+    {
+      encoding: "base64",
+    },
+  ),
+  "conflicted-soloist": fs.readFileSync(
+    path.join(__dirname, "icons/badges/o_badge_conflicted_soloist.png"),
+    {
+      encoding: "base64",
+    },
+  ),
+  "rigid-proceduralist": fs.readFileSync(
+    path.join(__dirname, "icons/badges/o_badge_rigid_proceduralist.png"),
+    {
+      encoding: "base64",
+    },
+  ),
+  "visionary-without-realization": fs.readFileSync(
+    path.join(
+      __dirname,
+      "icons/badges/o_badge_visionary_without_realization.png",
+    ),
+    {
+      encoding: "base64",
+    },
+  ),
+  "latent-opponent": fs.readFileSync(
+    path.join(__dirname, "icons/badges/o_badge_latent_opponent.png"),
+    {
+      encoding: "base64",
+    },
+  ),
+  "stable-team-player": fs.readFileSync(
+    path.join(__dirname, "icons/badges/o_badge_stable_team_player.png"),
+    {
+      encoding: "base64",
+    },
+  ),
+  "innovator-disruptor": fs.readFileSync(
+    path.join(__dirname, "icons/badges/o_badge_innovator_disruptor.png"),
+    {
+      encoding: "base64",
+    },
+  ),
+  "operator-without-initiative": fs.readFileSync(
+    path.join(
+      __dirname,
+      "icons/badges/o_badge_operator_without_initiative.png",
+    ),
+    {
+      encoding: "base64",
+    },
+  ),
+};
+
 const idealProfileMap = {
   H: "ethical",
   E: "emotional",
@@ -194,6 +432,15 @@ const devPlanDimensionMap = {
   development_plan_learning_innovation: "Learning & Innovation",
 };
 
+const devPlanDimensionToHexacoKeyMap = {
+  H: "development_plan_integrity",
+  E: "development_plan_emotional_regulation",
+  X: "development_plan_communication_influence",
+  A: "development_plan_collaboration_diplomacy",
+  C: "development_plan_execution_reliability",
+  O: "development_plan_learning_innovation",
+};
+
 function getPersonalityProfile(
   recruitmentProfile: keyof typeof personalityProfileMap,
   name: string,
@@ -202,6 +449,7 @@ function getPersonalityProfile(
   const profile = personalityProfileMap[recruitmentProfile];
   const personality = config.personalityProfileConfig[profile];
 
+  const overallBadge = overallBadges[profile];
   const pronoun = gender === "male" ? "He" : "She";
   const about = personality.about
     .replaceAll("[Name]", name)
@@ -220,17 +468,25 @@ function getPersonalityProfile(
     .replaceAll("(NAME)", name)
     .replaceAll("[He/She]", pronoun);
   return {
-    personality_profile_about: about,
+    personality_profile_about: about
+      .replaceAll("(He/She)", pronoun)
+      .replaceAll("(His/Her)", gender === "male" ? "His" : "Her")
+      .replaceAll("(His/Hers)", gender === "male" ? "His" : "Hers")
+      .replaceAll("(his/her)", gender === "male" ? "His" : "Her")
+      .replaceAll("(him/her)", gender === "male" ? "him" : "her"),
     key_strengths: strengths,
     possible_weaknesses: weaknesses,
     overall_recommendation: recommendation,
+    personality_profile_conclusion_image_url: overallBadge,
     personality_profile_conclusion: config.personalityProfileConfig[
       profile
     ].conclusion
       .replaceAll("[Name]", name)
       .replaceAll("(NAME)", name)
       .replaceAll("[He/She]", pronoun)
+      .replaceAll("(He/She)", pronoun)
       .replaceAll("(His/Her)", gender === "male" ? "His" : "Her")
+      .replaceAll("(His/Hers)", gender === "male" ? "His" : "Hers")
       .replaceAll("(his/her)", gender === "male" ? "His" : "Her"),
   };
 }
@@ -298,12 +554,6 @@ function getIdealProfile(
     leadership: "low" | "medium" | "high";
   },
 ) {
-  console.log("idealProfile", {
-    ip: idealProfile.structured,
-    ca: candidateAlignment.structured,
-    ips: config.ideal_profile.structured,
-    ipss: config.ideal_profile.structured[idealProfile.structured],
-  });
   return {
     ideal_ethical_profile:
       config.ideal_profile.ethical[idealProfile.ethical].profile,
@@ -472,7 +722,6 @@ function resultCreator(results: ParticipantInfo) {
         | "communication"
         | "relational"
         | "leadership";
-      console.log("profileKey", profileKey);
       acc[profileKey] =
         idealCandidate.idealScoreCategories[
           key as keyof typeof idealCandidate.idealScoreCategories
@@ -548,8 +797,6 @@ function resultCreator(results: ParticipantInfo) {
     },
   );
 
-  console.log("idealProfile", idealProfile);
-
   const devPlanScore = getDevPlanFromScore(
     results.neuroCorrectionCorrected,
     results.fullName,
@@ -580,6 +827,7 @@ function resultCreator(results: ParticipantInfo) {
     recruiter_name: results.fullName,
     flow_name: results.flow_name,
     position_name: results.position_name,
+    first_name: results.fullName.split(" ")[0],
     assessment_type: results.assessment_type,
     ...getPersonalityProfile(
       results.recruitmentProfile,
@@ -641,8 +889,11 @@ function resultCreator(results: ParticipantInfo) {
       .replaceAll("[He/She]", results.gender === "male" ? "He" : "She")
       .replaceAll("(His/Her)", results.gender === "male" ? "His" : "Her")
       .replaceAll("( )", idealCandidate.fitIndexOverall.toFixed(2) + "%"),
+    dev_plan_highest_score_image_url: hexacoPositiveBadges[twoHighest[0]],
+    dev_plan_second_highest_image_url: hexacoPositiveBadges[twoHighest[1]],
     dev_plan_highest_score: devPlanDimensionMap[twoHighest[0]],
     dev_plan_second_highest: devPlanDimensionMap[twoHighest[1]],
+    dev_plan_lowest_score_image_url: hexacoNegativeBadges[twoLowest[0]],
     dev_plan_lowest_score: devPlanScore[twoLowest[0]],
     dev_plan_second_lowest: devPlanScore[twoLowest[1]],
   };
@@ -707,7 +958,6 @@ const selectors = {
     selector: '[data-id="fit_index_percentage"]',
     type: "text",
     replacement: (text, replacementText) => {
-      console.log("Replacing fit index percentage:", { text, replacementText });
       return text.replaceAll(fit_index_percentage, replacementText);
     },
   },
@@ -1119,6 +1369,15 @@ const selectors = {
     replacement: (text, replacementText) =>
       text.replaceAll(interpretation_learning, replacementText),
   },
+  personality_profile_conclusion_image_url: {
+    selector: '[data-id="personality_profile_conclusion_image_url"]',
+    type: "text",
+    replacement: (text, replacementText) =>
+      text.replaceAll(
+        personality_profile_conclusion_image_url,
+        "data:image/png;base64, " + replacementText,
+      ),
+  },
   personality_profile_conclusion: {
     selector: '[data-id="personality_profile_conclusion"]',
     type: "text",
@@ -1131,17 +1390,44 @@ const selectors = {
     replacement: (text, replacementText) =>
       text.replaceAll(fit_index_conclusion, replacementText),
   },
+  dev_plan_highest_score_image_url: {
+    selector: '[data-id="dev_plan_highest_score_image_url"]',
+    type: "text",
+    replacement: (text, replacementText) =>
+      text.replaceAll(
+        dev_plan_highest_score_image_url,
+        "data:image/png;base64, " + replacementText,
+      ),
+  },
   dev_plan_highest_score: {
     selector: '[data-id="dev_plan_highest_score"]',
     type: "text",
     replacement: (text, replacementText) =>
       text.replaceAll(dev_plan_highest_score, replacementText),
   },
+  dev_plan_second_highest_image_url: {
+    selector: '[data-id="dev_plan_second_highest_image_url"]',
+    type: "text",
+    replacement: (text, replacementText) =>
+      text.replaceAll(
+        dev_plan_second_highest_image_url,
+        "data:image/png;base64, " + replacementText,
+      ),
+  },
   dev_plan_second_highest: {
     selector: '[data-id="dev_plan_second_highest"]',
     type: "text",
     replacement: (text, replacementText) =>
       text.replaceAll(dev_plan_second_highest, replacementText),
+  },
+  dev_plan_lowest_score_image_url: {
+    selector: '[data-id="dev_plan_lowest_score_image_url"]',
+    type: "text",
+    replacement: (text, replacementText) =>
+      text.replaceAll(
+        dev_plan_lowest_score_image_url,
+        "data:image/png;base64, " + replacementText,
+      ),
   },
   dev_plan_lowest_score: {
     selector: '[data-id="dev_plan_lowest_score"]',
@@ -1163,6 +1449,7 @@ const selectors = {
   };
 };
 
+console.log("penv", process.env);
 export async function generateDevelopmentReport(
   result: ParticipantInfo = resExample,
 ) {
@@ -1177,9 +1464,105 @@ export async function generateDevelopmentReport(
     );
   }
 
-  fs.writeFileSync(path.resolve(__dirname, "output.html"), htmlContent, {
-    encoding: "utf8",
-  });
+  const htmlDoc = parseHTML(htmlContent);
+
+  const lowDiscrepancyScoreEl = findElementById(
+    htmlDoc,
+    "low_discrepancy_score",
+  );
+  const lowDiscrepancyScores = Object.keys(
+    result.discrepancyHexaco ?? {},
+  ).filter((key) => new Big(result.discrepancyHexaco?.[key] ?? 0).lt(3));
+  console.log("lowDiscrepancyScores", lowDiscrepancyScores);
+  console.log("lowDiscrepancyScoreEl", lowDiscrepancyScoreEl);
+  for (const scoreKey of lowDiscrepancyScores) {
+    const img = createElement(htmlDoc, "img");
+    const dimension =
+      devPlanDimensionToHexacoKeyMap[
+        scoreKey as keyof typeof devPlanDimensionToHexacoKeyMap
+      ];
+
+    console.log("dimension", dimension);
+    img.setAttribute(
+      "src",
+      "data:image/png;base64, " + hexacoPositiveBadges[dimension],
+    );
+    img.setAttribute("alt", scoreKey);
+    img.classList.add("o-badge-lg");
+    lowDiscrepancyScoreEl?.appendChild(img);
+  }
+
+  const highDiscrepancyScoreEl = findElementById(
+    htmlDoc,
+    "high_discrepancy_score",
+  );
+  const highDiscrepancyScores = Object.keys(
+    result.discrepancyHexaco ?? {},
+  ).filter((key) => new Big(result.discrepancyHexaco?.[key] ?? 0).gte(3));
+  console.log("highDiscrepancyScores", highDiscrepancyScores);
+  console.log("highDiscrepancyScoreEl", highDiscrepancyScoreEl);
+  for (const scoreKey of highDiscrepancyScores) {
+    const img = createElement(htmlDoc, "img");
+    const dimension =
+      devPlanDimensionToHexacoKeyMap[
+        scoreKey as keyof typeof devPlanDimensionToHexacoKeyMap
+      ];
+
+    console.log("dimension", dimension);
+    img.setAttribute(
+      "src",
+      "data:image/png;base64, " + hexacoNegativeBadges[dimension],
+    );
+    img.setAttribute("alt", scoreKey);
+    img.classList.add("o-badge-lg");
+    highDiscrepancyScoreEl?.appendChild(img);
+  }
+
+  const fitIndex = parseFloat(
+    finalResult.fit_index_percentage?.toString() ?? "0",
+  );
+  const gender = result.gender;
+
+  const iconConf = fitIndexIcons[gender];
+  const fitIndexString =
+    fitIndex < 21 ? "low" : fitIndex < 50 ? "medium" : "high";
+  const iconUrl = "data:image/png;base64, " + iconConf[fitIndexString];
+  const fitIndexConclusionSectionEl = findElementById(
+    htmlDoc,
+    "fit_index_conclusion_section",
+  );
+  const image = createElement(htmlDoc, "img");
+  const span = createElement(htmlDoc, "span");
+  const p = createElement(htmlDoc, "p");
+  const p2 = createElement(htmlDoc, "p");
+  const div = createElement(htmlDoc, "div");
+  image.setAttribute("src", iconUrl);
+  image.setAttribute("alt", "Fit Index Icon");
+  image.classList.add("o-badge");
+  p.textContent = `${new Big(finalResult.fit_index_percentage).toFixed(0)}%`;
+  p2.textContent = "Overall match";
+
+  p.classList.add("fit_index_percentage_value");
+  const color = fitIndex < 21 ? "red" : fitIndex < 50 ? "orange" : "green";
+  p.classList.add(color);
+
+  span.appendChild(p);
+  span.appendChild(p2);
+  span.classList.add("fit_index_percent");
+
+  div.appendChild(image);
+  div.appendChild(span);
+  div.classList.add("fit-index-summary");
+
+  fitIndexConclusionSectionEl?.prepend(div);
+
+  fs.writeFileSync(
+    path.resolve(__dirname, "output.html"),
+    serializeDocument(htmlDoc),
+    {
+      encoding: "utf8",
+    },
+  );
   const outputFileUrl = `file://${path.resolve(__dirname, "output.html")}`;
 
   // Launch the browser and open a new blank page.
@@ -1223,6 +1606,68 @@ export async function generateDevelopmentReport(
       }, el);
     }
   }
+
+  await page.waitForSelector('[data-id="fit_index_icon"]').then(async () => {
+    const fitIndex = parseFloat(
+      finalResult.fit_index_percentage?.toString() ?? "0",
+    );
+    const iconElements = await page.$$('[data-id="fit_index_icon"]');
+    const gender = result.gender;
+
+    const iconConf = fitIndexIcons[gender];
+    const fitIndexString =
+      fitIndex < 21 ? "low" : fitIndex < 50 ? "medium" : "high";
+    const iconUrl = "data:image/png;base64, " + iconConf[fitIndexString];
+
+    const fitIndexClass = await page.$$(".fit_index_percent");
+    console.log("fitIndexClass length", fitIndexClass.length);
+    for (const el of fitIndexClass) {
+      if (fitIndex < 21) {
+        await page.evaluate((el) => {
+          console.log("Adding red class to", el.classList);
+          (el as HTMLElement).classList.add("red");
+        }, el);
+      } else if (fitIndex >= 21 && fitIndex < 50) {
+        await page.evaluate((el) => {
+          console.log("Adding yellow class to", el.classList);
+          (el as HTMLElement).classList.add("yellow");
+        }, el);
+      } else {
+        await page.evaluate((el) => {
+          console.log("Adding green class to", el.classList);
+          (el as HTMLElement).classList.add("green");
+        }, el);
+      }
+    }
+
+    for (const iconElement of iconElements) {
+      if (fitIndex < 21) {
+        await page.evaluate(
+          (el, iconUrl) => {
+            el.setAttribute("src", iconUrl);
+          },
+          iconElement,
+          iconUrl,
+        );
+      } else if (fitIndex >= 21 && fitIndex < 50) {
+        await page.evaluate(
+          (el, iconUrl) => {
+            el.setAttribute("src", iconUrl);
+          },
+          iconElement,
+          iconUrl,
+        );
+      } else {
+        await page.evaluate(
+          (el, iconUrl) => {
+            el.setAttribute("src", iconUrl);
+          },
+          iconElement,
+          iconUrl,
+        );
+      }
+    }
+  });
 
   // await page.waitForSelector("#chart").then(async () => {
   //   const element = await page.$("#chart");
@@ -1609,6 +2054,48 @@ export async function generateDevelopmentReport(
   //     console.log("Generating chart in element:", el, typeof cChart);
   //     generateFitIndexChart(el);
   //   }, element);
+  // });
+
+  const someLow = Object.values(result.discrepancyHexaco ?? {}).some(
+    (v) => Number(v) < 3,
+  );
+  if (someLow) {
+    const lowScores = Object.entries(result.discrepancyHexaco ?? {}).filter(
+      ([_, v]) => Number(v) < 3,
+    );
+    console.log("Low discrepancy scores found:", lowScores);
+    // await page.waitForSelector("#low_discrepancy_score").then(async () => {
+    //   for (const [trait, score] of lowScores) {
+    //     const el = await page.$(`#low_discrepancy_score`);
+    //     el.chi;
+    //   }
+    // });
+  }
+
+  const someHigh = Object.values(result.discrepancyHexaco ?? {}).some(
+    (v) => Number(v) > 3,
+  );
+  if (someHigh) {
+    const highScores = Object.entries(result.discrepancyHexaco ?? {}).filter(
+      ([_, v]) => Number(v) > 3,
+    );
+    console.log("High discrepancy scores found:", highScores);
+    await page.waitForSelector("#high_discrepancy_score").then(async () => {});
+  }
+  // await page.waitForSelector('[data-id="overall_badge"]').then(async () => {
+  //   const overallBadgeName = personalityProfileMap[result.recruitmentProfile];
+  //   const badgeElements = await page.$$('[data-id="overall_badge"]');
+  //   const overallBadge = overallBadges[overallBadgeName];
+  //   for (const badgeElement of badgeElements) {
+  //     await page.evaluate(
+  //       (el, overallBadge) => {
+  //         el.textContent = overallBadge;
+  //       },
+  //       badgeElement,
+  //       overallBadge,
+  //     );
+  //   }
+  // });
 
   const puppeteerDPI = 96 + 48; // Default is 96 DPI
   const projectDPI = 72; // Project is designed at 72 DPI
@@ -1630,3 +2117,16 @@ export async function generateDevelopmentReport(
   const base64 = Buffer.from(pdfStream).toString("base64");
   return base64;
 }
+
+generateDevelopmentReport()
+  .then((base64) => {
+    console.log("Generated PDF base64 length:", base64.length);
+    fs.writeFileSync(path.resolve(__dirname, "output.pdf"), base64, {
+      encoding: "base64",
+    });
+    process.exit(0);
+  })
+  .catch((error) => {
+    console.error("Error generating PDF:", error);
+    process.exit(1);
+  });

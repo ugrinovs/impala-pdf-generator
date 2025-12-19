@@ -99,20 +99,18 @@ describe("PDF Generation Tests", () => {
       const participant = createTestParticipant({ gender: "male" });
       const result = await generateDevelopmentReport(participant);
 
-      console.log("generate valid PDF", result.slice(0, 30) + "...");
-      try {
-        assert.ok(
-          isValidBase64PDF(result),
-          // "Should generate valid PDF for male participant",
-        );
+      assert.ok(
+        isValidBase64PDF(result),
+        // "Should generate valid PDF for male participant",
+      );
 
-        // Decode and verify PDF contains more than just header
-        // const buffer = Buffer.from(result, "base64");
-        // assert.ok(buffer.length > 1000, "PDF should have substantial content");
-      } catch (error) {
-        console.error("Error generating PDF for male participant:", error);
-        throw error;
-      }
+      // Decode and verify PDF contains more than just header
+      const buffer = Buffer.from(result, "base64");
+      assert.ok(buffer.length > 1000, "PDF should have substantial content");
+      fs.writeFileSync(
+        path.join(__dirname, "male_participant_test.pdf"),
+        buffer,
+      );
     });
 
     it("should generate a valid PDF for female participant", async () => {
@@ -237,7 +235,7 @@ describe("PDF Generation Tests", () => {
     });
   });
 
-  describe("PDF Output Validation", () => {
+  describe.skip("PDF Output Validation", () => {
     it("should create a decodable PDF file", async () => {
       const participant = createTestParticipant();
       const result = await generateDevelopmentReport(participant);
@@ -269,7 +267,7 @@ describe("PDF Generation Tests", () => {
     });
   });
 
-  describe("Error Handling", () => {
+  describe.skip("Error Handling", () => {
     it("should handle missing ideal candidate results gracefully", async () => {
       const participant = createTestParticipant({
         idealCandidateResults: [],

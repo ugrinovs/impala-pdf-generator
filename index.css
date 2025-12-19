@@ -333,7 +333,8 @@
       td:nth-child(1) {
         box-sizing: border-box;
         width: 70px;
-        padding-right: 20px;
+        margin-right: 20px;
+        padding-right: 10px;
       }
 
       td:nth-child(2) {
@@ -497,7 +498,146 @@
     margin-bottom: 20px !important;
   }
 
-  #fit_index_chart {
+  #fit_index_chart_1,
+  #fit_index_chart_2 {
     width: 70px;
     height: 150px;
+    display: flex;
+    align-items: flex-end;
+  }
+
+  .fit_index_icon {
+    height: 100%;
+  }
+
+  [data-id="fit_index_percentage"] {
+    div {
+      font-size: 22px;
+      font-weight: 600;
+    }
+
+    p {
+      margin: 0;
+    }
+  }
+
+
+  .green {
+    color: hsla(150, 100%, 40%, 1);
+  }
+
+  .yellow {
+    color: hsla(46, 100%, 68%, 1);
+  }
+
+  .red {
+    color: hsla(0, 100%, 46%, 1);
+  }
+
+  .flex {
+    display: flex;
+  }
+
+  .flex-col {
+    flex-direction: column;
+  }
+
+  .flex-row {
+    flex-direction: row;
+  }
+
+  .items-center {
+    align-items: center;
+  }
+
+  .items-end {
+    align-items: flex-end;
+  }
+
+  .justify-center {
+    justify-content: center;
+  }
+
+  .justify-between {
+    justify-content: space-between;
+  }
+
+  .o-badge {
+    width: 100px;
+  }
+
+  .o-badge-md {
+    width: 66px;
+  }
+
+  .o-badge-lg {
+    width: 78px;
+  }
+
+  .text-gray {
+    color: hsla(0, 0%, 38%, 1);
+  }
+
+  .no-m-children>* {
+    margin: 0 !important;
+  }
+
+  .gap-1 {
+    gap: 4px;
+  }
+
+  .gap-54 {
+    gap: 54px;
+  }
+
+  .mb-45 {
+    margin-bottom: 45px;
+  }
+
+  .discrepancy-scores-section {
+    display: flex;
+    flex-direction: column;
+    gap: 36px;
+    margin-top: 26px;
+  }
+
+  #low_discrepancy_score {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  .fit_index_percent {
+    margin-bottom: -12px;
+    margin-left: -72%;
+    background-color: white;
+    border-radius: 50%;
+    padding: 10px;
+    letter-spacing: -5%;
+    width: 48px;
+    height: 48px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #c2c2c2;
+
+    p {
+      font-size: 4px;
+      margin: 0;
+      text-align: center;
+      font-weight: 700;
+    }
+  }
+
+  .fit_index_percentage_value {
+    font-size: 21px !important;
+    line-height: 15px;
+    margin: 0;
+  }
+
+  .fit-index-summary {
+    display: flex;
+    align-items: flex-end;
+    width: 100px;
   }

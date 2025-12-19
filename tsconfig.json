@@ -2,10 +2,12 @@
   "compilerOptions": {
     /* Language and Environment */
     "target": "ES2022",
-    "lib": ["ES2022", "DOM"],
+    "lib": [
+      "ES2022",
+      "DOM"
+    ],
     "module": "ES2022",
     "moduleResolution": "node",
-
     /* Emit */
     "declaration": true,
     "declarationMap": true,
@@ -14,7 +16,6 @@
     "removeComments": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-
     /* Type Checking */
     "strict": true,
     "noUnusedLocals": false,
@@ -24,7 +25,6 @@
     "skipLibCheck": true,
     "noImplicitAny": false,
     "strictNullChecks": false,
-
     /* Interop Constraints */
     "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,

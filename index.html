@@ -87,7 +87,7 @@
     <div class="content">
       <h2>Introduction</h2>
       <p>This report is based on a combination of multiple validated psychometric and neurocognitive instruments,
-        providing a multi-layered insight into the <span data-id="first_name">#{{FIRST_NAME}}</span> personality,
+        providing a multi-layered insight into the <span data-id="first_name">#{{FIRST_NAME}}'s'</span> personality,
         behavior, and potential.</p>
       <ol>
         <li><strong>Core Personality profile:</strong> designed to assess six fundamental personality dimensions
@@ -178,8 +178,16 @@
       <h2>Ideal And Candidate Profile Comparison</h2>
       <div class="section">
         <div>
-          <div id="fit_index_chart" data-id="fit_index_chart" alt="Fit Index Chart">
-            <div data-id="fit_index_percentage">#{{FIT_INDEX_PERCENTAGE}}%</div>
+          <div id="fit_index_chart_1" data-id="fit_index_chart_1" alt="Fit Index Chart">
+            <img data-id="fit_index_icon" class="fit_index_icon" />
+            <div data-id="fit_index_percentage">
+              <div class="fit_index_percent">
+                #{{FIT_INDEX_PERCENTAGE}}%
+              </div>
+              <p>
+                Overall match
+              </p>
+            </div>
           </div>
           <p class="overview">This section provides an overview of how the assessed profile aligns with the ideal
             requirements for the
@@ -194,7 +202,7 @@
             in
             selection and development by highlighting areas of strong role fit as well as potential challenges that may
             require attention.</p>
-          <p>  The profile alignment score for this individual is #{{FIT_INDEX_PERCENTAGE}}. The results indicate a
+          <p>The profile alignment score for this individual is #{{FIT_INDEX_PERCENTAGE}}. The results indicate a
             limited match with the
             competencies considered essential for the role.</p>
         </div>
@@ -255,8 +263,16 @@
       <h2>Ideal And Candidate Profile Comparison</h2>
       <div class="section">
         <div>
-          <div id="fit_index_chart" data-id="fit_index_chart" alt="Fit Index Chart">
-            <div data-id="fit_index_percentage">#{{FIT_INDEX_PERCENTAGE}}%</div>
+          <div id="fit_index_chart_2" data-id="fit_index_chart_2" alt="Fit Index Chart">
+            <img data-id="fit_index_icon" class="fit_index_icon" />
+            <div data-id="fit_index_percentage">
+              <div class="fit_index_percent">
+                #{{FIT_INDEX_PERCENTAGE}}%
+              </div>
+              <p>
+                Overall match
+              </p>
+            </div>
           </div>
           <p class="overview">This section provides an overview of how the assessed profile aligns with the ideal
             requirements for the
@@ -561,6 +577,19 @@
       <p data-id="development_plan_execution_reliability">#{{DEVELOPMENT_PLAN_EXECUTION_RELIABILITY}}</p>
       <p data-id="development_plan_learning_innovation">#{{DEVELOPMENT_PLAN_LEARNING_INNOVATION}}</p>
 
+      <div class="discrepancy-scores-section">
+        <div class="flex flex-col">
+          <h2 class="text-gray">Low Discrepancy Score</h2>
+
+          <div id="low_discrepancy_score"></div>
+        </div>
+
+        <div class="flex flex-col">
+          <h2 class="text-gray">Moderate / High Discrepancy Score</h2>
+
+          <div id="high_discrepancy_score"></div>
+        </div>
+      </div>
     </div>
 
     <div class="footer">
@@ -570,20 +599,57 @@
 
   <section class="page page-10">
     <div class="content">
-      <h2>Overall Conclusion</h2>
-      <p><span data-id="personality_profile_conclusion">#{{PERSONALITY_PROFILE_CONCLUSION}}</span></p>
-      <p data-id="fit_index_conclusion">#{{FIT_INDEX_CONCLUSION}}</p>
+      <h2 class="mb-45">Overall Conclusion</h2>
+      <div class="flex flex-col gap-54">
+        <div class="flex flex-row items-center">
+          <img src="#{{PERSONALITY_PROFILE_CONCLUSION_IMAGE_URL}}" alt="Personality Profile Conclusion Image"
+            class="o-badge" />
 
-      <p>The individual demonstrates strong capabilities in <span
-          data-id="dev_plan_highest_score">#{{DEV_PLAN_HIGHEST_SCORE}}</span> and <span
-          data-id="dev_plan_second_highest">#{{DEV_PLAN_SECOND_HIGHEST}}</span>, showcasing qualities that positively
-        contribute to their overall effectiveness and impact within the team.</p>
+          <div class="flex flex-col no-m-children gap-1">
+            <h2 class="text-gray">Personality Profile</h2>
+            <p data-id="personality_profile_conclusion">#{{PERSONALITY_PROFILE_CONCLUSION}}</p>
+          </div>
+        </div>
 
-      <p data-id="dev_plan_lowest_score">
-        #{{DEV_PLAN_LOWEST_SCORE}}
-        #{{DEV_PLAN_SECOND_LOWEST}}
-      </p>
+        <div class="flex flex-row items-center" id="fit_index_conclusion_section">
+          <!-- <img src="#{{FIT_INDEX_CONCLUSION_IMAGE_URL}}" alt="Fit Index Conclusion Image" class="o-badge-md" /> -->
+          <p data-id="fit_index_conclusion">#{{FIT_INDEX_CONCLUSION}}</p>
+        </div>
 
+        <div class="flex flex-row">
+          <div class="flex flex-row">
+            <img src="#{{DEV_PLAN_HIGHEST_SCORE_IMAGE_URL}}" alt="Development Plan Highest Score Image"
+              class="o-badge-md" />
+            <img src="#{{DEV_PLAN_SECOND_HIGHEST_IMAGE_URL}}" alt="Development Plan Second Highest Image"
+              class="o-badge-md" />
+          </div>
+
+          <div class="flex flex-col no-m-children gap-1">
+            <h2 class="text-gray">Strengths</h2>
+            <p>The individual demonstrates strong capabilities in <strong
+                data-id="dev_plan_highest_score">#{{DEV_PLAN_HIGHEST_SCORE}}</strong> and <strong
+                data-id="dev_plan_second_highest">#{{DEV_PLAN_SECOND_HIGHEST}}</strong>, showcasing qualities that
+              positively
+              contribute to their overall effectiveness and impact within the team.</p>
+          </div>
+        </div>
+
+        <div class="flex flex-row">
+          <div class="flex flex-row">
+            <img src="#{{DEV_PLAN_LOWEST_SCORE_IMAGE_URL}}" alt="Development Plan Lowest Score Image" class="o-badge" />
+          </div>
+          <div class="flex flex-col no-m-children gap-1">
+            <h2 class="text-gray">Room for Development</h2>
+            <p data-id="dev_plan_lowest_score">
+              #{{DEV_PLAN_LOWEST_SCORE}}
+            </p>
+            <p data-id="dev_plan_second_lowest_score">
+              #{{DEV_PLAN_SECOND_LOWEST}}
+            </p>
+          </div>
+        </div>
+
+      </div>
     </div>
 
     <div class="footer">
