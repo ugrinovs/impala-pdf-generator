@@ -10,14 +10,12 @@ import { personalityProfileMap } from "./lib/personality-profile.mapper.js";
 import {
   createElement,
   findElementById,
-  getElementsByTagName,
   parseHTML,
   serializeDocument,
 } from "./lib/html-parser.js";
 import Big from "big.js";
 
-console.log("process.cwd():", process.cwd());
-const __dirname = path.resolve(process.cwd());
+const __dirname = path.resolve(path.dirname(fileURLToPath(import.meta.url)));
 
 const fitIndexIcons = {
   female: {
@@ -1449,7 +1447,6 @@ const selectors = {
   };
 };
 
-console.log("penv", process.env);
 export async function generateDevelopmentReport(
   result: ParticipantInfo = resExample,
 ) {
