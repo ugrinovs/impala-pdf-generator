@@ -1540,7 +1540,7 @@ export async function generateDevelopmentReport(
   p2.textContent = "Overall match";
 
   p.classList.add("fit_index_percentage_value");
-  const color = fitIndex < 21 ? "red" : fitIndex < 50 ? "orange" : "green";
+  const color = fitIndex < 21 ? "red" : fitIndex < 50 ? "yellow" : "green";
   p.classList.add(color);
 
   span.appendChild(p);
