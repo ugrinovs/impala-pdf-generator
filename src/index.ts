@@ -3,9 +3,7 @@ import path from "path";
 import fs from "fs";
 import * as config from "./lib/config.js";
 import resExample from "./lib/res-example.js";
-// import { createChart } from "./chart.js";
 import calculateIdeaCandidate from "./lib/ideal-candidate.calculation.js";
-import { fileURLToPath } from "node:url";
 import { personalityProfileMap } from "./lib/personality-profile.mapper.js";
 import {
   createElement,
@@ -15,7 +13,9 @@ import {
 } from "./lib/html-parser.js";
 import Big from "big.js";
 
-const __dirname = path.resolve(path.dirname(fileURLToPath(import.meta.url)));
+// const __dirname = path.dirname(fileURLToPath(import.meta.dirname));
+const __dirname = import.meta.dirname;
+console.log("__dirname", __dirname);
 
 const fitIndexIcons = {
   female: {
@@ -2116,6 +2116,7 @@ export async function generateDevelopmentReport(
 }
 
 // serves for testing
+
 // generateDevelopmentReport()
 //   .then((base64) => {
 //     console.log("Generated PDF base64 length:", base64.length);
