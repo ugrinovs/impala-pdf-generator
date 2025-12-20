@@ -606,9 +606,9 @@
     justify-content: space-between;
   }
 
-  .fit_index_percent {
+  .o_fit_index_percent {
     margin-bottom: -12px;
-    margin-left: -72%;
+    margin-left: -75%;
     background-color: white;
     border-radius: 50%;
     padding: 10px;

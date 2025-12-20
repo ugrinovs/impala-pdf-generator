@@ -799,7 +799,7 @@ function resultCreator(results: ParticipantInfo) {
 
   const devPlanScore = getDevPlanFromScore(
     results.neuroCorrectionCorrected,
-    results.fullName,
+    results.fullName.split(" ")[0],
   );
   const sortedFromHighest = Object.keys(devPlanScore).sort((a, b) => {
     const devPlanA =
@@ -831,7 +831,7 @@ function resultCreator(results: ParticipantInfo) {
     assessment_type: results.assessment_type,
     ...getPersonalityProfile(
       results.recruitmentProfile,
-      results.fullName,
+      results.fullName.split(" ")[0],
       results.gender,
     ),
     ...getIdealProfile(idealProfile, candidateAlignment),
@@ -884,8 +884,8 @@ function resultCreator(results: ParticipantInfo) {
           ? "medium"
           : "high"
     ]
-      .replaceAll("(Name)", results.fullName)
-      .replaceAll("[Name]", results.fullName)
+      .replaceAll("(Name)", results.fullName.split(" ")[0])
+      .replaceAll("[Name]", results.fullName.split(" ")[0])
       .replaceAll("[He/She]", results.gender === "male" ? "He" : "She")
       .replaceAll("(His/Her)", results.gender === "male" ? "His" : "Her")
       .replaceAll("( )", idealCandidate.fitIndexOverall.toFixed(2) + "%"),
@@ -1548,7 +1548,7 @@ export async function generateDevelopmentReport(
 
   span.appendChild(p);
   span.appendChild(p2);
-  span.classList.add("fit_index_percent");
+  span.classList.add("o_fit_index_percent");
 
   div.appendChild(image);
   div.appendChild(span);
@@ -2118,15 +2118,16 @@ export async function generateDevelopmentReport(
   return base64;
 }
 
-generateDevelopmentReport()
-  .then((base64) => {
-    console.log("Generated PDF base64 length:", base64.length);
-    fs.writeFileSync(path.resolve(__dirname, "output.pdf"), base64, {
-      encoding: "base64",
-    });
-    process.exit(0);
-  })
-  .catch((error) => {
-    console.error("Error generating PDF:", error);
-    process.exit(1);
-  });
+// serves for testing
+// generateDevelopmentReport()
+//   .then((base64) => {
+//     console.log("Generated PDF base64 length:", base64.length);
+//     fs.writeFileSync(path.resolve(__dirname, "output.pdf"), base64, {
+//       encoding: "base64",
+//     });
+//     process.exit(0);
+//   })
+//   .catch((error) => {
+//     console.error("Error generating PDF:", error);
+//     process.exit(1);
+//   });
