@@ -659,4 +659,5 @@
 
   .page [data-id] {
     white-space: pre-line;
+    line-height: 100%;
   }
