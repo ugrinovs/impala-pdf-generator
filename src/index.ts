@@ -682,12 +682,12 @@ export type ParticipantInfo = {
     O: number;
   };
   hbeckResult: {
-    H: number;
-    E: number;
-    X: number;
-    A: number;
-    C: number;
-    O: number;
+    H: string;
+    E: string;
+    X: string;
+    A: string;
+    C: string;
+    O: string;
   };
   idealCandidateResults: Array<number>;
   gender: "male" | "female";
@@ -772,7 +772,7 @@ function resultCreator(results: ParticipantInfo) {
         | "leadership";
       acc[profileKey] =
         idealCandidate.idealCandidateAlignment[
-          key as keyof typeof idealCandidate.idealCandidateAlignment
+          key as string as keyof typeof idealCandidate.idealCandidateAlignment
         ] === 3
           ? "high"
           : idealCandidate.idealCandidateAlignment[
@@ -2130,15 +2130,15 @@ export async function generateDevelopmentReport(
 
 // serves for testing
 
-// generateDevelopmentReport()
-//   .then((base64) => {
-//     console.log("Generated PDF base64 length:", base64.length);
-//     fs.writeFileSync(path.resolve(__dirname, "output.pdf"), base64, {
-//       encoding: "base64",
-//     });
-//     process.exit(0);
-//   })
-//   .catch((error) => {
-//     console.error("Error generating PDF:", error);
-//     process.exit(1);
-//   });
+generateDevelopmentReport()
+  .then((base64) => {
+    console.log("Generated PDF base64 length:", base64.length);
+    fs.writeFileSync(path.resolve(__dirname, "output.pdf"), base64, {
+      encoding: "base64",
+    });
+    process.exit(0);
+  })
+  .catch((error) => {
+    console.error("Error generating PDF:", error);
+    process.exit(1);
+  });

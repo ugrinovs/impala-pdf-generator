@@ -6,12 +6,12 @@ function getScore(score: number | string) {
   return 3;
 }
 
-function getAlignment(participantScore: number, idealScore: number) {
+function getAlignment(participantScore: string | number, idealScore: number) {
   console.log(
     "alignment",
     participantScore,
     idealScore,
-    3 - Math.abs(participantScore - idealScore),
+    Big(3).minus(Big(participantScore).sub(idealScore).abs()).toString(),
   );
   // 3 - (3 - 3); => 3 - 0; => 3 // high
   // 3 - (2 - 3); => 3 - 1; => 2 // medium
@@ -22,7 +22,7 @@ function getAlignment(participantScore: number, idealScore: number) {
   // 3 - (0 - 3); => 3 - 3; => 0
   // 3 - (1 - 3); => 3 - 2; => 1
   // 3 - (2 - 3); => 3 - 1; => 2
-  return 3 - Math.abs(participantScore - idealScore);
+  return Big(3).minus(Big(participantScore).sub(idealScore).abs()).toNumber();
 }
 
 function getFitIndex(participantScores: string | number, idealScores: number) {
@@ -30,9 +30,12 @@ function getFitIndex(participantScores: string | number, idealScores: number) {
     "fitIndex",
     participantScores,
     idealScores,
-    Big(5).minus(participantScores).minus(idealScores).abs().div(5),
+    Big(5).minus(Big(participantScores).minus(idealScores).abs()).div(5),
   );
-  return Big(Big(5).minus(participantScores).minus(idealScores).abs()).div(5);
+  return Big(5)
+    .minus(Big(participantScores).minus(idealScores).abs())
+    .div(5)
+    .toNumber();
 }
 export default function calculateIdeaCandidate(results: {
   neuroCorrectionCorrected: {
@@ -44,12 +47,12 @@ export default function calculateIdeaCandidate(results: {
     O: string;
   };
   hbeckResult: {
-    H: number;
-    E: number;
-    X: number;
-    A: number;
-    C: number;
-    O: number;
+    H: string;
+    E: string;
+    X: string;
+    A: string;
+    C: string;
+    O: string;
   };
   idealCandidateResults: number[];
 }) {
