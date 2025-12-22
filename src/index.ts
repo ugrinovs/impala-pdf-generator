@@ -1473,7 +1473,7 @@ export async function generateDevelopmentReport(
   );
   const lowDiscrepancyScores = Object.keys(
     result.discrepancyHexaco ?? {},
-  ).filter((key) => new Big(result.discrepancyHexaco?.[key] ?? 0).lt(3));
+  ).filter((key) => new Big(result.discrepancyHexaco?.[key] ?? 0).lte(0.3));
   console.log("lowDiscrepancyScores", lowDiscrepancyScores);
   if (lowDiscrepancyScores.length > 0) {
     const discrepancyDiv = createElement(htmlDoc, "div");
@@ -1506,7 +1506,7 @@ export async function generateDevelopmentReport(
 
   const highDiscrepancyScores = Object.keys(
     result.discrepancyHexaco ?? {},
-  ).filter((key) => new Big(result.discrepancyHexaco?.[key] ?? 0).gte(3));
+  ).filter((key) => new Big(result.discrepancyHexaco?.[key] ?? 0).gt(0.3));
   console.log("highDiscrepancyScores", highDiscrepancyScores);
   if (highDiscrepancyScores.length < 0) {
     const highDiscrepancy = createElement(htmlDoc, "div");
@@ -1695,392 +1695,430 @@ export async function generateDevelopmentReport(
     }
   });
 
-  // await page.waitForSelector("#chart").then(async () => {
-  //   const element = await page.$("#chart");
-  //   await page.evaluate((el) => {
-  //     function createChart(ctx) {
-  //       const chartWidth = 400;
-  //       ctx.font = "12px Roboto";
-  //       ctx.textRendering = "geometricPrecision";
-  //       function createBarPath(
-  //         value,
-  //         x,
-  //         yMax,
-  //         options = {
-  //           offsetY: 0,
-  //           offsetX: 0,
-  //         },
-  //       ) {
-  //         const startOff = options.offsetX;
-  //         const width = 30 + (options.offsetX ?? 0);
-  //         const cornerRadius = 5;
-  //         const cornerHeight = 10;
-  //         const yMaxAdjusted = yMax + (options.offsetY ?? 0);
-  //         const height = (value / 100) * yMax; // Scale value to fit in canvas height
-  //         const y = yMax - height + (options.offsetY ?? 0); // Calculate y position based on height
-  //         const path = new Path2D();
-  //         path.moveTo(x + startOff, yMaxAdjusted - cornerHeight); // Bottom left
-  //         path.lineTo(x + startOff, y); // Top left with rounded corner
-  //         // path.quadraticCurveTo(x + 30, y, x + 35, y); // Top left corner
-  //         path.lineTo(x + width, y); // Top right
-  //         // path.quadraticCurveTo(x + 60, y, x + 60, y + 10); // Top right corner
-  //         path.lineTo(x + width, yMaxAdjusted - cornerHeight); // Bottom right
-  //         path.quadraticCurveTo(
-  //           x + width,
-  //           yMaxAdjusted,
-  //           x + width - cornerRadius,
-  //           yMaxAdjusted,
-  //         ); // Bottom right corner
-  //         path.lineTo(x + startOff + cornerRadius, yMaxAdjusted); // Bottom left
-  //         path.quadraticCurveTo(
-  //           x + startOff,
-  //           yMaxAdjusted,
-  //           x + startOff,
-  //           yMaxAdjusted - cornerHeight,
-  //         ); // Bottom left corner
-  //
-  //         path.closePath();
-  //         return path;
-  //       }
-  //
-  //       function createFilterPath(
-  //         x,
-  //         yMax,
-  //         options = {
-  //           offsetY: 0,
-  //         },
-  //       ) {
-  //         const startOff = 15;
-  //         const width = 30;
-  //         const cornerRadius = 5;
-  //         const path = new Path2D();
-  //         const y = options.offsetY ?? 0;
-  //         const cornerHeight = 10;
-  //         const yMaxAdjusted = yMax + (options.offsetY ?? 0);
-  //         // path.rect(x + 30, 41, 30, 210); // Simple rectangle for filter area
-  //
-  //         path.moveTo(x + startOff, y + cornerHeight); // Bottom left
-  //         path.lineTo(x + startOff, yMaxAdjusted - cornerHeight); // Top left
-  //         path.quadraticCurveTo(
-  //           x + startOff,
-  //           yMaxAdjusted,
-  //           x + startOff + cornerRadius,
-  //           yMaxAdjusted,
-  //         ); // Top left corner
-  //         path.lineTo(x + width - cornerRadius, yMaxAdjusted); // Top right
-  //         path.quadraticCurveTo(
-  //           x + width,
-  //           yMaxAdjusted,
-  //           x + width,
-  //           yMaxAdjusted - cornerHeight,
-  //         ); // Top right corner
-  //         path.lineTo(x + width, y + cornerHeight); // Bottom right
-  //         path.quadraticCurveTo(x + width, y, x + width - cornerRadius, y); // Bottom right corner
-  //         path.lineTo(x + startOff + cornerRadius, y); // Bottom left
-  //         path.quadraticCurveTo(
-  //           x + startOff,
-  //           y,
-  //           x + startOff,
-  //           y + cornerHeight,
-  //         ); // Bottom left corner
-  //         path.closePath();
-  //         return path;
-  //       }
-  //
-  //       function createTicksPath(
-  //         x,
-  //         yMax,
-  //         options = {
-  //           offsetY: 0,
-  //           offsetX: 0,
-  //         },
-  //       ) {
-  //         const yMaxAdjusted = yMax + (options.offsetY ?? 0);
-  //         const path = new Path2D();
-  //         const bigTickLength = 20;
-  //         const smallTickLength = 10;
-  //         const bigTickInterval = 40;
-  //         const smallTickInterval = 4;
-  //         // Draw ticks at every 50 units
-  //         for (let i = 4; i <= yMax; i += smallTickInterval) {
-  //           const y = yMaxAdjusted - i;
-  //           const isTickAtBigInterval = i % bigTickInterval === 0;
-  //           const tickLength =
-  //             i % 40 === 0 && i !== 0 ? bigTickLength : smallTickLength;
-  //           const tickStart = i % 40 === 0 && i !== 0 ? 10 : 15;
-  //           const tickEnd = tickStart + tickLength;
-  //           path.moveTo(x + tickStart + options.offsetX, y);
-  //           path.lineTo(x + tickEnd + options.offsetX, y);
-  //         }
-  //         return path;
-  //       }
-  //
-  //       function createBar(ctx, value, x, color, discrepancy) {
-  //         const options = {
-  //           offsetY: 30,
-  //           offsetX: 30,
-  //         };
-  //
-  //         const yMax = 200;
-  //         const path = createBarPath(value, x, yMax, options);
-  //         const filterPath = createFilterPath(x, yMax, options);
-  //         const ticksPath = createTicksPath(x, yMax, options);
-  //         // ctx.stroke(path);
-  //         // Draw filter area
-  //         ctx.strokeStyle = "rgb(222, 222, 222)";
-  //         ctx.lineWidth = 1;
-  //         ctx.fillStyle = "white";
-  //         ctx.fill(filterPath);
-  //         ctx.stroke(filterPath);
-  //         // #00CCFF opacity 0.25
-  //         ctx.fillStyle = color;
-  //         ctx.fillOpacity = 0.25;
-  //         ctx.fill(path);
-  //
-  //         // ticks
-  //         ctx.strokeStyle = "rgb(218, 218, 218)";
-  //         ctx.lineWidth = 1;
-  //         ctx.lineCap = "round";
-  //         ctx.stroke(ticksPath);
-  //
-  //         if (discrepancy) {
-  //           console.log("Discrepancy detected:", discrepancy);
-  //           const startOff = 10;
-  //           const width = 20;
-  //           // Highlight discrepancy area
-  //           const start = (value / 100) * yMax; // Scale value to fit in canvas height
-  //           const discHeight = (discrepancy / 100) * yMax;
-  //           const y = 200 - start + options.offsetY;
-  //           const discY = y - discHeight;
-  //           const discPath = new Path2D();
-  //           discPath.moveTo(x + startOff, discY);
-  //           discPath.lineTo(x + width, discY);
-  //           discPath.lineTo(x + width, y);
-  //           discPath.lineTo(x + startOff, y);
-  //           discPath.closePath();
-  //           ctx.fillStyle = "rgb(238, 91, 91, 0.1)";
-  //           ctx.strokeStyle = "rgb(255, 0, 0, 0.5)";
-  //           ctx.setLineDash([2, 2]);
-  //           ctx.fill(discPath);
-  //           ctx.stroke(discPath);
-  //
-  //           ctx.font = "600 6px Roboto";
-  //           ctx.fillStyle = "rgb(0, 0, 0, 1)";
-  //           ctx.textAlign = "center";
-  //           ctx.textBaseline = "middle";
-  //           const discText = discrepancy < 30 ? "Low" : "Medium\n/High";
-  //           const lines = discText.split("\n");
-  //           for (let i = 0; i < lines.length; i++) {
-  //             ctx.fillText(
-  //               lines[i],
-  //               x + 45,
-  //               discY + discHeight / 2 + i * 7 - (lines.length - 1) * 3.5,
-  //             );
-  //           }
-  //
-  //           ctx.setLineDash([]);
-  //           // ctx.fillStyle = 'rgb(255, 0, 0, 1)';
-  //           // ctx.fill(disc);
-  //         }
-  //       }
-  //
-  //       function createHorizontalLines(
-  //         ctx,
-  //         yMax = 200,
-  //         options = {
-  //           offsetY: 0,
-  //           offsetX: 0,
-  //         },
-  //       ) {
-  //         const path = new Path2D();
-  //         const yMaxAdjusted = yMax + (options.offsetY ?? 0);
-  //         const offsetY = options.offsetY ?? 0;
-  //         const offsetX = options.offsetX ?? 0;
-  //         for (let i = 0; i <= yMax; i += 40) {
-  //           const y = yMaxAdjusted - i;
-  //           path.moveTo(offsetX, y);
-  //           path.lineTo(chartWidth - 30, y);
-  //         }
-  //         ctx.strokeStyle = "rgb(212, 212, 212, 0.5)";
-  //         ctx.lineWidth = 1;
-  //         ctx.lineCap = "round";
-  //         ctx.stroke(path);
-  //       }
-  //
-  //       function createYScaleLabels(
-  //         ctx,
-  //         yMax = 200,
-  //         options = {
-  //           offsetY: 0,
-  //           offsetX: 0,
-  //         },
-  //       ) {
-  //         const offsetY = options.offsetY ?? 0;
-  //         const offsetX = options.offsetX ?? 0;
-  //         ctx.fillStyle = "black";
-  //         ctx.font = "700 7px Roboto";
-  //         ctx.textAlign = "right";
-  //         ctx.textBaseline = "middle";
-  //         for (let i = 0; i <= yMax; i += 40) {
-  //           const y = yMax - i + offsetY;
-  //           ctx.fillText((i / 40).toString(), offsetX + 20, y);
-  //         }
-  //       }
-  //
-  //       function textBetweenBars(ctx, text, x1, x2, y, options = {}) {
-  //         const offsetY = options.offsetY ?? 0;
-  //         const offsetX = options.offsetX ?? 0;
-  //         ctx.fillStyle = "black";
-  //         ctx.font = "700 7px Roboto";
-  //         ctx.textAlign = "center";
-  //         ctx.textBaseline = "middle";
-  //         // get text width
-  //         const textWidth = ctx.measureText(text).width;
-  //         const x = x1 + offsetX - textWidth;
-  //         ctx.fillText(text, x, y + offsetY);
-  //       }
-  //
-  //       // Draw horizontal lines
-  //       createHorizontalLines(ctx, 200, {
-  //         offsetY: 50,
-  //         offsetX: 24,
-  //       });
-  //
-  //       createYScaleLabels(ctx, 200, {
-  //         offsetY: 50,
-  //         offsetX: 0,
-  //       });
-  //
-  //       const values = Array.from({ length: 6 }).map(() => {
-  //         const explicit = Math.floor(Math.random() * 100) + 1;
-  //         const implicit = Math.floor(Math.random() * 100) + 1;
-  //         return {
-  //           explicit: explicit,
-  //           implicit: implicit,
-  //           discrepancy: Math.abs(explicit - implicit),
-  //           isLowerExplicit: explicit < implicit,
-  //         };
-  //       });
-  //
-  //       function createXAxisLabels(
-  //         ctx,
-  //         values,
-  //         x1,
-  //         x2,
-  //         options = {
-  //           offsetY: 260,
-  //           offsetX: 50,
-  //         },
-  //       ) {
-  //         const offsetY = options.offsetY ?? 0;
-  //         const offsetX = options.offsetX ?? 0;
-  //         ctx.fillStyle = "hsla(0, 0%, 38%, 1)";
-  //         ctx.textAlign = "center";
-  //         ctx.font = "300 7px Roboto";
-  //         ctx.textBaseline = "middle";
-  //         ctx.fillText(values[0], x1 + offsetX + 15, offsetY);
-  //         ctx.fillText(values[1], x2 + offsetX + 15, offsetY);
-  //       }
-  //
-  //       function createGroupLabels(
-  //         ctx,
-  //         options = {
-  //           offsetY: 20,
-  //           offsetX: 50,
-  //         },
-  //       ) {
-  //         const groups = [
-  //           "Integrity and \ntrust",
-  //           "Emotional \nregulation and \nresilience",
-  //           "Communication \nand influence",
-  //           "Cooperation \nand diplomacy",
-  //           "Performance \nand reliability",
-  //           "Learning and \ninnovation",
-  //         ];
-  //         const offsetY = options.offsetY ?? 0;
-  //         const offsetX = options.offsetX ?? 0;
-  //         const barSpacing = chartWidth / barCount;
-  //         ctx.fillStyle = "hsla(0, 0%, 38%, 1)";
-  //         ctx.textAlign = "left";
-  //         ctx.font = "300 10px Roboto";
-  //         ctx.textBaseline = "bottom";
-  //         const maxLines = Math.max(...groups.map((g) => g.split("\n").length));
-  //         for (let i = 0; i < groups.length; i++) {
-  //           const x = i * (barSpacing * 2) + offsetX;
-  //           const lines = groups[i].split("\n");
-  //           for (let j = lines.length - 1; j >= 0; j--) {
-  //             const lineOffset = maxLines * 10 - (lines.length - j) * 10;
-  //
-  //             console.log(
-  //               "Drawing group label:",
-  //               lines[j],
-  //               "at",
-  //               x,
-  //               offsetY + lineOffset,
-  //             );
-  //             ctx.fillText(lines[j], x, offsetY + lineOffset);
-  //           }
-  //         }
-  //       }
-  //
-  //       const width = chartWidth;
-  //       const barCount = 12;
-  //       createGroupLabels(ctx, {
-  //         offsetY: 20,
-  //         offsetX: 38,
-  //       });
-  //       for (let i = 0; i < values.length; i++) {
-  //         const value = values[i]; // Random value between 1 and 100
-  //         // every two bars have different x position
-  //         const color =
-  //           i % 2 === 1 ? "rgb(0, 9, 255, 0.25)" : "rgba(0, 204, 255, 0.25)";
-  //         const barSpacing = width / barCount;
-  //         const x1 = i * (barSpacing * 2) + 5;
-  //         const x2 = x1 + 43;
-  //         console.log(
-  //           "Bar",
-  //           i,
-  //           "Explicit:",
-  //           value.explicit,
-  //           "Implicit:",
-  //           value.implicit,
-  //           x1,
-  //           x2,
-  //         );
-  //         createBar(
-  //           ctx,
-  //           value.explicit,
-  //           x1,
-  //           "rgba(0, 204, 255, 0.25)",
-  //           value.isLowerExplicit ? value.discrepancy : 0,
-  //         );
-  //         textBetweenBars(ctx, `vs`, x1 + 29, x2, 100, {
-  //           offsetY: 50,
-  //           offsetX: 45,
-  //         });
-  //         createBar(
-  //           ctx,
-  //           value.implicit,
-  //           x2,
-  //           "rgb(0, 9, 255, 0.25)",
-  //           value.isLowerExplicit ? 0 : value.discrepancy,
-  //         );
-  //         createXAxisLabels(ctx, ["Explicit", "Implicit"], x1, x2, {
-  //           offsetY: 260,
-  //           offsetX: 30,
-  //         });
-  //       }
-  //       // });
-  //     }
-  //     function generateFitIndexChart(container) {
-  //       // Example chart generation using Chart.js
-  //       const ctx = container.getContext("2d");
-  //       createChart(ctx);
-  //     }
-  //     console.log("Generating chart in element:", el, typeof cChart);
-  //     generateFitIndexChart(el);
-  //   }, element);
-  // });
+  await page.waitForSelector("#chart").then(async () => {
+    const element = await page.$("#chart");
+    await page.evaluate((el) => {
+      function createChart(ctx: CanvasRenderingContext2D) {
+        const chartWidth = 400;
+        ctx.font = "12px Roboto";
+        ctx.textRendering = "geometricPrecision";
+        function createBarPath(
+          value: number,
+          x: number,
+          yMax: number,
+          options: {
+            offsetY: number;
+            offsetX: number;
+          } = {
+            offsetY: 0,
+            offsetX: 0,
+          },
+        ) {
+          const startOff = options.offsetX;
+          const width = 30 + (options.offsetX ?? 0);
+          const cornerRadius = 5;
+          const cornerHeight = 10;
+          const yMaxAdjusted = yMax + (options.offsetY ?? 0);
+          const height = (value / 100) * yMax; // Scale value to fit in canvas height
+          const y = yMax - height + (options.offsetY ?? 0); // Calculate y position based on height
+          const path = new Path2D();
+          path.moveTo(x + startOff, yMaxAdjusted - cornerHeight); // Bottom left
+          path.lineTo(x + startOff, y); // Top left with rounded corner
+          // path.quadraticCurveTo(x + 30, y, x + 35, y); // Top left corner
+          path.lineTo(x + width, y); // Top right
+          // path.quadraticCurveTo(x + 60, y, x + 60, y + 10); // Top right corner
+          path.lineTo(x + width, yMaxAdjusted - cornerHeight); // Bottom right
+          path.quadraticCurveTo(
+            x + width,
+            yMaxAdjusted,
+            x + width - cornerRadius,
+            yMaxAdjusted,
+          ); // Bottom right corner
+          path.lineTo(x + startOff + cornerRadius, yMaxAdjusted); // Bottom left
+          path.quadraticCurveTo(
+            x + startOff,
+            yMaxAdjusted,
+            x + startOff,
+            yMaxAdjusted - cornerHeight,
+          ); // Bottom left corner
+
+          path.closePath();
+          return path;
+        }
+
+        function createFilterPath(
+          x: number,
+          yMax: number,
+          options: {
+            offsetY: number;
+          } = {
+            offsetY: 0,
+          },
+        ) {
+          const startOff = 15;
+          const width = 30;
+          const cornerRadius = 5;
+          const path = new Path2D();
+          const y = options.offsetY ?? 0;
+          const cornerHeight = 10;
+          const yMaxAdjusted = yMax + (options.offsetY ?? 0);
+          // path.rect(x + 30, 41, 30, 210); // Simple rectangle for filter area
+
+          path.moveTo(x + startOff, y + cornerHeight); // Bottom left
+          path.lineTo(x + startOff, yMaxAdjusted - cornerHeight); // Top left
+          path.quadraticCurveTo(
+            x + startOff,
+            yMaxAdjusted,
+            x + startOff + cornerRadius,
+            yMaxAdjusted,
+          ); // Top left corner
+          path.lineTo(x + width - cornerRadius, yMaxAdjusted); // Top right
+          path.quadraticCurveTo(
+            x + width,
+            yMaxAdjusted,
+            x + width,
+            yMaxAdjusted - cornerHeight,
+          ); // Top right corner
+          path.lineTo(x + width, y + cornerHeight); // Bottom right
+          path.quadraticCurveTo(x + width, y, x + width - cornerRadius, y); // Bottom right corner
+          path.lineTo(x + startOff + cornerRadius, y); // Bottom left
+          path.quadraticCurveTo(
+            x + startOff,
+            y,
+            x + startOff,
+            y + cornerHeight,
+          ); // Bottom left corner
+          path.closePath();
+          return path;
+        }
+
+        function createTicksPath(
+          x: number,
+          yMax: number,
+          options: {
+            offsetY: number;
+            offsetX: number;
+          } = {
+            offsetY: 0,
+            offsetX: 0,
+          },
+        ) {
+          const yMaxAdjusted = yMax + (options.offsetY ?? 0);
+          const path = new Path2D();
+          const bigTickLength = 20;
+          const smallTickLength = 10;
+          const bigTickInterval = 40;
+          const smallTickInterval = 4;
+          // Draw ticks at every 50 units
+          for (let i = 4; i <= yMax; i += smallTickInterval) {
+            const y = yMaxAdjusted - i;
+            const isTickAtBigInterval = i % bigTickInterval === 0;
+            const tickLength =
+              i % 40 === 0 && i !== 0 ? bigTickLength : smallTickLength;
+            const tickStart = i % 40 === 0 && i !== 0 ? 10 : 15;
+            const tickEnd = tickStart + tickLength;
+            path.moveTo(x + tickStart + options.offsetX, y);
+            path.lineTo(x + tickEnd + options.offsetX, y);
+          }
+          return path;
+        }
+
+        function createBar(
+          ctx: CanvasRenderingContext2D,
+          value: number,
+          x: number,
+          color: string,
+          discrepancy: number,
+        ) {
+          const options = {
+            offsetY: 30,
+            offsetX: 30,
+          };
+
+          const yMax = 200;
+          const path = createBarPath(value, x, yMax, options);
+          const filterPath = createFilterPath(x, yMax, options);
+          const ticksPath = createTicksPath(x, yMax, options);
+          // ctx.stroke(path);
+          // Draw filter area
+          ctx.strokeStyle = "rgb(222, 222, 222)";
+          ctx.lineWidth = 1;
+          ctx.fillStyle = "white";
+          ctx.fill(filterPath);
+          ctx.stroke(filterPath);
+          // #00CCFF opacity 0.25
+          ctx.fillStyle = color;
+          // ctx.fillOpacity = 0.25;
+          ctx.fill(path);
+
+          // ticks
+          ctx.strokeStyle = "rgb(218, 218, 218)";
+          ctx.lineWidth = 1;
+          ctx.lineCap = "round";
+          ctx.stroke(ticksPath);
+
+          if (discrepancy) {
+            console.log("Discrepancy detected:", discrepancy);
+            const startOff = 10;
+            const width = 20;
+            // Highlight discrepancy area
+            const start = (value / 100) * yMax; // Scale value to fit in canvas height
+            const discHeight = (discrepancy / 100) * yMax;
+            const y = 200 - start + options.offsetY;
+            const discY = y - discHeight;
+            const discPath = new Path2D();
+            discPath.moveTo(x + startOff, discY);
+            discPath.lineTo(x + width, discY);
+            discPath.lineTo(x + width, y);
+            discPath.lineTo(x + startOff, y);
+            discPath.closePath();
+            ctx.fillStyle = "rgb(238, 91, 91, 0.1)";
+            ctx.strokeStyle = "rgb(255, 0, 0, 0.5)";
+            ctx.setLineDash([2, 2]);
+            ctx.fill(discPath);
+            ctx.stroke(discPath);
+
+            ctx.font = "600 6px Roboto";
+            ctx.fillStyle = "rgb(0, 0, 0, 1)";
+            ctx.textAlign = "center";
+            ctx.textBaseline = "middle";
+            const discText = discrepancy < 0.3 ? "Low" : "Medium\n/High";
+            const lines = discText.split("\n");
+            for (let i = 0; i < lines.length; i++) {
+              ctx.fillText(
+                lines[i],
+                x + 45,
+                discY + discHeight / 2 + i * 7 - (lines.length - 1) * 3.5,
+              );
+            }
+
+            ctx.setLineDash([]);
+            // ctx.fillStyle = 'rgb(255, 0, 0, 1)';
+            // ctx.fill(disc);
+          }
+        }
+
+        function createHorizontalLines(
+          ctx: CanvasRenderingContext2D,
+          yMax: number = 200,
+          options: {
+            offsetY: number;
+            offsetX: number;
+          } = {
+            offsetY: 0,
+            offsetX: 0,
+          },
+        ) {
+          const path = new Path2D();
+          const yMaxAdjusted = yMax + (options.offsetY ?? 0);
+          const offsetX = options.offsetX ?? 0;
+          for (let i = 0; i <= yMax; i += 40) {
+            const y = yMaxAdjusted - i;
+            path.moveTo(offsetX, y);
+            path.lineTo(chartWidth - 30, y);
+          }
+          ctx.strokeStyle = "rgb(212, 212, 212, 0.5)";
+          ctx.lineWidth = 1;
+          ctx.lineCap = "round";
+          ctx.stroke(path);
+        }
+
+        function createYScaleLabels(
+          ctx: CanvasRenderingContext2D,
+          yMax: number = 200,
+          options: {
+            offsetY: number;
+            offsetX: number;
+          } = {
+            offsetY: 0,
+            offsetX: 0,
+          },
+        ) {
+          const offsetY = options.offsetY ?? 0;
+          const offsetX = options.offsetX ?? 0;
+          ctx.fillStyle = "black";
+          ctx.font = "700 7px Roboto";
+          ctx.textAlign = "right";
+          ctx.textBaseline = "middle";
+          for (let i = 0; i <= yMax; i += 40) {
+            const y = yMax - i + offsetY;
+            ctx.fillText((i / 40).toString(), offsetX + 20, y);
+          }
+        }
+
+        function textBetweenBars(
+          ctx: CanvasRenderingContext2D,
+          text: string,
+          x1: number,
+          _x2: number,
+          y: number,
+          options: {
+            offsetY: number;
+            offsetX: number;
+          } = {
+            offsetY: 0,
+            offsetX: 0,
+          },
+        ) {
+          const offsetY = options.offsetY ?? 0;
+          const offsetX = options.offsetX ?? 0;
+          ctx.fillStyle = "black";
+          ctx.font = "700 7px Roboto";
+          ctx.textAlign = "center";
+          ctx.textBaseline = "middle";
+          // get text width
+          const textWidth = ctx.measureText(text).width;
+          const x = x1 + offsetX - textWidth;
+          ctx.fillText(text, x, y + offsetY);
+        }
+
+        // Draw horizontal lines
+        createHorizontalLines(ctx, 200, {
+          offsetY: 50,
+          offsetX: 24,
+        });
+
+        createYScaleLabels(ctx, 200, {
+          offsetY: 50,
+          offsetX: 0,
+        });
+
+        const values = Array.from({ length: 6 }).map(() => {
+          const explicit = Math.floor(Math.random() * 100) + 1;
+          const implicit = Math.floor(Math.random() * 100) + 1;
+          return {
+            explicit: explicit,
+            implicit: implicit,
+            discrepancy: Math.abs(explicit - implicit),
+            isLowerExplicit: explicit < implicit,
+          };
+        });
+
+        function createXAxisLabels(
+          ctx: CanvasRenderingContext2D,
+          values: string[],
+          x1: number,
+          x2: number,
+          options: {
+            offsetY: number;
+            offsetX: number;
+          } = {
+            offsetY: 260,
+            offsetX: 50,
+          },
+        ) {
+          const offsetY = options.offsetY ?? 0;
+          const offsetX = options.offsetX ?? 0;
+          ctx.fillStyle = "hsla(0, 0%, 38%, 1)";
+          ctx.textAlign = "center";
+          ctx.font = "300 7px Roboto";
+          ctx.textBaseline = "middle";
+          ctx.fillText(values[0], x1 + offsetX + 15, offsetY);
+          ctx.fillText(values[1], x2 + offsetX + 15, offsetY);
+        }
+
+        function createGroupLabels(
+          ctx: CanvasRenderingContext2D,
+          options: {
+            offsetY: number;
+            offsetX: number;
+          } = {
+            offsetY: 20,
+            offsetX: 50,
+          },
+        ) {
+          const groups = [
+            "Integrity and \ntrust",
+            "Emotional \nregulation and \nresilience",
+            "Communication \nand influence",
+            "Cooperation \nand diplomacy",
+            "Performance \nand reliability",
+            "Learning and \ninnovation",
+          ];
+          const offsetY = options.offsetY ?? 0;
+          const offsetX = options.offsetX ?? 0;
+          const barSpacing = chartWidth / barCount;
+          ctx.fillStyle = "hsla(0, 0%, 38%, 1)";
+          ctx.textAlign = "left";
+          ctx.font = "300 10px Roboto";
+          ctx.textBaseline = "bottom";
+          const maxLines = Math.max(...groups.map((g) => g.split("\n").length));
+          for (let i = 0; i < groups.length; i++) {
+            const x = i * (barSpacing * 2) + offsetX;
+            const lines = groups[i].split("\n");
+            for (let j = lines.length - 1; j >= 0; j--) {
+              const lineOffset = maxLines * 10 - (lines.length - j) * 10;
+
+              console.log(
+                "Drawing group label:",
+                lines[j],
+                "at",
+                x,
+                offsetY + lineOffset,
+              );
+              ctx.fillText(lines[j], x, offsetY + lineOffset);
+            }
+          }
+        }
+
+        const width = chartWidth;
+        const barCount = 12;
+        createGroupLabels(ctx, {
+          offsetY: 20,
+          offsetX: 38,
+        });
+        for (let i = 0; i < values.length; i++) {
+          const value = values[i]; // Random value between 1 and 100
+          // every two bars have different x position
+          const color =
+            i % 2 === 1 ? "rgb(0, 9, 255, 0.25)" : "rgba(0, 204, 255, 0.25)";
+          const barSpacing = width / barCount;
+          const x1 = i * (barSpacing * 2) + 5;
+          const x2 = x1 + 43;
+          console.log(
+            "Bar",
+            i,
+            "Explicit:",
+            value.explicit,
+            "Implicit:",
+            value.implicit,
+            x1,
+            x2,
+          );
+          createBar(
+            ctx,
+            value.explicit,
+            x1,
+            "rgba(0, 204, 255, 0.25)",
+            value.isLowerExplicit ? value.discrepancy : 0,
+          );
+          textBetweenBars(ctx, `vs`, x1 + 29, x2, 100, {
+            offsetY: 50,
+            offsetX: 45,
+          });
+          createBar(
+            ctx,
+            value.implicit,
+            x2,
+            "rgb(0, 9, 255, 0.25)",
+            value.isLowerExplicit ? 0 : value.discrepancy,
+          );
+          createXAxisLabels(ctx, ["Explicit", "Implicit"], x1, x2, {
+            offsetY: 260,
+            offsetX: 30,
+          });
+        }
+        // });
+      }
+      function generateFitIndexChart(container: HTMLCanvasElement) {
+        // Example chart generation using Chart.js
+        const ctx = container.getContext("2d");
+        createChart(ctx!);
+      }
+      // console.log("Generating chart in element:", el, typeof cChart);
+      generateFitIndexChart(el as HTMLCanvasElement);
+    }, element);
+  });
 
   // await page.waitForSelector('[data-id="overall_badge"]').then(async () => {
   //   const overallBadgeName = personalityProfileMap[result.recruitmentProfile];
@@ -2120,15 +2158,15 @@ export async function generateDevelopmentReport(
 
 // serves for testing
 
-// generateDevelopmentReport()
-//   .then((base64) => {
-//     console.log("Generated PDF base64 length:", base64.length);
-//     fs.writeFileSync(path.resolve(__dirname, "output.pdf"), base64, {
-//       encoding: "base64",
-//     });
-//     process.exit(0);
-//   })
-//   .catch((error) => {
-//     console.error("Error generating PDF:", error);
-//     process.exit(1);
-//   });
+generateDevelopmentReport()
+  .then((base64) => {
+    console.log("Generated PDF base64 length:", base64.length);
+    fs.writeFileSync(path.resolve(__dirname, "output.pdf"), base64, {
+      encoding: "base64",
+    });
+    process.exit(0);
+  })
+  .catch((error) => {
+    console.error("Error generating PDF:", error);
+    process.exit(1);
+  });
