@@ -1474,6 +1474,11 @@ export async function generateDevelopmentReport(
   const lowDiscrepancyScores = Object.keys(
     result.discrepancyHexaco ?? {},
   ).filter((key) => new Big(result.discrepancyHexaco?.[key] ?? 0).lte(0.3));
+  console.log(
+    "result.discrepancyHexaco",
+    result.discrepancyHexaco,
+    lowDiscrepancyScores,
+  );
   console.log("lowDiscrepancyScores", lowDiscrepancyScores);
   if (lowDiscrepancyScores.length > 0) {
     const discrepancyDiv = createElement(htmlDoc, "div");
@@ -1508,7 +1513,7 @@ export async function generateDevelopmentReport(
     result.discrepancyHexaco ?? {},
   ).filter((key) => new Big(result.discrepancyHexaco?.[key] ?? 0).gt(0.3));
   console.log("highDiscrepancyScores", highDiscrepancyScores);
-  if (highDiscrepancyScores.length < 0) {
+  if (highDiscrepancyScores.length > 0) {
     const highDiscrepancy = createElement(htmlDoc, "div");
     highDiscrepancy.classList.add("flex", "flex-col");
     const heading = createElement(htmlDoc, "h2");
@@ -1516,6 +1521,8 @@ export async function generateDevelopmentReport(
     heading.textContent = "Moderate / High Discrepancy Score";
 
     highDiscrepancy.appendChild(heading);
+
+    const highDiscrepancyScoresDiv = createElement(htmlDoc, "div");
     for (const scoreKey of highDiscrepancyScores) {
       const dimension =
         devPlanDimensionToHexacoKeyMap[
@@ -1527,10 +1534,10 @@ export async function generateDevelopmentReport(
       const svg = svgDoc.querySelector("svg");
       svg!.classList.add("o-badge-lg");
 
-      highDiscrepancy?.appendChild(svg!);
+      highDiscrepancyScoresDiv.appendChild(svg!);
     }
 
-    highDiscrepancy.appendChild(highDiscrepancy);
+    highDiscrepancy.appendChild(highDiscrepancyScoresDiv);
     discrepancyScoreSection?.appendChild(highDiscrepancy);
   }
 
