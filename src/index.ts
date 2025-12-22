@@ -1467,51 +1467,71 @@ export async function generateDevelopmentReport(
 
   const htmlDoc = parseHTML(htmlContent);
 
-  const lowDiscrepancyScoreEl = findElementById(
+  const discrepancyScoreSection = findElementById(
     htmlDoc,
-    "low_discrepancy_score",
+    "discrepancy_scores_section",
   );
   const lowDiscrepancyScores = Object.keys(
     result.discrepancyHexaco ?? {},
   ).filter((key) => new Big(result.discrepancyHexaco?.[key] ?? 0).lt(3));
   console.log("lowDiscrepancyScores", lowDiscrepancyScores);
-  console.log("lowDiscrepancyScoreEl", lowDiscrepancyScoreEl);
-  for (const scoreKey of lowDiscrepancyScores) {
-    const dimension =
-      devPlanDimensionToHexacoKeyMap[
-        scoreKey as keyof typeof devPlanDimensionToHexacoKeyMap
-      ];
+  if (lowDiscrepancyScores.length > 0) {
+    const discrepancyDiv = createElement(htmlDoc, "div");
+    discrepancyDiv.classList.add("flex", "flex-col");
+    const heading = createElement(htmlDoc, "h2");
+    heading.classList.add("text-gray");
+    heading.textContent = "Low Discrepancy Score";
 
-    console.log("dimension", dimension);
-    const svgDoc = parseHTML(hexacoPositiveBadges[dimension]);
-    const svg = svgDoc.querySelector("svg");
-    // img.setAttribute("alt", scoreKey);
-    // img.classList.add("o-badge-lg");
-    svg!.classList.add("o-badge-lg");
-    lowDiscrepancyScoreEl?.appendChild(svg!);
+    discrepancyDiv.appendChild(heading);
+
+    const lowDiscrepancyDiv = createElement(htmlDoc, "div");
+    for (const scoreKey of lowDiscrepancyScores) {
+      const dimension =
+        devPlanDimensionToHexacoKeyMap[
+          scoreKey as keyof typeof devPlanDimensionToHexacoKeyMap
+        ];
+
+      console.log("dimension", dimension);
+      const svgDoc = parseHTML(hexacoPositiveBadges[dimension]);
+      const svg = svgDoc.querySelector("svg");
+      // img.setAttribute("alt", scoreKey);
+      // img.classList.add("o-badge-lg");
+      svg!.classList.add("o-badge-lg");
+      lowDiscrepancyDiv.appendChild(svg!);
+    }
+
+    discrepancyDiv.appendChild(lowDiscrepancyDiv);
+    discrepancyScoreSection?.appendChild(discrepancyDiv);
   }
 
-  const highDiscrepancyScoreEl = findElementById(
-    htmlDoc,
-    "high_discrepancy_score",
-  );
   const highDiscrepancyScores = Object.keys(
     result.discrepancyHexaco ?? {},
   ).filter((key) => new Big(result.discrepancyHexaco?.[key] ?? 0).gte(3));
   console.log("highDiscrepancyScores", highDiscrepancyScores);
-  console.log("highDiscrepancyScoreEl", highDiscrepancyScoreEl);
-  for (const scoreKey of highDiscrepancyScores) {
-    const dimension =
-      devPlanDimensionToHexacoKeyMap[
-        scoreKey as keyof typeof devPlanDimensionToHexacoKeyMap
-      ];
+  if (highDiscrepancyScores.length < 0) {
+    const highDiscrepancy = createElement(htmlDoc, "div");
+    highDiscrepancy.classList.add("flex", "flex-col");
+    const heading = createElement(htmlDoc, "h2");
+    heading.classList.add("text-gray");
+    heading.textContent = "Moderate / High Discrepancy Score";
 
-    console.log("dimension", dimension);
-    const svgDoc = parseHTML(hexacoNegativeBadges[dimension]);
-    const svg = svgDoc.querySelector("svg");
-    svg!.classList.add("o-badge-lg");
+    highDiscrepancy.appendChild(heading);
+    for (const scoreKey of highDiscrepancyScores) {
+      const dimension =
+        devPlanDimensionToHexacoKeyMap[
+          scoreKey as keyof typeof devPlanDimensionToHexacoKeyMap
+        ];
 
-    highDiscrepancyScoreEl?.appendChild(svg!);
+      console.log("dimension", dimension);
+      const svgDoc = parseHTML(hexacoNegativeBadges[dimension]);
+      const svg = svgDoc.querySelector("svg");
+      svg!.classList.add("o-badge-lg");
+
+      highDiscrepancy?.appendChild(svg!);
+    }
+
+    highDiscrepancy.appendChild(highDiscrepancy);
+    discrepancyScoreSection?.appendChild(highDiscrepancy);
   }
 
   const fitIndex = parseFloat(
@@ -2062,32 +2082,6 @@ export async function generateDevelopmentReport(
   //   }, element);
   // });
 
-  const someLow = Object.values(result.discrepancyHexaco ?? {}).some(
-    (v) => Number(v) < 0.3,
-  );
-  if (someLow) {
-    const lowScores = Object.entries(result.discrepancyHexaco ?? {}).filter(
-      ([_, v]) => Number(v) < 0.3,
-    );
-    console.log("Low discrepancy scores found:", lowScores);
-    // await page.waitForSelector("#low_discrepancy_score").then(async () => {
-    //   for (const [trait, score] of lowScores) {
-    //     const el = await page.$(`#low_discrepancy_score`);
-    //     el.chi;
-    //   }
-    // });
-  }
-
-  const someHigh = Object.values(result.discrepancyHexaco ?? {}).some(
-    (v) => Number(v) > 0.7,
-  );
-  if (someHigh) {
-    const highScores = Object.entries(result.discrepancyHexaco ?? {}).filter(
-      ([_, v]) => Number(v) > 0.7,
-    );
-    console.log("High discrepancy scores found:", highScores);
-    await page.waitForSelector("#high_discrepancy_score").then(async () => {});
-  }
   // await page.waitForSelector('[data-id="overall_badge"]').then(async () => {
   //   const overallBadgeName = personalityProfileMap[result.recruitmentProfile];
   //   const badgeElements = await page.$$('[data-id="overall_badge"]');
@@ -2126,15 +2120,15 @@ export async function generateDevelopmentReport(
 
 // serves for testing
 
-// generateDevelopmentReport()
-  // .then((base64) => {
-  //   console.log("Generated PDF base64 length:", base64.length);
-  //   fs.writeFileSync(path.resolve(__dirname, "output.pdf"), base64, {
-  //     encoding: "base64",
-  //   });
-  //   process.exit(0);
-  // })
-  // .catch((error) => {
-  //   console.error("Error generating PDF:", error);
-  //   process.exit(1);
-  // });
+generateDevelopmentReport()
+  .then((base64) => {
+    console.log("Generated PDF base64 length:", base64.length);
+    fs.writeFileSync(path.resolve(__dirname, "output.pdf"), base64, {
+      encoding: "base64",
+    });
+    process.exit(0);
+  })
+  .catch((error) => {
+    console.error("Error generating PDF:", error);
+    process.exit(1);
+  });
