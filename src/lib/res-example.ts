@@ -1,43 +1,81 @@
+import { ParticipantInfo } from "../index.js";
 import { personalityProfileMap } from "./personality-profile.mapper.js";
 
 export default {
-  participantId: "36sU6nKZOFRyy7r5Ygj4TyJ5A88",
-  fullName: "Savo Savic",
-  position_name: "Accountant",
+  fullName: "Miro Mirić",
+  position_name: "Recruiter",
   flow_name: "Development flow ",
   assessment_type: "Development",
-  recruitmentProfile:
-    "Charming manipulator" as keyof typeof personalityProfileMap,
+  recruitmentProfile: "Too good to be true",
   discrepancyHexaco: {
-    H: "0.4633333333333332",
-    E: "0.78",
-    X: "0.96",
-    A: "0.99",
-    C: "0.93",
-    O: "0.93",
+    H: "0.863333333333333259999",
+    E: "-0.21",
+    X: "-0.1100000000000001",
+    A: "0.63",
+    C: "0.63",
+    O: "0.78",
   },
   neuroCorrectionCorrected: {
-    H: "2.6366666666666668",
-    E: "1.82",
-    X: "2.24",
-    A: "2.31",
-    C: "2.17",
-    O: "2.17",
+    H: "2.236666666666666740001",
+    E: "3.01",
+    X: "2.4100000000000001",
+    A: "1.47",
+    C: "1.47",
+    O: "1.82",
   },
-  neuroCorrectionRaw: { H: 3.1, E: 2.6, X: 3.2, A: 3.3, C: 3.1, O: 3.1 },
+  neuroCorrectionRaw: { H: 3.1, E: 2.8, X: 2.3, A: 2.1, C: 2.1, O: 2.6 },
   hbeckResult: {
-    H: "3.6",
-    E: "3",
-    X: "3",
-    A: "2.77777777777777777778",
-    C: "2.66666666666666666667",
-    O: "2.66666666666666666667",
+    H: "2.6",
+    E: "1",
+    X: "3.14285714285714285714",
+    A: "2",
+    C: "2.44444444444444444444",
+    O: "1",
   },
   idealCandidateResults: [
-    2, 1, 2, 3, 4, 3, 2, 1, 3, 2, 1, 0, 3, 4, 4, 3, 3, 2, 3, 1, 2, 3, 4, 3,
+    0, 1, 2, 0, 0, 0, 1, 2, 4, 3, 3, 4, 4, 4, 2, 1, 3, 4, 2, 0, 1, 2, 0, 1,
   ],
-  gender: "male" as "male" | "female",
-};
+  gender: "male",
+} satisfies ParticipantInfo;
+
+// {
+//   participantId: "36sU6nKZOFRyy7r5Ygj4TyJ5A88",
+//   fullName: "Savo Savic",
+//   position_name: "Accountant",
+//   flow_name: "Development flow ",
+//   assessment_type: "Development",
+//   recruitmentProfile:
+//     "Charming manipulator" as keyof typeof personalityProfileMap,
+//   discrepancyHexaco: {
+//     H: "0.4633333333333332",
+//     E: "0.78",
+//     X: "0.96",
+//     A: "0.99",
+//     C: "0.93",
+//     O: "0.93",
+//   },
+//   neuroCorrectionCorrected: {
+//     H: "2.6366666666666668",
+//     E: "1.82",
+//     X: "2.24",
+//     A: "2.31",
+//     C: "2.17",
+//     O: "2.17",
+//   },
+//   neuroCorrectionRaw: { H: 3.1, E: 2.6, X: 3.2, A: 3.3, C: 3.1, O: 3.1 },
+//   hbeckResult: {
+//     H: "3.6",
+//     E: "3",
+//     X: "3",
+//     A: "2.77777777777777777778",
+//     C: "2.66666666666666666667",
+//     O: "2.66666666666666666667",
+//   },
+//   idealCandidateResults: [
+//     2, 1, 2, 3, 4, 3, 2, 1, 3, 2, 1, 0, 3, 4, 4, 3, 3, 2, 3, 1, 2, 3, 4, 3,
+//   ],
+//   gender: "male" as "male" | "female",
+// };
 
 // {
 //   fullName: "Employee 1",

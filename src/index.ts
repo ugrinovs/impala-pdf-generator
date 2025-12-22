@@ -180,13 +180,10 @@ function getHexacoScore(hexacoData: {
   return Object.keys(hexacoData).reduce(
     (acc, key) => {
       const k = key as "H" | "E" | "X" | "A" | "C" | "O";
-      if (parseFloat(hexacoData[k]) < 0.3) {
+      if (Big(hexacoData[k]).lt(0.3)) {
         acc[k] = "low";
       }
-      if (
-        parseFloat(hexacoData[k]) >= 0.3 ||
-        parseFloat(hexacoData[k]) <= 0.7
-      ) {
+      if (Big(hexacoData[k]).gte(0.3) && Big(hexacoData[k]).lte(0.7)) {
         acc[k] = "medium";
       }
 
@@ -1473,7 +1470,7 @@ export async function generateDevelopmentReport(
   );
   const lowDiscrepancyScores = Object.keys(
     result.discrepancyHexaco ?? {},
-  ).filter((key) => new Big(result.discrepancyHexaco?.[key] ?? 0).lte(0.3));
+  ).filter((key) => new Big(result.discrepancyHexaco?.[key] ?? 0).lt(0.3));
   console.log(
     "result.discrepancyHexaco",
     result.discrepancyHexaco,
@@ -1511,7 +1508,7 @@ export async function generateDevelopmentReport(
 
   const highDiscrepancyScores = Object.keys(
     result.discrepancyHexaco ?? {},
-  ).filter((key) => new Big(result.discrepancyHexaco?.[key] ?? 0).gt(0.3));
+  ).filter((key) => new Big(result.discrepancyHexaco?.[key] ?? 0).gte(0.3));
   console.log("highDiscrepancyScores", highDiscrepancyScores);
   if (highDiscrepancyScores.length > 0) {
     const highDiscrepancy = createElement(htmlDoc, "div");
@@ -2165,15 +2162,15 @@ export async function generateDevelopmentReport(
 
 // serves for testing
 
-// generateDevelopmentReport()
-//   .then((base64) => {
-//     console.log("Generated PDF base64 length:", base64.length);
-//     fs.writeFileSync(path.resolve(__dirname, "output.pdf"), base64, {
-//       encoding: "base64",
-//     });
-//     process.exit(0);
-//   })
-//   .catch((error) => {
-//     console.error("Error generating PDF:", error);
-//     process.exit(1);
-//   });
+generateDevelopmentReport()
+  .then((base64) => {
+    console.log("Generated PDF base64 length:", base64.length);
+    fs.writeFileSync(path.resolve(__dirname, "output.pdf"), base64, {
+      encoding: "base64",
+    });
+    process.exit(0);
+  })
+  .catch((error) => {
+    console.error("Error generating PDF:", error);
+    process.exit(1);
+  });
