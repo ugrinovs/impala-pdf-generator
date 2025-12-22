@@ -153,15 +153,9 @@
 
         <strong>Key Strengths</strong>
         <p data-id="key_strengths">#{{KEY_STRENGTHS}}</p>
-        <ul data-id="key_strengths_list">
-          <!-- Key strengths list items will be dynamically inserted here -->
-        </ul>
 
         <strong>Possible Weaknesses</strong>
         <p data-id="possible_weaknesses">#{{POSSIBLE_WEAKNESSES}}</p>
-        <ul data-id="possible_weaknesses_list">
-          <!-- Possible weaknesses list items will be dynamically inserted here -->
-        </ul>
 
         <strong>Overall Recommendation</strong>
         <p data-id="overall_recommendation">#{{OVERALL_RECOMMENDATION}}</p>
@@ -657,7 +651,10 @@
 
         <div class="flex flex-row items-center" id="fit_index_conclusion_section">
           <!-- <img src="#{{FIT_INDEX_CONCLUSION_IMAGE_URL}}" alt="Fit Index Conclusion Image" class="o-badge-md" /> -->
-          <p data-id="fit_index_conclusion">#{{FIT_INDEX_CONCLUSION}}</p>
+          <div class="flex flex-col no-m-children gap-1">
+            <h2 class="text-gray">IDEAL AND CANDIDATE PROFILE COMPARISON</h2>
+            <p data-id="fit_index_conclusion">#{{FIT_INDEX_CONCLUSION}}</p>
+          </div>
         </div>
 
         <div class="flex flex-row">

@@ -326,10 +326,9 @@
       td {
         height: 45px;
         padding-top: 10px;
-        vertical-align: top;
 
         &:not(:last-child) {
-          padding-bottom: 20px;
+          /* padding-bottom: 20px; */
         }
       }
 
@@ -342,7 +341,7 @@
       }
 
       .pb-25 {
-        padding-bottom: 25px;
+        /* padding-bottom: 25px; */
       }
 
       td:nth-child(1) {
@@ -660,4 +659,8 @@
 
   .h-full {
     height: 100%;
+  }
+
+  .page [data-id] {
+    white-space: pre-line;
   }

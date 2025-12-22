@@ -35,8 +35,15 @@ export const personalityProfileConfig = {
   "too-good-to-be-true": {
     about:
       "<strong>[Name]</strong> presents as highly polished, charming, and seemingly overqualified, often delivering impressive early results and confident promises. [He/She] is a “Too Good to Be True” profile — someone who accelerates initiatives and inspires confidence, but whose flawless presentation may mask gaps in depth, integrity, or long-term fit. [Name]'s impact can be significant if claims are verified and expectations are managed rigorously.",
-    strengths:
-      "This section identifies the key strengths which (NAME) brings to the organisation. (NAME) has abilities, skills and attributes in other areas, but the statements below are likely to be some of the fundamental gifts he has to offer. - Strong personal brand, high confidence, and compelling presence. - Quickly wins stakeholder trust and secures opportunities. - Delivers ambitious proposals and persuasive pitches. - Often achieves short-term goals and creates positive first impressions.",
+    strengths: `This section identifies the key strengths which (NAME) brings to the organisation. (NAME) has abilities, skills and attributes in other areas, but the statements below are likely to be some of the fundamental gifts he has to offer.
+
+- Strong personal brand, high confidence, and compelling presence.
+
+- Quickly wins stakeholder trust and secures opportunities.
+
+- Delivers ambitious proposals and persuasive pitches.
+
+- Often achieves short-term goals and creates positive first impressions.`,
     weaknesses:
       "The following points highlight areas that may present development opportunities for <strong>[Name]</strong>. While not fixed weaknesses, they represent potential risks that could limit effectiveness if left unmanaged. - May overpromise or commit beyond realistic capacity. - Surface-level polish can obscure skill or delivery gaps. - Follow-through may decline as complexity, ambiguity, or routine work increase. - May minimize issues or avoid scrutiny to protect their image.",
     overall:

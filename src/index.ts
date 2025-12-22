@@ -222,180 +222,180 @@ function getHexacoScore(hexacoData: {
 // O: "learning",
 const hexacoNegativeBadges = {
   development_plan_integrity: fs.readFileSync(
-    path.join(__dirname, "icons/badges/n_badge_h.png"),
+    path.join(__dirname, "icons/badges/n_badge_h.svg"),
     {
-      encoding: "base64",
+      encoding: "utf8",
     },
   ),
   development_plan_emotional_regulation: fs.readFileSync(
-    path.join(__dirname, "icons/badges/n_badge_e.png"),
+    path.join(__dirname, "icons/badges/n_badge_e.svg"),
     {
-      encoding: "base64",
+      encoding: "utf8",
     },
   ),
   development_plan_communication_influence: fs.readFileSync(
-    path.join(__dirname, "icons/badges/n_badge_x.png"),
+    path.join(__dirname, "icons/badges/n_badge_x.svg"),
     {
-      encoding: "base64",
+      encoding: "utf8",
     },
   ),
   development_plan_collaboration_diplomacy: fs.readFileSync(
-    path.join(__dirname, "icons/badges/n_badge_a.png"),
+    path.join(__dirname, "icons/badges/n_badge_a.svg"),
     {
-      encoding: "base64",
+      encoding: "utf8",
     },
   ),
   development_plan_execution_reliability: fs.readFileSync(
-    path.join(__dirname, "icons/badges/n_badge_c.png"),
+    path.join(__dirname, "icons/badges/n_badge_c.svg"),
     {
-      encoding: "base64",
+      encoding: "utf8",
     },
   ),
   development_plan_learning_innovation: fs.readFileSync(
-    path.join(__dirname, "icons/badges/n_badge_o.png"),
+    path.join(__dirname, "icons/badges/n_badge_o.svg"),
     {
-      encoding: "base64",
+      encoding: "utf8",
     },
   ),
 };
 
 const hexacoPositiveBadges = {
   development_plan_integrity: fs.readFileSync(
-    path.join(__dirname, "icons/badges/p_badge_h.png"),
+    path.join(__dirname, "icons/badges/p_badge_h.svg"),
     {
-      encoding: "base64",
+      encoding: "utf8",
     },
   ),
   development_plan_emotional_regulation: fs.readFileSync(
-    path.join(__dirname, "icons/badges/p_badge_e.png"),
+    path.join(__dirname, "icons/badges/p_badge_e.svg"),
     {
-      encoding: "base64",
+      encoding: "utf8",
     },
   ),
   development_plan_communication_influence: fs.readFileSync(
-    path.join(__dirname, "icons/badges/p_badge_x.png"),
+    path.join(__dirname, "icons/badges/p_badge_x.svg"),
     {
-      encoding: "base64",
+      encoding: "utf8",
     },
   ),
   development_plan_collaboration_diplomacy: fs.readFileSync(
-    path.join(__dirname, "icons/badges/p_badge_a.png"),
+    path.join(__dirname, "icons/badges/p_badge_a.svg"),
     {
-      encoding: "base64",
+      encoding: "utf8",
     },
   ),
   development_plan_execution_reliability: fs.readFileSync(
-    path.join(__dirname, "icons/badges/p_badge_c.png"),
+    path.join(__dirname, "icons/badges/p_badge_c.svg"),
     {
-      encoding: "base64",
+      encoding: "utf8",
     },
   ),
   development_plan_learning_innovation: fs.readFileSync(
-    path.join(__dirname, "icons/badges/p_badge_o.png"),
+    path.join(__dirname, "icons/badges/p_badge_o.svg"),
     {
-      encoding: "base64",
+      encoding: "utf8",
     },
   ),
 };
 
 const overallBadges = {
   "charismatic-driver": fs.readFileSync(
-    path.join(__dirname, "icons/badges/o_badge_charismatic_driver.png"),
+    path.join(__dirname, "icons/badges/o_badge_charismatic_driver.svg"),
     {
-      encoding: "base64",
+      encoding: "utf8",
     },
   ),
   "charming-manipulator": fs.readFileSync(
-    path.join(__dirname, "icons/badges/o_badge_charming_manipulator.png"),
+    path.join(__dirname, "icons/badges/o_badge_charming_manipulator.svg"),
     {
-      encoding: "base64",
+      encoding: "utf8",
     },
   ),
   "passive-aggressive-perfectionist": fs.readFileSync(
     path.join(
       __dirname,
-      "icons/badges/o_badge_passive_aggressive_perfectionist.png",
+      "icons/badges/o_badge_passive_aggressive_perfectionist.svg",
     ),
     {
-      encoding: "base64",
+      encoding: "utf8",
     },
   ),
   "too-good-to-be-true": fs.readFileSync(
-    path.join(__dirname, "icons/badges/o_badge_too_good_to_be_true.png"),
+    path.join(__dirname, "icons/badges/o_badge_too_good_to_be_true.svg"),
     {
-      encoding: "base64",
+      encoding: "utf8",
     },
   ),
   "withdrawn-opportunist": fs.readFileSync(
-    path.join(__dirname, "icons/badges/o_badge_withdrawn_opportunist.png"),
+    path.join(__dirname, "icons/badges/o_badge_withdrawn_opportunist.svg"),
     {
-      encoding: "base64",
+      encoding: "utf8",
     },
   ),
   "wall-of-silence": fs.readFileSync(
-    path.join(__dirname, "icons/badges/o_badge_wall_of_silence.png"),
+    path.join(__dirname, "icons/badges/o_badge_wall_of_silence.svg"),
     {
-      encoding: "base64",
+      encoding: "utf8",
     },
   ),
   "emotionally-reactive": fs.readFileSync(
-    path.join(__dirname, "icons/badges/o_badge_emotionally_reactive.png"),
+    path.join(__dirname, "icons/badges/o_badge_emotionally_reactive.svg"),
     {
-      encoding: "base64",
+      encoding: "utf8",
     },
   ),
   "cool-calculator": fs.readFileSync(
-    path.join(__dirname, "icons/badges/o_badge_cool_calculator.png"),
+    path.join(__dirname, "icons/badges/o_badge_cool_calculator.svg"),
     {
-      encoding: "base64",
+      encoding: "utf8",
     },
   ),
   "conflicted-soloist": fs.readFileSync(
-    path.join(__dirname, "icons/badges/o_badge_conflicted_soloist.png"),
+    path.join(__dirname, "icons/badges/o_badge_conflicted_soloist.svg"),
     {
-      encoding: "base64",
+      encoding: "utf8",
     },
   ),
   "rigid-proceduralist": fs.readFileSync(
-    path.join(__dirname, "icons/badges/o_badge_rigid_proceduralist.png"),
+    path.join(__dirname, "icons/badges/o_badge_rigid_proceduralist.svg"),
     {
-      encoding: "base64",
+      encoding: "utf8",
     },
   ),
   "visionary-without-realization": fs.readFileSync(
     path.join(
       __dirname,
-      "icons/badges/o_badge_visionary_without_realization.png",
+      "icons/badges/o_badge_visionary_without_realization.svg",
     ),
     {
-      encoding: "base64",
+      encoding: "utf8",
     },
   ),
   "latent-opponent": fs.readFileSync(
-    path.join(__dirname, "icons/badges/o_badge_latent_opponent.png"),
+    path.join(__dirname, "icons/badges/o_badge_latent_opponent.svg"),
     {
-      encoding: "base64",
+      encoding: "utf8",
     },
   ),
   "stable-team-player": fs.readFileSync(
-    path.join(__dirname, "icons/badges/o_badge_stable_team_player.png"),
+    path.join(__dirname, "icons/badges/o_badge_stable_team_player.svg"),
     {
-      encoding: "base64",
+      encoding: "utf8",
     },
   ),
   "innovator-disruptor": fs.readFileSync(
-    path.join(__dirname, "icons/badges/o_badge_innovator_disruptor.png"),
+    path.join(__dirname, "icons/badges/o_badge_innovator_disruptor.svg"),
     {
-      encoding: "base64",
+      encoding: "utf8",
     },
   ),
   "operator-without-initiative": fs.readFileSync(
     path.join(
       __dirname,
-      "icons/badges/o_badge_operator_without_initiative.png",
+      "icons/badges/o_badge_operator_without_initiative.svg",
     ),
     {
-      encoding: "base64",
+      encoding: "utf8",
     },
   ),
 };
@@ -456,6 +456,7 @@ function getPersonalityProfile(
     .replaceAll("[Name]", name)
     .replaceAll("(NAME)", name)
     .replaceAll("[He/She]", pronoun);
+  console.log("persstrengths", personality.strengths);
   const strengths = personality.strengths
     .replaceAll("[Name]", name)
     .replaceAll("(NAME)", name)
@@ -1376,7 +1377,7 @@ const selectors = {
     replacement: (text, replacementText) =>
       text.replaceAll(
         personality_profile_conclusion_image_url,
-        "data:image/png;base64, " + replacementText,
+        "data:image/svg+xml;base64, " + btoa(replacementText),
       ),
   },
   personality_profile_conclusion: {
@@ -1397,7 +1398,7 @@ const selectors = {
     replacement: (text, replacementText) =>
       text.replaceAll(
         dev_plan_highest_score_image_url,
-        "data:image/png;base64, " + replacementText,
+        "data:image/svg+xml;base64, " + btoa(replacementText),
       ),
   },
   dev_plan_highest_score: {
@@ -1412,7 +1413,7 @@ const selectors = {
     replacement: (text, replacementText) =>
       text.replaceAll(
         dev_plan_second_highest_image_url,
-        "data:image/png;base64, " + replacementText,
+        "data:image/svg+xml;base64, " + btoa(replacementText),
       ),
   },
   dev_plan_second_highest: {
@@ -1427,7 +1428,7 @@ const selectors = {
     replacement: (text, replacementText) =>
       text.replaceAll(
         dev_plan_lowest_score_image_url,
-        "data:image/png;base64, " + replacementText,
+        "data:image/svg+xml;base64, " + btoa(replacementText),
       ),
   },
   dev_plan_lowest_score: {
@@ -1476,20 +1477,18 @@ export async function generateDevelopmentReport(
   console.log("lowDiscrepancyScores", lowDiscrepancyScores);
   console.log("lowDiscrepancyScoreEl", lowDiscrepancyScoreEl);
   for (const scoreKey of lowDiscrepancyScores) {
-    const img = createElement(htmlDoc, "img");
     const dimension =
       devPlanDimensionToHexacoKeyMap[
         scoreKey as keyof typeof devPlanDimensionToHexacoKeyMap
       ];
 
     console.log("dimension", dimension);
-    img.setAttribute(
-      "src",
-      "data:image/png;base64, " + hexacoPositiveBadges[dimension],
-    );
-    img.setAttribute("alt", scoreKey);
-    img.classList.add("o-badge-lg");
-    lowDiscrepancyScoreEl?.appendChild(img);
+    const svgDoc = parseHTML(hexacoPositiveBadges[dimension]);
+    const svg = svgDoc.querySelector("svg");
+    // img.setAttribute("alt", scoreKey);
+    // img.classList.add("o-badge-lg");
+    svg!.classList.add("o-badge-lg");
+    lowDiscrepancyScoreEl?.appendChild(svg!);
   }
 
   const highDiscrepancyScoreEl = findElementById(
@@ -1502,20 +1501,17 @@ export async function generateDevelopmentReport(
   console.log("highDiscrepancyScores", highDiscrepancyScores);
   console.log("highDiscrepancyScoreEl", highDiscrepancyScoreEl);
   for (const scoreKey of highDiscrepancyScores) {
-    const img = createElement(htmlDoc, "img");
     const dimension =
       devPlanDimensionToHexacoKeyMap[
         scoreKey as keyof typeof devPlanDimensionToHexacoKeyMap
       ];
 
     console.log("dimension", dimension);
-    img.setAttribute(
-      "src",
-      "data:image/png;base64, " + hexacoNegativeBadges[dimension],
-    );
-    img.setAttribute("alt", scoreKey);
-    img.classList.add("o-badge-lg");
-    highDiscrepancyScoreEl?.appendChild(img);
+    const svgDoc = parseHTML(hexacoNegativeBadges[dimension]);
+    const svg = svgDoc.querySelector("svg");
+    svg!.classList.add("o-badge-lg");
+
+    highDiscrepancyScoreEl?.appendChild(svg!);
   }
 
   const fitIndex = parseFloat(
@@ -2130,15 +2126,15 @@ export async function generateDevelopmentReport(
 
 // serves for testing
 
-// generateDevelopmentReport()
-//   .then((base64) => {
-//     console.log("Generated PDF base64 length:", base64.length);
-//     fs.writeFileSync(path.resolve(__dirname, "output.pdf"), base64, {
-//       encoding: "base64",
-//     });
-//     process.exit(0);
-//   })
-//   .catch((error) => {
-//     console.error("Error generating PDF:", error);
-//     process.exit(1);
-//   });
+generateDevelopmentReport()
+  .then((base64) => {
+    console.log("Generated PDF base64 length:", base64.length);
+    fs.writeFileSync(path.resolve(__dirname, "output.pdf"), base64, {
+      encoding: "base64",
+    });
+    process.exit(0);
+  })
+  .catch((error) => {
+    console.error("Error generating PDF:", error);
+    process.exit(1);
+  });
