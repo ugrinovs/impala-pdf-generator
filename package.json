@@ -1,6 +1,6 @@
 {
   "name": "@ugrinovs/impala-pdf-generator",
-  "version": "1.0.13",
+  "version": "1.0.14",
   "description": "A PDF generator for Impala recruitment reports with support for HEXACO personality assessments and candidate evaluations",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
