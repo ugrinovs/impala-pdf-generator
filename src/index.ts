@@ -180,14 +180,14 @@ function getHexacoScore(hexacoData: {
   return Object.keys(hexacoData).reduce(
     (acc, key) => {
       const k = key as "H" | "E" | "X" | "A" | "C" | "O";
-      if (parseFloat(hexacoData[k]) < 3) {
+      if (parseFloat(hexacoData[k]) < 0.3) {
         acc[k] = "low";
       }
-      if (parseFloat(hexacoData[k]) === 3) {
+      if (parseFloat(hexacoData[k]) >= 0.3 || parseFloat(hexacoData[k]) <= 0.7) {
         acc[k] = "medium";
       }
 
-      if (parseFloat(hexacoData[k]) > 3) {
+      if (parseFloat(hexacoData[k]) > 0.7) {
         acc[k] = "high";
       }
       return acc;
@@ -2054,11 +2054,11 @@ export async function generateDevelopmentReport(
   // });
 
   const someLow = Object.values(result.discrepancyHexaco ?? {}).some(
-    (v) => Number(v) < 3,
+    (v) => Number(v) < 0.3,
   );
   if (someLow) {
     const lowScores = Object.entries(result.discrepancyHexaco ?? {}).filter(
-      ([_, v]) => Number(v) < 3,
+      ([_, v]) => Number(v) < 0.3,
     );
     console.log("Low discrepancy scores found:", lowScores);
     // await page.waitForSelector("#low_discrepancy_score").then(async () => {
@@ -2070,11 +2070,11 @@ export async function generateDevelopmentReport(
   }
 
   const someHigh = Object.values(result.discrepancyHexaco ?? {}).some(
-    (v) => Number(v) > 3,
+    (v) => Number(v) > 0.7,
   );
   if (someHigh) {
     const highScores = Object.entries(result.discrepancyHexaco ?? {}).filter(
-      ([_, v]) => Number(v) > 3,
+      ([_, v]) => Number(v) > 0.7,
     );
     console.log("High discrepancy scores found:", highScores);
     await page.waitForSelector("#high_discrepancy_score").then(async () => {});
