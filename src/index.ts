@@ -183,7 +183,10 @@ function getHexacoScore(hexacoData: {
       if (parseFloat(hexacoData[k]) < 0.3) {
         acc[k] = "low";
       }
-      if (parseFloat(hexacoData[k]) >= 0.3 || parseFloat(hexacoData[k]) <= 0.7) {
+      if (
+        parseFloat(hexacoData[k]) >= 0.3 ||
+        parseFloat(hexacoData[k]) <= 0.7
+      ) {
         acc[k] = "medium";
       }
 
@@ -1585,10 +1588,15 @@ export async function generateDevelopmentReport(
     }
     const textContent = await page.evaluate((el) => el.textContent, el);
     if (textContent === "high") {
-      await page.evaluate((el) => {
-        (el as HTMLElement).style.color = "red";
-        el.textContent = "High";
-      }, el);
+      const color = startsWithDiscrepancy ? "red" : "green";
+      await page.evaluate(
+        (el, clr) => {
+          (el as HTMLElement).style.color = clr;
+          el.textContent = "High";
+        },
+        el,
+        color,
+      );
     }
     if (textContent === "medium") {
       await page.evaluate((el) => {
@@ -1597,10 +1605,15 @@ export async function generateDevelopmentReport(
       }, el);
     }
     if (textContent === "low") {
-      await page.evaluate((el) => {
-        (el as HTMLElement).style.color = "green";
-        el.textContent = "Low";
-      }, el);
+      const color = startsWithDiscrepancy ? "green" : "red";
+      await page.evaluate(
+        (el, clr) => {
+          (el as HTMLElement).style.color = clr;
+          el.textContent = "Low";
+        },
+        el,
+        color,
+      );
     }
   }
 
