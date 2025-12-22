@@ -10,6 +10,7 @@
     "copy-assets": "cp index.html index.css *.png dist/ && cp -r icons dist/ && cp -r font dist/",
     "prepublishOnly": "npm run build",
     "start": "node dist/index.js",
+    "start:test": "NODE_ENV=test node dist/index.js",
     "dev": "tsx watch src/index.ts",
     "clean": "rm -rf dist test/*.js test/*.d.ts test/*.map",
     "test": "npm run build && tsc -p tsconfig.test.json && node --test test/*.test.js",

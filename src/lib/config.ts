@@ -2,10 +2,21 @@ export const personalityProfileConfig = {
   "charismatic-driver": {
     about:
       "<strong>[Name]</strong> demonstrates high leadership potential, characterized by strategic vision, personal charisma, and strong goal orientation. (He/She) is a “Charismatic Driver” — a leader capable of mobilizing people and achieving visible results quickly. (His/Hers) influence and energy make him a natural motivator and ambassador for organizational initiatives.",
-    strengths:
-      "This section identifies the key strengths which (NAME) brings to the organisation. (NAME)  has abilities, skills and attributes in other areas, but the statements below are likely to be some of the fundamental gifts he has to offer. - Exceptional presence and influence in group settings. - Strong results orientation and decisive execution. - Natural ability to inspire others and attract support. - Strategic and adaptive in high-pressure contexts.",
-    weaknesses:
-      "The following points highlight areas that may present development opportunities for <strong>[Name]</strong>. While not fixed weaknesses, they represent potential risks that could limit effectiveness if left unmanaged. - May under-prioritize processes and documentation. - Can suppress dissenting opinions or overlook quieter team members. - High reliance on charisma may cause sustainability or succession risks. - Occasional impulsivity in decision-making.",
+    strengths: `This section identifies the key strengths which <strong>(NAME)</strong> brings to the organisation. <strong>(NAME)</strong>  has abilities, skills and attributes in other areas, but the statements below are likely to be some of the fundamental gifts he has to offer.
+
+- Exceptional presence and influence in group settings.
+
+- Strong results orientation and decisive execution.
+
+- Natural ability to inspire others and attract support.
+
+- Strategic and adaptive in high-pressure contexts.`,
+    weaknesses: `The following points highlight areas that may present development opportunities for <strong>[Name]</strong>. While not fixed weaknesses, they represent potential risks that could limit effectiveness if left unmanaged.
+
+- May under-prioritize processes and documentation.
+- Can suppress dissenting opinions or overlook quieter team members.
+- High reliance on charisma may cause sustainability or succession risks.
+- Occasional impulsivity in decision-making.`,
     overall:
       "<strong>[Name]</strong> is a strong fit for high-visibility, fast-paced leadership roles. To ensure long-term success, pair their visionary style with structured process partners and continuous feedback mechanisms emphasizing ethical consistency, emotional regulation, and procedural rigor.",
     conclusion: `<strong>[Name]</strong> is a high-potential, charismatic leader who drives rapid results, inspires others, and adapts strategically under pressure. (His/Hers) strong presence and decisive execution make them a natural motivator and visible ambassador for organizational initiatives, though (he/she) may at times prioritize speed and influence over process and inclusive input.`,
@@ -13,29 +24,57 @@ export const personalityProfileConfig = {
   "charming-manipulator": {
     about:
       '<strong>[Name]</strong> demonstrates strong interpersonal skill, persuasive ability, and a talent for influencing people and outcomes. As a "Charming Manipulator," he is effective at securing buy-in and building coalitions quickly. His social intelligence makes him valuable in roles that require stakeholder management and rapid alignment, but his approach requires safeguards to protect trust and team cohesion.',
-    strengths:
-      "This section identifies the key strengths which (NAME) brings to the organisation. (NAME) has abilities, skills and attributes in other areas, but the statements below are likely to be some of the fundamental gifts he has to offer. - Excellent at persuading stakeholders and winning support. - Skilled at building strategic relationships and informal networks. - Communicates compellingly and mobilizes others to act. - Quickly identifies and seizes opportunities in complex contexts.",
-    weaknesses:
-      "The following points highlight areas that may present development opportunities for <strong>[Name]</strong>. While not fixed weaknesses, they represent potential risks that could limit effectiveness if left unmanaged. - May prioritize persuasion over full transparency, eroding trust over time. - Can withhold information or obscure motives to influence outcomes. - Tends to rely on emotional or rhetorical tactics that some experience as coercive. - May avoid documentation or accountability, creating governance and ethics risk.",
+    strengths: `This section identifies the key strengths which <strong>(NAME)</strong> brings to the organisation. <strong>(NAME)</strong> has abilities, skills and attributes in other areas, but the statements below are likely to be some of the fundamental gifts he has to offer.
+
+- Excellent at persuading stakeholders and winning support.
+
+- Skilled at building strategic relationships and informal networks.
+
+- Communicates compellingly and mobilizes others to act.
+
+- Quickly identifies and seizes opportunities in complex contexts.`,
+    weaknesses: `The following points highlight areas that may present development opportunities for <strong>[Name]</strong>. While not fixed weaknesses, they represent potential risks that could limit effectiveness if left unmanaged.
+
+- May prioritize persuasion over full transparency, eroding trust over time.
+
+- Can withhold information or obscure motives to influence outcomes.
+
+- Tends to rely on emotional or rhetorical tactics that some experience as coercive.
+
+- May avoid documentation or accountability, creating governance and ethics risk.`,
     overall:
       " <strong>[Name]</strong> fits roles that require stakeholder engagement, partnerships, or change navigation, provided robust controls are in place. Use clear documentation, dual sign-offs, ethical KPIs, regular 360° feedback, and strong policy enforcement to channel their influence into transparent, sustainable impact.",
     conclusion: `<strong>[Name]</strong> is a persuasive, socially skilled influencer who rapidly builds support and strategic relationships. (His/Hers) compelling communication and opportunistic agility make (him/her) effective in stakeholder-facing and change contexts, though (his/her) style can risk transparency, accountability, and long-term trust if not balanced by clear governance.`,
   },
   "passive-aggressive-perfectionist": {
     about:
-      "<strong>[Name]</strong> combines high standards and strong technical competence with an indirect style of expressing disagreement or frustration. [Name] is a “Passive-Aggressive Perfectionist” — someone who delivers meticulous work and expects the same from others, yet may resist or criticize indirectly. [Name]'s focus on quality is valuable, but his avoidance of direct communication can undermine collaboration and morale.",
-    strengths:
-      "This section identifies the key strengths which (NAME) brings to the organisation. (NAME) has abilities, skills and attributes in other areas, but the statements below are likely to be some of the fundamental gifts he has to offer. - Consistently high standards and strong quality of deliverables. - Reliable on complex, detail-heavy tasks and quality control. - Strong ability to spot errors, gaps, and edge cases others miss. - Persistent and conscientious in meeting technical and compliance requirements",
-    weaknesses:
-      "The following points highlight areas that may present development opportunities for <strong>[Name]</strong>. While not fixed weaknesses, they represent potential risks that could limit effectiveness if left unmanaged. - May communicate dissatisfaction indirectly (sarcasm, delay, withdrawal). - Can procrastinate or subtly obstruct initiatives they disagree with. - Tends to prioritize perfection over timeliness, slowing delivery. - Reluctance to give or receive direct feedback reduces psychological safety.",
+      "<strong>[Name]</strong> combines high standards and strong technical competence with an indirect style of expressing disagreement or frustration. <strong>[Name]</strong> is a “Passive-Aggressive Perfectionist” — someone who delivers meticulous work and expects the same from others, yet may resist or criticize indirectly. <strong>[Name]'s</strong> focus on quality is valuable, but his avoidance of direct communication can undermine collaboration and morale.",
+    strengths: `This section identifies the key strengths which <strong>(NAME)</strong> brings to the organisation. <strong>(NAME)</strong> has abilities, skills and attributes in other areas, but the statements below are likely to be some of the fundamental gifts he has to offer.
+
+- Consistently high standards and strong quality of deliverables.
+
+- Reliable on complex, detail-heavy tasks and quality control.
+
+- Strong ability to spot errors, gaps, and edge cases others miss.
+
+- Persistent and conscientious in meeting technical and compliance requirements`,
+    weaknesses: `The following points highlight areas that may present development opportunities for <strong>[Name]</strong>. While not fixed weaknesses, they represent potential risks that could limit effectiveness if left unmanaged.
+
+- May communicate dissatisfaction indirectly (sarcasm, delay, withdrawal).
+
+- Can procrastinate or subtly obstruct initiatives they disagree with.
+
+- Tends to prioritize perfection over timeliness, slowing delivery.
+
+- Reluctance to give or receive direct feedback reduces psychological safety.`,
     overall:
       "<strong>[Name]</strong> is well suited to roles where accuracy, compliance, and quality control are critical. Set clear expectations and deadlines, monitor service levels, and provide coaching on assertiveness, direct feedback, and “good-enough” standards to balance excellence with timely, transparent collaboration.",
     conclusion: `<strong>[Name]</strong> is a meticulous, technically strong contributor who consistently delivers high-quality, detail-oriented work. His/Her exacting standards and reliability on complex tasks enhance accuracy and compliance, though indirect communication and perfectionism can create friction and slow team processes.`,
   },
   "too-good-to-be-true": {
     about:
-      "<strong>[Name]</strong> presents as highly polished, charming, and seemingly overqualified, often delivering impressive early results and confident promises. [He/She] is a “Too Good to Be True” profile — someone who accelerates initiatives and inspires confidence, but whose flawless presentation may mask gaps in depth, integrity, or long-term fit. [Name]'s impact can be significant if claims are verified and expectations are managed rigorously.",
-    strengths: `This section identifies the key strengths which (NAME) brings to the organisation. (NAME) has abilities, skills and attributes in other areas, but the statements below are likely to be some of the fundamental gifts he has to offer.
+      "<strong>[Name]</strong> presents as highly polished, charming, and seemingly overqualified, often delivering impressive early results and confident promises. [He/She] is a “Too Good to Be True” profile — someone who accelerates initiatives and inspires confidence, but whose flawless presentation may mask gaps in depth, integrity, or long-term fit. <strong>[Name]'s</strong> impact can be significant if claims are verified and expectations are managed rigorously.",
+    strengths: `This section identifies the key strengths which <strong>(NAME)</strong> brings to the organisation. <strong>(NAME)</strong> has abilities, skills and attributes in other areas, but the statements below are likely to be some of the fundamental gifts he has to offer.
 
 - Strong personal brand, high confidence, and compelling presence.
 
@@ -44,8 +83,15 @@ export const personalityProfileConfig = {
 - Delivers ambitious proposals and persuasive pitches.
 
 - Often achieves short-term goals and creates positive first impressions.`,
-    weaknesses:
-      "The following points highlight areas that may present development opportunities for <strong>[Name]</strong>. While not fixed weaknesses, they represent potential risks that could limit effectiveness if left unmanaged. - May overpromise or commit beyond realistic capacity. - Surface-level polish can obscure skill or delivery gaps. - Follow-through may decline as complexity, ambiguity, or routine work increase. - May minimize issues or avoid scrutiny to protect their image.",
+    weaknesses: `The following points highlight areas that may present development opportunities for <strong>[Name]</strong>. While not fixed weaknesses, they represent potential risks that could limit effectiveness if left unmanaged.
+
+- May overpromise or commit beyond realistic capacity.
+
+- Surface-level polish can obscure skill or delivery gaps.
+
+- Follow-through may decline as complexity, ambiguity, or routine work increase.
+
+- May minimize issues or avoid scrutiny to protect their image.`,
     overall:
       "<strong>[Name]</strong> fits front-facing, business development, or high-visibility roles where presentation matters, provided robust verification and performance controls exist. Use structured selection, trial tasks, staged KPIs, tight documentation, and reference checks, and pair them with operational partners who validate feasibility and ensure delivery.",
     conclusion: `<strong>[Name]</strong> makes strong first impressions and drives early momentum through confidence, polish, and persuasive presence. (His/Her) ability to win trust and secure opportunities yields quick wins, but (his/her) polished exterior can sometimes hide gaps in depth or follow-through as challenges grow.`,
@@ -53,19 +99,42 @@ export const personalityProfileConfig = {
   "withdrawn-opportunist": {
     about:
       "<strong>[Name]</strong> demonstrates a cautious, self-protective approach to workplace opportunities, characterized by risk awareness, selective engagement, and a preference for low visibility. [He/She] is a “Withdrawn Opportunist” — someone who advances personal goals by observing carefully, stepping in when the risk–reward balance is favorable, and otherwise staying in the background. [Name]'s discretion can be valuable in sensitive environments, but selective engagement can create alignment and trust challenges.",
-    strengths:
-      "This section identifies the key strengths which (NAME) brings to the organisation. (NAME) has abilities, skills and attributes in other areas, but the statements below are likely to be some of the fundamental gifts he has to offer. - Strong personal brand, high confidence, and compelling presence. - Quickly wins stakeholder trust and secures opportunities. - Delivers ambitious proposals and persuasive pitches. - Often achieves short-term goals and creates positive first impressions.",
-    weaknesses:
-      "<strong>[Name]</strong> presents as highly polished, charming, and seemingly overqualified, often delivering impressive early results and confident promises. [He/She] is a “Too Good to Be True” profile — someone who accelerates initiatives and inspires confidence, but whose flawless presentation may mask gaps in depth, integrity, or long-term fit. [Name]'s impact can be significant if claims are verified and expectations are managed rigorously.",
+    strengths: `This section identifies the key strengths which <strong>(NAME)</strong> brings to the organisation. has abilities, skills and attributes in other areas, but the statements below are likely to be some of the fundamental gifts he has to offer.
+
+- Observant and discreet; gathers information before acting.
+
+- Risk-conscious decision-making that reduces exposure to avoidable mistakes.
+
+- Able to capitalize on opportunities with minimal fanfare when timing is right.
+
+- Reliable in tasks that require confidentiality, due diligence, or steady follow-through.
+
+- Low propensity for interpersonal conflict; often stabilizes tense situations by staying neutral.`,
+    weaknesses: `The following points highlight areas that may present development opportunities for <strong>[Name]</strong>. While not fixed weaknesses, they represent potential risks that could limit effectiveness if left unmanaged.
+
+- Low visibility can obscure contributions and complicate succession planning.
+
+- May withhold ideas, concerns, or dissent, reducing decision quality.
+
+- Engagement may spike only when personal gain is clear, fuelling perceptions of opportunism.
+
+- Risk of quiet disengagement or unexpected exits if advancement stalls.`,
     overall:
       "<strong>[Name]</strong> fits front-facing, business development, or high-visibility roles where presentation matters, provided robust verification and performance controls exist. Use structured selection, trial tasks, staged KPIs, tight documentation, and reference checks, and pair them with operational partners who validate feasibility and ensure delivery.",
     conclusion: `<strong>[Name]</strong> is a cautious, discreet contributor who engages selectively to maximize impact and minimize risk. (His/Her) careful timing and low-profile reliability suit confidential or due-diligence roles, but limited visibility and selective engagement can hinder team alignment and long-term career progression.`,
   },
   "wall-of-silence": {
     about:
-      "<strong>[Name]</strong> demonstrates a methodical, evidence-driven approach to work, characterized by deep expertise, analytical rigor, and a strong preference for data-led decisions. [He/She] is a “Wall of Science”–type technical profile — a trusted specialist who builds credibility through knowledge, careful analysis, and adherence to proven methods. [Name]'s presence strengthens quality, compliance, and technical decision-making, especially in high-stakes environments.",
-    strengths:
-      "This section identifies the key strengths which (NAME) brings to the organisation. (NAME) has abilities, skills and attributes in other areas, but the statements below are likely to be some of the fundamental gifts he has to offer. - Deep subject-matter expertise and strong technical credibility. - Rigorous, data-driven decision-making that reduces error and variability. - Thoroughness in analysis, documentation, and quality control. - Reliable execution on complex, technically demanding tasks; acts as a knowledge resource.",
+      "<strong>[Name]</strong> demonstrates a methodical, evidence-driven approach to work, characterized by deep expertise, analytical rigor, and a strong preference for data-led decisions. [He/She] is a “Wall of Science”–type technical profile — a trusted specialist who builds credibility through knowledge, careful analysis, and adherence to proven methods. <strong>[Name]'s</strong> presence strengthens quality, compliance, and technical decision-making, especially in high-stakes environments.",
+    strengths: `This section identifies the key strengths which <strong>(NAME)</strong> brings to the organisation. <strong>(NAME)</strong> has abilities, skills and attributes in other areas, but the statements below are likely to be some of the fundamental gifts he has to offer.
+
+- Deep subject-matter expertise and strong technical credibility.
+
+- Rigorous, data-driven decision-making that reduces error and variability.
+
+- Thoroughness in analysis, documentation, and quality control.
+
+- Reliable execution on complex, technically demanding tasks; acts as a knowledge resource.`,
     weaknesses: `The following points highlight areas that may present development opportunities for <strong>[Name]</strong>. While not fixed weaknesses, they represent potential risks that could limit effectiveness if left unmanaged.
 
 - May prioritize detail and correctness over timeliness or business pragmatism.
@@ -76,14 +145,13 @@ export const personalityProfileConfig = {
 
 - Tendency to keep tight control of domain knowledge, creating silos and succession risks.`,
     overall: `<strong>[Name]</strong> fits roles requiring technical leadership, quality assurance, research, or specialist advisory work. Pair them with colleagues who translate technical insight into clear business narratives and timelines, and invest in communication, stakeholder influence, and change-tolerance skills to balance rigor with speed and cross-functional impact.`,
-    conclusion: `
-<strong>[Name]</strong> is a methodical, data-driven technical expert whose deep knowledge and rigorous analysis consistently strengthen quality, compliance, and complex decision-making. However, a strong focus on detail and technical depth can slow delivery, limit innovation uptake, and reduce accessibility for non-expert stakeholders.`,
+    conclusion: `<strong>[Name]</strong> is a methodical, data-driven technical expert whose deep knowledge and rigorous analysis consistently strengthen quality, compliance, and complex decision-making. However, a strong focus on detail and technical depth can slow delivery, limit innovation uptake, and reduce accessibility for non-expert stakeholders.`,
   },
   "emotionally-reactive": {
     about: `<strong>[Name]</strong> shows high emotional sensitivity and intensity, reacting strongly to interpersonal cues and situational signals.
 [He/She] is an “Emotionally Reactive” profile — someone whose passion, empathy, and urgency can energize teams but also create volatility when under stress or unsupported.
 <strong>[Name]</strong> 's emotional engagement is a powerful asset in people-facing and change-heavy contexts when guided constructively.`,
-    strengths: `This section identifies the key strengths which (NAME) brings to the organisation. (NAME) has abilities, skills and attributes in other areas, but the statements below are likely to be some of the fundamental gifts he has to offer.
+    strengths: `This section identifies the key strengths which <strong>(NAME)</strong> brings to the organisation. <strong>(NAME)</strong> has abilities, skills and attributes in other areas, but the statements below are likely to be some of the fundamental gifts he has to offer.
 
 - Strong emotional awareness and ability to read others quickly.
 
@@ -103,12 +171,12 @@ export const personalityProfileConfig = {
 - Tendency to personalize feedback or setbacks, which can hinder resilience.
 
 - May struggle with sustained objectivity in high-stakes or ambiguous situations.`,
-    overall: `Deploy (NAME) in roles where empathy, advocacy, and visible commitment are assets (e.g., people-facing, change champion, client escalation). To enhance effectiveness, provide coaching on emotional regulation, structured decision-making frameworks, and pause-and-reflect practices (e.g., cooling-off periods, checklists). Pair (NAME) with analytical or steadying partners to balance passion with consistency, and reinforce safe feedback cultures to help them process criticism constructively.`,
+    overall: `Deploy <strong>(NAME)</strong> in roles where empathy, advocacy, and visible commitment are assets (e.g., people-facing, change champion, client escalation). To enhance effectiveness, provide coaching on emotional regulation, structured decision-making frameworks, and pause-and-reflect practices (e.g., cooling-off periods, checklists). Pair <strong>(NAME)</strong> with analytical or steadying partners to balance passion with consistency, and reinforce safe feedback cultures to help them process criticism constructively.`,
     conclusion: `<strong>[Name]</strong> is a passionate, empathetic contributor whose strong emotional engagement can mobilize teams, surface problems early, and drive visible commitment to people and causes. This emotional intensity helps spot and escalate people issues quickly and can generate deep loyalty and momentum in change or client-facing settings. However, without supportive structures, reactions may be driven by momentary feelings—leading to impulsive choices, inconsistent messaging, or strained resilience when facing criticism. Overall, the profile offers high relational impact when paired with practices that support emotional regulation and steady decision-making.`,
   },
   "cool-calculator": {
     about: `<strong>[Name]</strong> demonstrates a calm, analytical, and outcome-focused approach, characterized by measured judgment, emotional steadiness, and strategic calculation. [He/She] is a “Cool Calculator” — a rational decision-maker who emphasizes logic, efficiency, and long-term optimization. This profile is valuable where clear-headed analysis, objective trade-offs, and steady execution are required.`,
-    strengths: `This section identifies the key strengths which (NAME) brings to the organisation. (NAME) has abilities, skills and attributes in other areas, but the statements below are likely to be some of the fundamental gifts he has to offer.
+    strengths: `This section identifies the key strengths which <strong>(NAME)</strong> brings to the organisation. <strong>(NAME)</strong> has abilities, skills and attributes in other areas, but the statements below are likely to be some of the fundamental gifts he has to offer.
 
 - Clear, logical decision-making grounded in facts and cost–benefit analysis.
 
@@ -130,12 +198,12 @@ export const personalityProfileConfig = {
 - Risk of perceived inflexibility if criteria and models aren’t adapted to context.
 
 - May struggle to inspire or mobilize teams emotionally when buy-in is required.`,
-    overall: `Place (NAME) in roles requiring strategic planning, financial or operational modeling, risk assessment, or crisis management. To increase impact, pair (NAME) with relationship-driven colleagues who translate analytical outcomes into motivating narratives and stakeholder engagement. Encourage practices that surface human implications (storytelling, empathy checks), set decision timelines to prevent over-analysis, and create visible milestones to help build team motivation and buy-in.`,
+    overall: `Place <strong>(NAME)</strong> in roles requiring strategic planning, financial or operational modeling, risk assessment, or crisis management. To increase impact, pair <strong>(NAME)</strong> with relationship-driven colleagues who translate analytical outcomes into motivating narratives and stakeholder engagement. Encourage practices that surface human implications (storytelling, empathy checks), set decision timelines to prevent over-analysis, and create visible milestones to help build team motivation and buy-in.`,
     conclusion: `<strong>[Name]</strong> is calm, logical, and focused on getting results. (He/She) makes clear, fact-based decisions, stays steady under pressure, and prioritizes resources effectively. While reliable and fair, (he/she) can seem distant or overly analytical and may needs help connecting with others emotionally or rallying the team around change.`,
   },
   "conflicted-soloist": {
     about: `<strong>[Name]</strong> shows a tension between independent drive and internal uncertainty—preferring to work alone but often conflicted about direction, commitment, or stakeholder expectations. [He/She] is a “Conflicted Soloist” — a capable self-starter who delivers through solitary focus yet may hesitate, second-guess, or withdraw when stakes or ambiguity rise. This profile is useful for tasks requiring focused independent work, specialist problem-solving, or situations where autonomy is emphasized.`,
-    strengths: `This section identifies the key strengths which (NAME) brings to the organisation. (NAME) has abilities, skills and attributes in other areas, but the statements below are likely to be some of the fundamental gifts he has to offer.
+    strengths: `This section identifies the key strengths which <strong>(NAME)</strong> brings to the organisation. <strong>(NAME)</strong> has abilities, skills and attributes in other areas, but the statements below are likely to be some of the fundamental gifts he has to offer.
 
 - Strong self-motivation and ability to produce high-quality work independently.
 
@@ -157,12 +225,12 @@ export const personalityProfileConfig = {
 - May undervalue stakeholder input, reducing buy-in and integration with broader plans.
 
 - Risk of burnout from carrying responsibility alone without seeking support.`,
-    overall: `Assign (NAME) to roles that allow focused autonomy with clear deliverables (e.g., specialist contributor, researcher, individual project lead). Mitigate risks by setting explicit goals, checkpoints, and decision criteria; pairing with a liaison or sponsor who provides alignment and timely feedback; and encouraging regular knowledge-sharing rituals. Provide coaching on stakeholder communication, escalation norms, and confidence-building for visible leadership moments to broaden impact.`,
+    overall: `Assign <strong>(NAME)</strong> to roles that allow focused autonomy with clear deliverables (e.g., specialist contributor, researcher, individual project lead). Mitigate risks by setting explicit goals, checkpoints, and decision criteria; pairing with a liaison or sponsor who provides alignment and timely feedback; and encouraging regular knowledge-sharing rituals. Provide coaching on stakeholder communication, escalation norms, and confidence-building for visible leadership moments to broaden impact.`,
     conclusion: `<strong>[Name]</strong> is a capable self-starter who produces high-quality work independently, showing strong focus, persistence, and creative problem-solving. (He/She) delivers best when given clear goals and autonomy, but can hesitate, second-guess, or withdraw when expectations are ambiguous or interpersonal friction arises. To realize full value, ensure defined deliverables, regular check-ins, and clearer stakeholder alignment so their independent strengths translate into visible, integrated outcomes.`,
   },
   "rigid-proceduralist": {
     about: `<strong>[Name]</strong> demonstrates a strict, process-first orientation—prioritizing rules, standards, and repeatable procedures. [He/She] is a “Rigid Procedural” profile — someone who ensures consistency, compliance, and quality through adherence to established methods. This profile is valuable where accuracy, safety, and regulatory conformity are non-negotiable.`,
-    strengths: `This section identifies the key strengths which (NAME) brings to the organisation. (NAME) has abilities, skills and attributes in other areas, but the statements below are likely to become of the fundamental gifts (NAME) has to offer.
+    strengths: `This section identifies the key strengths which <strong>(NAME)</strong> brings to the organisation. <strong>(NAME)</strong> has abilities, skills and attributes in other areas, but the statements below are likely to become of the fundamental gifts <strong>(NAME)</strong> has to offer.
 
 - Strong commitment to rules, standards, and documented processes.
 
@@ -184,12 +252,12 @@ export const personalityProfileConfig = {
 - Difficulty operating in ambiguous, fast-moving contexts that require improvisation.
 
 - May struggle to prioritize when procedures conflict with evolving business priorities.`,
-    overall: `Best suited for roles focused on compliance, quality assurance, operations, or safety-critical functions. To increase organizational value, pair (NAME) with adaptive, big-picture partners who champion change and stakeholder needs. Encourage periodic process reviews that include customer and frontline input, create exception-handling protocols to empower judgment, and provide leadership development on influencing and change management to balance rigor with responsiveness.`,
+    overall: `Best suited for roles focused on compliance, quality assurance, operations, or safety-critical functions. To increase organizational value, pair <strong>(NAME)</strong> with adaptive, big-picture partners who champion change and stakeholder needs. Encourage periodic process reviews that include customer and frontline input, create exception-handling protocols to empower judgment, and provide leadership development on influencing and change management to balance rigor with responsiveness.`,
     conclusion: `<strong>[Name]</strong> is a process-focused, dependable operator who ensures consistency, compliance, and high-quality outcomes through disciplined adherence to standards and procedures. (His/Her) rigor reduces errors and supports auditability, but can limit flexibility and slow adaptation in fast-changing or ambiguous contexts`,
   },
   "visionary-without-realization": {
     about: `<strong>[Name]</strong> demonstrates strong imaginative and strategic thinking but struggles to translate ideas into practical outcomes. [He/She] is a “Visionary without Realization” — a big-picture thinker who generates bold directions and possibilities but often falls short on execution, follow-through, and operational detail. This profile is valuable for sparking innovation and setting long-term direction but risks leaving initiatives underdelivered.`,
-    strengths: `This section identifies the key strengths which (NAME) brings to the organisation. (NAME) has abilities, skills and attributes in other areas, but the statements below are likely to be some of the fundamental gifts he has to offer.
+    strengths: `This section identifies the key strengths which <strong>(NAME)</strong> brings to the organisation. <strong>(NAME)</strong> has abilities, skills and attributes in other areas, but the statements below are likely to be some of the fundamental gifts he has to offer.
 
 - Exceptional idea generation and ability to see disruptive long-term opportunities.
 
@@ -211,13 +279,13 @@ export const personalityProfileConfig = {
 - Can frustrate stakeholders and teams seeking clear direction, structure, and progress.
 
 - Risk of losing credibility if concepts remain perpetually undeveloped.`,
-    overall: `Deploy (NAME) in roles where ideation and strategic direction are primary (e.g., innovation lead, strategy, R&D ideation). To ensure impact, pair (NAME) with strong delivery partners—operational leaders, program managers, or integrators—responsible for planning, budgeting, and disciplined execution. Implement structured gating (milestones, pilots, metrics) to convert concepts into validated prototypes and scalable initiatives. Provide coaching on prioritization, stakeholder alignment, and accountability to increase follow-through and organizational trust.`,
-    conclusion: `Name] is a visionary thinker who generates bold strategic ideas and inspires others with compelling possibilities. (His/Her) strength lies in spotting disruptive opportunities and setting long-term direction. However, (he/she) often struggles with translating concepts into concrete plans, timelines, and measurable outcomes, which can lead to scattered focus and underdelivered initiatives without strong delivery partners and governance.`,
+    overall: `Deploy <strong>(NAME)</strong> in roles where ideation and strategic direction are primary (e.g., innovation lead, strategy, R&D ideation). To ensure impact, pair <strong>(NAME)</strong> with strong delivery partners—operational leaders, program managers, or integrators—responsible for planning, budgeting, and disciplined execution. Implement structured gating (milestones, pilots, metrics) to convert concepts into validated prototypes and scalable initiatives. Provide coaching on prioritization, stakeholder alignment, and accountability to increase follow-through and organizational trust.`,
+    conclusion: `<strong>[Name]</strong> is a visionary thinker who generates bold strategic ideas and inspires others with compelling possibilities. (His/Her) strength lies in spotting disruptive opportunities and setting long-term direction. However, (he/she) often struggles with translating concepts into concrete plans, timelines, and measurable outcomes, which can lead to scattered focus and underdelivered initiatives without strong delivery partners and governance.`,
   },
   "latent-opponent": {
     about: `
-<strong>[Name]</strong> tends to oppose prevailing plans subtly rather than overtly, driven by caution, principle, or skepticism. [Name]  is a “Latent Oppositionist” — someone who protects the organization from blind spots by challenging ideas, but often does so indirectly. This can improve decision quality when managed, but also risks undermining alignment and morale.`,
-    strengths: `This section identifies the key strengths which (NAME) brings to the organisation. (NAME) has abilities, skills and attributes in other areas, but the statements below are likely to be some of the fundamental gifts he has to offer.
+<strong>[Name]</strong> tends to oppose prevailing plans subtly rather than overtly, driven by caution, principle, or skepticism. <strong>[Name]</strong>  is a “Latent Oppositionist” — someone who protects the organization from blind spots by challenging ideas, but often does so indirectly. This can improve decision quality when managed, but also risks undermining alignment and morale.`,
+    strengths: `This section identifies the key strengths which <strong>(NAME)</strong> brings to the organisation. <strong>(NAME)</strong> has abilities, skills and attributes in other areas, but the statements below are likely to be some of the fundamental gifts he has to offer.
 
 - Sharp critical thinker who identifies risks, gaps, and unrealistic assumptions.
 
@@ -241,11 +309,11 @@ export const personalityProfileConfig = {
 
 - May avoid collaboration if they feel their concerns aren’t heard.`,
     overall: `Use this person’s critical perspective formally—assign roles like risk reviewer, devil’s advocate, or quality gatekeeper. Reduce negative impact by creating safe, structured channels for raising objections (pre-mortems, red teams, scheduled challenge sessions) and by setting expectations for transparent, evidence-based feedback. Pair them with sponsors who acknowledge valid concerns but enforce decisions and timelines. Offer coaching on constructive influence, collaborative problem-solving, and communicating concerns publicly to build trust and accountability.`,
-    conclusion: `Name] is a sharp, principle-driven critic who reliably surfaces risks, unrealistic assumptions, and gaps in plans—improving decision quality and protecting long-term interests. (His/Her) tendency to oppose plans indirectly can prevent costly oversights, but when concerns are not voiced openly it may slow momentum, fragment alignment, or be perceived as obstructive. Encouraging more direct, evidence-based challenge will help the organization capture the value of (his/her) skepticism without harming team cohesion.`,
+    conclusion: `<strong>[Name]</strong> is a sharp, principle-driven critic who reliably surfaces risks, unrealistic assumptions, and gaps in plans—improving decision quality and protecting long-term interests. (His/Her) tendency to oppose plans indirectly can prevent costly oversights, but when concerns are not voiced openly it may slow momentum, fragment alignment, or be perceived as obstructive. Encouraging more direct, evidence-based challenge will help the organization capture the value of (his/her) skepticism without harming team cohesion.`,
   },
   "stable-team-player": {
-    about: `<strong>[Name]</strong> is steady, dependable, and team-focused—someone who prioritizes collaboration, consistency, and maintaining a positive working environment. [Name] is a “Stable Team Player” — reliable in delivery, supportive of colleagues, and effective at keeping teams aligned and functioning smoothly.`,
-    strengths: `This section identifies the key strengths which (NAME) brings to the organisation. has abilities, skills and attributes in other areas, but the statements below are likely to be some of the fundamental gifts he has to offer.
+    about: `<strong>[Name]</strong> is steady, dependable, and team-focused—someone who prioritizes collaboration, consistency, and maintaining a positive working environment. <strong>[Name]</strong> is a “Stable Team Player” — reliable in delivery, supportive of colleagues, and effective at keeping teams aligned and functioning smoothly.`,
+    strengths: `This section identifies the key strengths which <strong>(NAME)</strong> brings to the organisation. has abilities, skills and attributes in other areas, but the statements below are likely to be some of the fundamental gifts he has to offer.
 
 - Dependable and consistent in meeting commitments and deadlines.
 
@@ -267,13 +335,13 @@ export const personalityProfileConfig = {
 - May underplay personal ambition, risking being overlooked for advancement.
 
 - Sometimes defers to stronger personalities, reducing their own influence.`,
-    overall: `Place (NAME) in roles that value reliability, collaboration, and continuity (e.g., team lead, operations, client service, HR support). To broaden impact, encourage stretch assignments that build decision-making and visible leadership, provide coaching on constructive feedback and conflict resolution, and ensure (NAME)'s contributions are recognized so (NAME) is considered for development and promotion.`,
+    overall: `Place <strong>(NAME)</strong> in roles that value reliability, collaboration, and continuity (e.g., team lead, operations, client service, HR support). To broaden impact, encourage stretch assignments that build decision-making and visible leadership, provide coaching on constructive feedback and conflict resolution, and ensure <strong>(NAME)'s</strong> contributions are recognized so <strong>(NAME)</strong> is considered for development and promotion.`,
     conclusion: `<strong>[Name]</strong> is a steady, dependable team player who reliably meets commitments, fosters collaboration, and helps keep team morale calm during pressure. (His/Her) consistency and cooperative approach support smooth operations and inclusive culture. However, a strong preference for harmony can lead to avoiding difficult conversations, slowing decisive action, and reducing visibility for promotion unless deliberate opportunities for stretch, feedback skills, and recognition are provided.`,
   },
   "innovator-disruptor": {
-    about: `<strong>[Name]</strong> is creative, energetic, and focused on change—someone who challenges the status quo and pushes for new products, processes, or business models. [Name] is an “Innovator–Disruptor” — a catalyst for fresh ideas who energizes teams to try bold approaches and seize new opportunities.
+    about: `<strong>[Name]</strong> is creative, energetic, and focused on change—someone who challenges the status quo and pushes for new products, processes, or business models. <strong>[Name]</strong> is an “Innovator–Disruptor” — a catalyst for fresh ideas who energizes teams to try bold approaches and seize new opportunities.
 `,
-    strengths: `This section identifies the key strengths which (NAME) brings to the organisation. (NAME) has abilities, skills and attributes in other areas, but the statements below are likely to be some of the fundamental gifts he has to offer.
+    strengths: `This section identifies the key strengths which <strong>(NAME)</strong> brings to the organisation. <strong>(NAME)</strong> has abilities, skills and attributes in other areas, but the statements below are likely to be some of the fundamental gifts he has to offer.
 
 - Generates original ideas and sees opportunities others miss.
 
@@ -295,12 +363,12 @@ export const personalityProfileConfig = {
 - Risk of pursuing too many initiatives, diluting focus and resources.
 
 - May be perceived as reckless or impractical by more conservative colleagues.`,
-    overall: `Engage (NAME) in roles that require idea generation and change leadership (e.g., innovation lead, R&D, strategic growth). Pair (NAME) with delivery-focused partners who handle planning, risk management, and execution. Set clear priorities, stage-gate pilots, and require business cases to channel creativity into measurable outcomes. Provide coaching on stakeholder engagement and sustaining momentum through disciplined follow-through.`,
+    overall: `Engage <strong>(NAME)</strong> in roles that require idea generation and change leadership (e.g., innovation lead, R&D, strategic growth). Pair <strong>(NAME)</strong> with delivery-focused partners who handle planning, risk management, and execution. Set clear priorities, stage-gate pilots, and require business cases to channel creativity into measurable outcomes. Provide coaching on stakeholder engagement and sustaining momentum through disciplined follow-through.`,
     conclusion: `<strong>[Name]</strong> is a creative, energetic change agent who generates original ideas, motivates teams, and drives rapid experimentation. Comfortable with ambiguity, (he/she) pushes the organization to try bold approaches and seize new opportunities. However, (his/her) fast pace and focus on novelty can exceed the organization’s capacity to adapt, risking friction, incomplete follow-through, or stretched resources. With clear priorities, staged pilots, and delivery-focused partners, their drive converts into sustained, scalable impact.`,
   },
   "operator-without-initiative": {
-    about: `<strong>[Name]</strong> is reliable and task-focused but tends not to take initiative or drive change—someone who executes assigned work well but waits for direction. [Name] is an “Operator without Initiative” — steady in delivery and dependable on routine tasks, but unlikely to proactively improve processes or seek new opportunities.`,
-    strengths: `This section identifies the key strengths which (NAME) brings to the organisation. (NAME) has abilities, skills and attributes in other areas, but the statements below are likely to be some of the fundamental gifts he has to offer.
+    about: `<strong>[Name]</strong> is reliable and task-focused but tends not to take initiative or drive change—someone who executes assigned work well but waits for direction. <strong>[Name]</strong> is an “Operator without Initiative” — steady in delivery and dependable on routine tasks, but unlikely to proactively improve processes or seek new opportunities.`,
+    strengths: `This section identifies the key strengths which <strong>(NAME)</strong> brings to the organisation. <strong>(NAME)</strong> has abilities, skills and attributes in other areas, but the statements below are likely to be some of the fundamental gifts he has to offer.
 
 - Consistently completes assigned tasks on time and to standard.
 
@@ -322,7 +390,7 @@ export const personalityProfileConfig = {
 - Might miss early warning signs or opportunities because they don’t proactively scan for them.
 
 - May become disengaged if work is monotonous and lacks clear progression.`,
-    overall: `Place (NAME) in roles that value dependable execution and routine operations (e.g., operations, administration, production). To increase contribution, provide clear development paths, short-term stretch assignments with defined goals, and autonomy gradually tied to measurable outcomes. Encourage a culture of small, safe experiments and recognize proactive behaviors to build confidence and motivation for taking initiative.`,
+    overall: `Place <strong>(NAME)</strong> in roles that value dependable execution and routine operations (e.g., operations, administration, production). To increase contribution, provide clear development paths, short-term stretch assignments with defined goals, and autonomy gradually tied to measurable outcomes. Encourage a culture of small, safe experiments and recognize proactive behaviors to build confidence and motivation for taking initiative.`,
     conclusion: `<strong>[Name]</strong> is a dependable, task-oriented performer who reliably completes assigned work and supports stable operations. Comfortable with routine and clear instructions, (he/she) reduce errors and sustain predictable delivery. However, this profile rarelies volunteer ideas or take initiative, which can limit innovation, visibility, and promotion opportunities. His/Her impact increases with gradual autonomy, short stretch assignments, and explicit recognition for proactive behavior.`,
   },
 };

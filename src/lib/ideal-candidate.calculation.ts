@@ -98,12 +98,12 @@ export default function calculateIdeaCandidate(results: {
     A: getScore(hexacoCorrected.A),
     C: getScore(hexacoCorrected.C),
     O: getScore(hexacoCorrected.O),
-    Results: hBeck.H,
-    Mindset: hBeck.E,
-    Skills: hBeck.X,
-    Communication: hBeck.A,
-    Interpersonal: hBeck.C,
-    Influence: hBeck.O,
+    Results: getScore(hBeck.H),
+    Mindset: getScore(hBeck.E),
+    Skills: getScore(hBeck.X),
+    Communication: getScore(hBeck.A),
+    Interpersonal: getScore(hBeck.C),
+    Influence: getScore(hBeck.O),
   };
   console.log("idealCandidateCalculated", idealCandidateCalculated);
 
@@ -139,6 +139,8 @@ export default function calculateIdeaCandidate(results: {
       idealScoreCategories.Influence,
     ),
   };
+
+  console.log("idealCandidateAlignment", idealCandidateAlignment);
 
   const fitIndexCloseToIdeal = {
     H: getFitIndex(hexacoCorrected.H, idealCandidateCalculated.H),
