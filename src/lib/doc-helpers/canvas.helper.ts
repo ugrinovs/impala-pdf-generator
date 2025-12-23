@@ -28,7 +28,7 @@ const el = <T extends SVGElement>(
 
 const barPath = (value: number, x: number) => {
   const h = (value / 100) * CHART.yMax;
-  const yTop = CHART.plotOffsetY + CHART.yMax - h + 5;
+  const yTop = CHART.plotOffsetY + CHART.yMax - h;
   const yBottom = CHART.plotOffsetY + CHART.yMax;
 
   console.log("barPath", { value, h, yTop, yBottom });
@@ -188,8 +188,7 @@ export function createChartSvg(data: ChartData, doc: Document): SVGElement {
     if (diff > 0) {
       const min = Math.min(g.explicit, g.implicit);
       const h = (diff / 100) * CHART.yMax;
-      const y =
-        CHART.plotOffsetY + CHART.yMax - (min / 100) * CHART.yMax - h + 5;
+      const y = CHART.plotOffsetY + CHART.yMax - (min / 100) * CHART.yMax - h;
       const x = g.explicit < g.implicit ? x1 : x2;
 
       svg.appendChild(

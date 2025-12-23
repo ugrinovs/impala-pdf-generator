@@ -2149,15 +2149,15 @@ export async function generateDevelopmentReport(
 
 // serves for testing
 
-// generateDevelopmentReport()
-//   .then((base64) => {
-//     console.log("Generated PDF base64 length:", base64.length);
-//     fs.writeFileSync(path.resolve(__dirname, "output.pdf"), base64, {
-//       encoding: "base64",
-//     });
-//     process.exit(0);
-//   })
-//   .catch((error) => {
-//     console.error("Error generating PDF:", error);
-//     process.exit(1);
-//   });
+generateDevelopmentReport()
+  .then((base64) => {
+    console.log("Generated PDF base64 length:", base64.length);
+    fs.writeFileSync(path.resolve(__dirname, "output.pdf"), base64, {
+      encoding: "base64",
+    });
+    process.exit(0);
+  })
+  .catch((error) => {
+    console.error("Error generating PDF:", error);
+    process.exit(1);
+  });
