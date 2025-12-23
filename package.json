@@ -45,8 +45,10 @@
   },
   "dependencies": {
     "big.js": "^7.0.1",
+    "canvas": "^3.2.0",
     "htmlparser2": "^10.0.0",
     "jsdom": "^27.3.0",
+    "path2d": "^0.3.1",
     "puppeteer": "^24.31.0"
   },
   "devDependencies": {

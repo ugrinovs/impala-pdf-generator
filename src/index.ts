@@ -6,14 +6,20 @@ import resExample from "./lib/res-example.js";
 import calculateIdeaCandidate from "./lib/ideal-candidate.calculation.js";
 import { personalityProfileMap } from "./lib/personality-profile.mapper.js";
 import {
-  createElement,
   findElementById,
   parseHTML,
   serializeDocument,
-} from "./lib/html-parser.js";
+} from "./lib/doc-helpers/html-parser.js";
 import Big from "big.js";
+import {
+  addDiscrepancyImages,
+  addFitIndexImage,
+} from "./lib/doc-helpers/images.helper.js";
+import { createChartSvg } from "./lib/doc-helpers/canvas.helper.js";
+import { devPlanDimensionToHexacoKeyMap } from "./lib/hexaco-dimension.map.js";
 
 // const __dirname = path.dirname(fileURLToPath(import.meta.dirname));
+type HexacoDimension = "H" | "E" | "X" | "A" | "C" | "O";
 const __dirname = import.meta.dirname;
 console.log("__dirname", __dirname);
 
@@ -430,13 +436,14 @@ const devPlanDimensionMap = {
   development_plan_learning_innovation: "Learning & Innovation",
 };
 
-const devPlanDimensionToHexacoKeyMap = {
-  H: "development_plan_integrity",
-  E: "development_plan_emotional_regulation",
-  X: "development_plan_communication_influence",
-  A: "development_plan_collaboration_diplomacy",
-  C: "development_plan_execution_reliability",
-  O: "development_plan_learning_innovation",
+const devPlanForChart = {
+  development_plan_integrity: "Integrity\nand Trust",
+  development_plan_emotional_regulation:
+    "Emotional\nRegulation\nand Resilience",
+  development_plan_communication_influence: "Communication\nand Influence",
+  development_plan_collaboration_diplomacy: "Collaboration\nand Diplomacy",
+  development_plan_execution_reliability: "Performance\nand Reliability",
+  development_plan_learning_innovation: "Learning\nand Innovation",
 };
 
 function getPersonalityProfile(
@@ -1464,10 +1471,6 @@ export async function generateDevelopmentReport(
 
   const htmlDoc = parseHTML(htmlContent);
 
-  const discrepancyScoreSection = findElementById(
-    htmlDoc,
-    "discrepancy_scores_section",
-  );
   const lowDiscrepancyScores = Object.keys(
     result.discrepancyHexaco ?? {},
   ).filter((key) => new Big(result.discrepancyHexaco?.[key] ?? 0).lt(0.3));
@@ -1477,66 +1480,25 @@ export async function generateDevelopmentReport(
     lowDiscrepancyScores,
   );
   console.log("lowDiscrepancyScores", lowDiscrepancyScores);
-  if (lowDiscrepancyScores.length > 0) {
-    const discrepancyDiv = createElement(htmlDoc, "div");
-    discrepancyDiv.classList.add("flex", "flex-col");
-    const heading = createElement(htmlDoc, "h2");
-    heading.classList.add("text-gray");
-    heading.textContent = "Low Discrepancy Score";
-
-    discrepancyDiv.appendChild(heading);
-
-    const lowDiscrepancyDiv = createElement(htmlDoc, "div");
-    for (const scoreKey of lowDiscrepancyScores) {
-      const dimension =
-        devPlanDimensionToHexacoKeyMap[
-          scoreKey as keyof typeof devPlanDimensionToHexacoKeyMap
-        ];
-
-      console.log("dimension", dimension);
-      const svgDoc = parseHTML(hexacoPositiveBadges[dimension]);
-      const svg = svgDoc.querySelector("svg");
-      // img.setAttribute("alt", scoreKey);
-      // img.classList.add("o-badge-lg");
-      svg!.classList.add("o-badge-lg");
-      lowDiscrepancyDiv.appendChild(svg!);
-    }
-
-    discrepancyDiv.appendChild(lowDiscrepancyDiv);
-    discrepancyScoreSection?.appendChild(discrepancyDiv);
-  }
+  addDiscrepancyImages(
+    htmlDoc,
+    lowDiscrepancyScores as Array<HexacoDimension>,
+    "Low Discrepancy Score",
+    (dimension) => hexacoPositiveBadges[dimension],
+  );
 
   const highDiscrepancyScores = Object.keys(
     result.discrepancyHexaco ?? {},
-  ).filter((key) => new Big(result.discrepancyHexaco?.[key] ?? 0).gte(0.3));
-  console.log("highDiscrepancyScores", highDiscrepancyScores);
-  if (highDiscrepancyScores.length > 0) {
-    const highDiscrepancy = createElement(htmlDoc, "div");
-    highDiscrepancy.classList.add("flex", "flex-col");
-    const heading = createElement(htmlDoc, "h2");
-    heading.classList.add("text-gray");
-    heading.textContent = "Moderate / High Discrepancy Score";
+  ).filter((key) =>
+    new Big(result.discrepancyHexaco?.[key] ?? 0).gte(0.3),
+  ) as Array<HexacoDimension>;
 
-    highDiscrepancy.appendChild(heading);
-
-    const highDiscrepancyScoresDiv = createElement(htmlDoc, "div");
-    for (const scoreKey of highDiscrepancyScores) {
-      const dimension =
-        devPlanDimensionToHexacoKeyMap[
-          scoreKey as keyof typeof devPlanDimensionToHexacoKeyMap
-        ];
-
-      console.log("dimension", dimension);
-      const svgDoc = parseHTML(hexacoNegativeBadges[dimension]);
-      const svg = svgDoc.querySelector("svg");
-      svg!.classList.add("o-badge-lg");
-
-      highDiscrepancyScoresDiv.appendChild(svg!);
-    }
-
-    highDiscrepancy.appendChild(highDiscrepancyScoresDiv);
-    discrepancyScoreSection?.appendChild(highDiscrepancy);
-  }
+  addDiscrepancyImages(
+    htmlDoc,
+    highDiscrepancyScores,
+    "Moderate / High Discrepancy Score",
+    (dimension) => hexacoNegativeBadges[dimension],
+  );
 
   const fitIndex = parseFloat(
     finalResult.fit_index_percentage?.toString() ?? "0",
@@ -1547,34 +1509,59 @@ export async function generateDevelopmentReport(
   const fitIndexString =
     fitIndex < 21 ? "low" : fitIndex < 50 ? "medium" : "high";
   const iconUrl = "data:image/png;base64, " + iconConf[fitIndexString];
-  const fitIndexConclusionSectionEl = findElementById(
-    htmlDoc,
-    "fit_index_conclusion_section",
-  );
-  const image = createElement(htmlDoc, "img");
-  const span = createElement(htmlDoc, "span");
-  const p = createElement(htmlDoc, "p");
-  const p2 = createElement(htmlDoc, "p");
-  const div = createElement(htmlDoc, "div");
-  image.setAttribute("src", iconUrl);
-  image.setAttribute("alt", "Fit Index Icon");
-  image.classList.add("o-badge");
-  p.textContent = `${new Big(finalResult.fit_index_percentage).toFixed(0)}%`;
-  p2.textContent = "Overall match";
-
-  p.classList.add("fit_index_percentage_value");
   const color = fitIndex < 21 ? "red" : fitIndex < 50 ? "yellow" : "green";
-  p.classList.add(color);
+  addFitIndexImage(htmlDoc, iconUrl, color, finalResult.fit_index_percentage);
 
-  span.appendChild(p);
-  span.appendChild(p2);
-  span.classList.add("o_fit_index_percent");
+  const chart = findElementById(htmlDoc, "chart") as HTMLCanvasElement;
+  // const context = chart.getContext("2d");
 
-  div.appendChild(image);
-  div.appendChild(span);
-  div.classList.add("fit-index-summary");
+  // 1 to 5
+  const normalizePercent = (value: number | string) => {
+    const num = new Big(value);
+    const normalized = num.minus(1).div(4).times(100);
+    return normalized.toNumber();
+  };
 
-  fitIndexConclusionSectionEl?.prepend(div);
+  const chartSVG = createChartSvg(
+    {
+      groups: Object.keys(devPlanDimensionToHexacoKeyMap).map((key) => {
+        const dimension =
+          devPlanDimensionToHexacoKeyMap[
+            key as keyof typeof devPlanDimensionToHexacoKeyMap
+          ];
+
+        console.log(
+          "dimension for key",
+          key,
+          dimension,
+          lowDiscrepancyScores,
+          highDiscrepancyScores,
+        );
+        return {
+          label: devPlanForChart[dimension as keyof typeof devPlanDimensionMap],
+          explicit: normalizePercent(
+            result.neuroCorrectionRaw[
+              key as keyof typeof result.neuroCorrectionRaw
+            ],
+          ),
+          implicit: normalizePercent(
+            result.neuroCorrectionCorrected[
+              key as keyof typeof result.neuroCorrectionCorrected
+            ],
+          ),
+          discrepancyLabel: lowDiscrepancyScores.includes(
+            key as HexacoDimension,
+          )
+            ? "Low"
+            : highDiscrepancyScores.includes(key as HexacoDimension)
+              ? "Medium\n/High"
+              : "",
+        };
+      }),
+    },
+    htmlDoc,
+  );
+  chart.replaceWith(chartSVG);
 
   fs.writeFileSync(
     path.resolve(__dirname, "output.html"),
@@ -1621,7 +1608,7 @@ export async function generateDevelopmentReport(
     if (textContent === "medium") {
       await page.evaluate((el) => {
         (el as HTMLElement).style.color = "orange";
-        el.textContent = "Medium";
+        el.textContent = "Moderate";
       }, el);
     }
     if (textContent === "low") {
@@ -1699,7 +1686,7 @@ export async function generateDevelopmentReport(
     }
   });
 
-  // await page.waitForSelector("#chart").then(async () => {
+  // await page.waitForSelector("#ehart").then(async () => {
   //   const element = await page.$("#chart");
   //   await page.evaluate((el) => {
   //     function createChart(ctx: CanvasRenderingContext2D) {
@@ -2139,7 +2126,7 @@ export async function generateDevelopmentReport(
   //   }
   // });
 
-  const puppeteerDPI = 96 + 48; // Default is 96 DPI
+  const puppeteerDPI = 96; // Default is 96 DPI
   const projectDPI = 72; // Project is designed at 72 DPI
 
   // Set screen size.
