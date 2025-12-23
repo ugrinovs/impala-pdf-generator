@@ -1,0 +1,71 @@
+# Source files (only include compiled dist/)
+src/
+*.ts
+!*.d.ts
+tsconfig.json
+
+# Output directory
+output/
+
+# Development files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Test files
+*.test.js
+*.test.ts
+__tests__/
+
+# Git
+.git/
+.gitignore
+
+# CI/CD
+.github/
+
+# Documentation source
+docs/
+
+# Temporary files
+*.tmp
+*.bak
+.tmp-*/
+
+# Example files
+*-example.ts
+res-example.ts
+
+# Config files for development
+.eslintrc*
+.prettierrc*
+
+# Excel and template files (users will provide their own)
+*.xlsx
+*.docx
+
+# Images and assets not needed in package
+*.png
+*.svg
+!icons/**
+*.jpg
+*.jpeg
+
+# Fleet directories
+Fleet-*/
+
+# Build artifacts
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Lock files
+package-lock.json
+yarn.lock

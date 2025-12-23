@@ -87,7 +87,7 @@
     <div class="content">
       <h2>Introduction</h2>
       <p>This report is based on a combination of multiple validated psychometric and neurocognitive instruments,
-        providing a multi-layered insight into the <span data-id="first_name">#{{FIRST_NAME}}</span> personality,
+        providing a multi-layered insight into the <strong data-id="first_name">#{{FIRST_NAME}}'s'</strong> personality,
         behavior, and potential.</p>
       <ol>
         <li><strong>Core Personality profile:</strong> designed to assess six fundamental personality dimensions
@@ -153,15 +153,9 @@
 
         <strong>Key Strengths</strong>
         <p data-id="key_strengths">#{{KEY_STRENGTHS}}</p>
-        <ul data-id="key_strengths_list">
-          <!-- Key strengths list items will be dynamically inserted here -->
-        </ul>
 
         <strong>Possible Weaknesses</strong>
         <p data-id="possible_weaknesses">#{{POSSIBLE_WEAKNESSES}}</p>
-        <ul data-id="possible_weaknesses_list">
-          <!-- Possible weaknesses list items will be dynamically inserted here -->
-        </ul>
 
         <strong>Overall Recommendation</strong>
         <p data-id="overall_recommendation">#{{OVERALL_RECOMMENDATION}}</p>
@@ -178,8 +172,16 @@
       <h2>Ideal And Candidate Profile Comparison</h2>
       <div class="section">
         <div>
-          <div id="fit_index_chart" data-id="fit_index_chart" alt="Fit Index Chart">
-            <div data-id="fit_index_percentage">#{{FIT_INDEX_PERCENTAGE}}%</div>
+          <div id="fit_index_chart_1" data-id="fit_index_chart_1" alt="Fit Index Chart">
+            <img data-id="fit_index_icon" class="fit_index_icon" />
+            <div data-id="fit_index_percentage">
+              <div class="fit_index_percent">
+                #{{FIT_INDEX_PERCENTAGE}}%
+              </div>
+              <p>
+                Overall match
+              </p>
+            </div>
           </div>
           <p class="overview">This section provides an overview of how the assessed profile aligns with the ideal
             requirements for the
@@ -194,7 +196,7 @@
             in
             selection and development by highlighting areas of strong role fit as well as potential challenges that may
             require attention.</p>
-          <p>  The profile alignment score for this individual is #{{FIT_INDEX_PERCENTAGE}}. The results indicate a
+          <p>The profile alignment score for this individual is #{{FIT_INDEX_PERCENTAGE}}. The results indicate a
             limited match with the
             competencies considered essential for the role.</p>
         </div>
@@ -240,6 +242,12 @@
             <td data-id="candidate_dependability_alignment">#{{CANDIDATE_DEPENDABILITY_ALIGNMENT}}</td>
             <td data-id="dependability_interpretation">#{{DEPENDABILITY_INTERPRETATION}}</td>
           </tr>
+          <tr>
+            <td>Innovative Thinking and Adaptability</td>
+            <td data-id="ideal_innovation_profile">#{{IDEAL_INNOVATION_PROFILE}}</td>
+            <td data-id="candidate_innovation_alignment">#{{CANDIDATE_INNOVATION_ALIGNMENT}}</td>
+            <td data-id="innovation_interpretation">#{{INNOVATION_INTERPRETATION}}</td>
+          </tr>
         </tbody>
       </table>
 
@@ -255,8 +263,16 @@
       <h2>Ideal And Candidate Profile Comparison</h2>
       <div class="section">
         <div>
-          <div id="fit_index_chart" data-id="fit_index_chart" alt="Fit Index Chart">
-            <div data-id="fit_index_percentage">#{{FIT_INDEX_PERCENTAGE}}%</div>
+          <div id="fit_index_chart_2" data-id="fit_index_chart_2" alt="Fit Index Chart">
+            <img data-id="fit_index_icon" class="fit_index_icon" />
+            <div data-id="fit_index_percentage">
+              <div class="fit_index_percent">
+                #{{FIT_INDEX_PERCENTAGE}}%
+              </div>
+              <p>
+                Overall match
+              </p>
+            </div>
           </div>
           <p class="overview">This section provides an overview of how the assessed profile aligns with the ideal
             requirements for the
@@ -288,12 +304,6 @@
         </thead>
         <tbody data-id="competency_comparison_rows">
           <tr>
-            <td>Innovative Thinking and Adaptability</td>
-            <td data-id="ideal_innovation_profile">#{{IDEAL_INNOVATION_PROFILE}}</td>
-            <td data-id="candidate_innovation_alignment">#{{CANDIDATE_INNOVATION_ALIGNMENT}}</td>
-            <td data-id="innovation_interpretation">#{{INNOVATION_INTERPRETATION}}</td>
-          </tr>
-          <tr>
             <td>Purposeful and strategic planning</td>
             <td data-id="ideal_strategic_profile">#{{IDEAL_STRATEGIC_PROFILE}}</td>
             <td data-id="candidate_strategic_alignment">#{{CANDIDATE_STRATEGIC_ALIGNMENT}}</td>
@@ -317,18 +327,18 @@
             <td data-id="candidate_communication_alignment">#{{CANDIDATE_COMMUNICATION_ALIGNMENT}}</td>
             <td data-id="communication_interpretation">#{{COMMUNICATION_INTERPRETATION}}</td>
           </tr>
-          <!-- <tr> -->
-          <!--   <td>Relational Intelligence</td> -->
-          <!--   <td data-id="ideal_relational_profile">#{{IDEAL_RELATIONAL_PROFILE}}</td> -->
-          <!--   <td data-id="candidate_relational_alignment">#{{CANDIDATE_RELATIONAL_ALIGNMENT}}</td> -->
-          <!--   <td data-id="relational_interpretation">#{{RELATIONAL_INTERPRETATION}}</td> -->
-          <!-- </tr> -->
-          <!-- <tr> -->
-          <!--   <td>Leadership effectiveness</td> -->
-          <!--   <td data-id="ideal_leadership_profile">#{{IDEAL_LEADERSHIP_PROFILE}}</td> -->
-          <!--   <td data-id="candidate_leadership_alignment">#{{CANDIDATE_LEADERSHIP_ALIGNMENT}}</td> -->
-          <!--   <td data-id="leadership_interpretation">#{{LEADERSHIP_INTERPRETATION}}</td> -->
-          <!-- </tr> -->
+          <tr>
+            <td>Relational Intelligence</td>
+            <td data-id="ideal_relational_profile">#{{IDEAL_RELATIONAL_PROFILE}}</td>
+            <td data-id="candidate_relational_alignment">#{{CANDIDATE_RELATIONAL_ALIGNMENT}}</td>
+            <td data-id="relational_interpretation">#{{RELATIONAL_INTERPRETATION}}</td>
+          </tr>
+          <tr>
+            <td>Leadership effectiveness</td>
+            <td data-id="ideal_leadership_profile">#{{IDEAL_LEADERSHIP_PROFILE}}</td>
+            <td data-id="candidate_leadership_alignment">#{{CANDIDATE_LEADERSHIP_ALIGNMENT}}</td>
+            <td data-id="leadership_interpretation">#{{LEADERSHIP_INTERPRETATION}}</td>
+          </tr>
         </tbody>
       </table>
 
@@ -342,7 +352,7 @@
   <section class="page page-7" id="explicit-implicit">
     <div class="content">
       <div class="info">
-        <h2>Explicit vs Implicit Levels</h2>
+        <h2>Explicit vs Corrected Levels</h2>
         <p>Traditional personality assessments rely on self-reported data, capturing how individuals consciously
           perceive
           and describe their own traits, values, and behavior. While such instruments provide valuable insight, they can
@@ -374,7 +384,7 @@
             <span>(Self-Report)</span>
           </div>
           <div>
-            <p>Implicit test</p>
+            <p>Impala correction</p>
             <span>(Neuro Marker)</span>
           </div>
           <div>
@@ -461,7 +471,7 @@
             <span>(Self-Report)</span>
           </div>
           <div>
-            <p>Implicit test</p>
+            <p>Impala correction</p>
             <span>(Neuro Marker)</span>
           </div>
           <div>
@@ -551,7 +561,10 @@
         results and organized to support focused,
         practical growth. Use these recommendations to identify priorities, create a personalized development plan,
         and track progress across remediation, targeted development, maintenance, and empowerment areas.
-        Listed below are some suggestions for <span data-id="recruiter_name">#{{RECRUITER_NAME}}</span>’s development.
+      </p>
+      <p data-id="development_plan_dimension">
+        Listed below are some suggestions for <strong data-id="first_name">#{{FIRST_NAME}}</strong>’s
+        development.
       </p>
 
       <p data-id="development_plan_integrity">#{{DEVELOPMENT_PLAN_INTEGRITY}}</p>
@@ -561,6 +574,8 @@
       <p data-id="development_plan_execution_reliability">#{{DEVELOPMENT_PLAN_EXECUTION_RELIABILITY}}</p>
       <p data-id="development_plan_learning_innovation">#{{DEVELOPMENT_PLAN_LEARNING_INNOVATION}}</p>
 
+      <div class="discrepancy-scores-section" id="discrepancy_scores_section">
+      </div>
     </div>
 
     <div class="footer">
@@ -570,20 +585,60 @@
 
   <section class="page page-10">
     <div class="content">
-      <h2>Overall Conclusion</h2>
-      <p><span data-id="personality_profile_conclusion">#{{PERSONALITY_PROFILE_CONCLUSION}}</span></p>
-      <p data-id="fit_index_conclusion">#{{FIT_INDEX_CONCLUSION}}</p>
+      <h2 class="mb-45">Overall Conclusion</h2>
+      <div class="flex flex-col gap-54">
+        <div class="flex flex-row items-center">
+          <img src="#{{PERSONALITY_PROFILE_CONCLUSION_IMAGE_URL}}" alt="Personality Profile Conclusion Image"
+            class="o-badge" />
 
-      <p>The individual demonstrates strong capabilities in <span
-          data-id="dev_plan_highest_score">#{{DEV_PLAN_HIGHEST_SCORE}}</span> and <span
-          data-id="dev_plan_second_highest">#{{DEV_PLAN_SECOND_HIGHEST}}</span>, showcasing qualities that positively
-        contribute to their overall effectiveness and impact within the team.</p>
+          <div class="flex flex-col no-m-children gap-1">
+            <h2 class="text-gray">Personality Profile</h2>
+            <p data-id="personality_profile_conclusion">#{{PERSONALITY_PROFILE_CONCLUSION}}</p>
+          </div>
+        </div>
 
-      <p data-id="dev_plan_lowest_score">
-        #{{DEV_PLAN_LOWEST_SCORE}}
-        #{{DEV_PLAN_SECOND_LOWEST}}
-      </p>
+        <div class="flex flex-row items-center" id="fit_index_conclusion_section">
+          <!-- <img src="#{{FIT_INDEX_CONCLUSION_IMAGE_URL}}" alt="Fit Index Conclusion Image" class="o-badge-md" /> -->
+          <div class="flex flex-col no-m-children gap-1">
+            <h2 class="text-gray">IDEAL AND CANDIDATE PROFILE COMPARISON</h2>
+            <p data-id="fit_index_conclusion">#{{FIT_INDEX_CONCLUSION}}</p>
+          </div>
+        </div>
 
+        <div class="flex flex-row">
+          <div class="flex flex-row">
+            <img src="#{{DEV_PLAN_HIGHEST_SCORE_IMAGE_URL}}" alt="Development Plan Highest Score Image"
+              class="o-badge-md" />
+            <img src="#{{DEV_PLAN_SECOND_HIGHEST_IMAGE_URL}}" alt="Development Plan Second Highest Image"
+              class="o-badge-md" />
+          </div>
+
+          <div class="flex flex-col no-m-children gap-1">
+            <h2 class="text-gray">Strengths</h2>
+            <p>The individual demonstrates strong capabilities in <strong
+                data-id="dev_plan_highest_score">#{{DEV_PLAN_HIGHEST_SCORE}}</strong> and <strong
+                data-id="dev_plan_second_highest">#{{DEV_PLAN_SECOND_HIGHEST}}</strong>, showcasing qualities that
+              positively
+              contribute to their overall effectiveness and impact within the team.</p>
+          </div>
+        </div>
+
+        <div class="flex flex-row">
+          <div class="flex flex-row">
+            <img src="#{{DEV_PLAN_LOWEST_SCORE_IMAGE_URL}}" alt="Development Plan Lowest Score Image" class="o-badge" />
+          </div>
+          <div class="flex flex-col no-m-children gap-1">
+            <h2 class="text-gray">Room for Development</h2>
+            <p data-id="dev_plan_lowest_score">
+              #{{DEV_PLAN_LOWEST_SCORE}}
+            </p>
+            <p data-id="dev_plan_second_lowest_score">
+              #{{DEV_PLAN_SECOND_LOWEST}}
+            </p>
+          </div>
+        </div>
+
+      </div>
     </div>
 
     <div class="footer">

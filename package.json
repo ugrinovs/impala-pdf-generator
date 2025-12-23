@@ -1,19 +1,59 @@
 {
-  "name": "puppeteer-test",
-  "version": "1.0.0",
-  "main": "index.js",
+  "name": "@ugrinovs/impala-pdf-generator",
+  "version": "1.0.17",
+  "description": "A PDF generator for Impala recruitment reports with support for HEXACO personality assessments and candidate evaluations",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "type": "module",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js",
-    "watch": "node index.js --watch",
-    "lib-test": "node test-lib.js"
+    "build": "tsc && npm run copy-assets",
+    "copy-assets": "cp index.html index.css *.png dist/ && cp -r icons dist/ && cp -r font dist/",
+    "prepublishOnly": "npm run build",
+    "start": "node dist/index.js",
+    "start:test": "NODE_ENV=test node dist/index.js",
+    "dev": "tsx watch src/index.ts",
+    "clean": "rm -rf dist test/*.js test/*.d.ts test/*.map",
+    "test": "npm run build && tsc -p tsconfig.test.json && node --test test/*.test.js",
+    "test:build": "tsc -p tsconfig.test.json",
+    "test:run": "node --test test/*.test.js"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "pdf",
+    "generator",
+    "recruitment",
+    "hexaco",
+    "personality",
+    "assessment",
+    "report"
+  ],
+  "author": "ugrinovs",
   "license": "ISC",
-  "description": "",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ugrinovs/impala-pdf-generator.git"
+  },
+  "homepage": "https://github.com/ugrinovs/impala-pdf-generator#readme",
+  "bugs": {
+    "url": "https://github.com/ugrinovs/impala-pdf-generator/issues"
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
   "dependencies": {
+    "big.js": "^7.0.1",
+    "htmlparser2": "^10.0.0",
+    "jsdom": "^27.3.0",
     "puppeteer": "^24.31.0"
+  },
+  "devDependencies": {
+    "@types/htmlparser2": "^3.10.7",
+    "@types/jsdom": "^27.0.0",
+    "@types/node": "^22.10.2",
+    "tsx": "^4.21.0",
+    "typescript": "^5.7.2"
   }
 }
