@@ -1518,7 +1518,7 @@ export async function generateDevelopmentReport(
   // 1 to 5
   const normalizePercent = (value: number | string) => {
     const num = new Big(value);
-    const normalized = num.minus(1).div(4).times(100);
+    const normalized = num.minus(0).div(5).times(100);
     return normalized.toNumber();
   };
 
